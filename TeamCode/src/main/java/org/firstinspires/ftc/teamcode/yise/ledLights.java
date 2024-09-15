@@ -11,16 +11,10 @@ public class LedLights {
 
     public enum ledStates {
         INIT,
-        OPEN,
-        RED,
-        YELLOW,
-        BLUE,
-        HANG,
-        GREEN,
-        CELEBRATION,
+        ARM_READY,
+        BLOCK_GRABBED,
         ENDGAME,
-        INTAKE,
-        DARK
+
     }
 
     public LedLights(HardwareMap hardwareMap) {
@@ -31,44 +25,20 @@ public class LedLights {
 
     public void setLed(ledStates state) {
         switch (state) {
-            case OPEN:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
-                currentState = state;
-                break;
-            case RED:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
-                currentState = state;
-                break;
-            case YELLOW:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-                currentState = state;
-                break;
-            case GREEN:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
-                currentState = state;
-                break;
-            case BLUE:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
-                currentState = state;
-                break;
-            case HANG:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
-                currentState = state;
-                break;
-            case CELEBRATION:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CONFETTI);
-                currentState = state;
-                break;
             case ENDGAME:
                 lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                 currentState = state;
                 break;
-            case INTAKE:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_MEDIUM);
+            case ARM_READY:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_GREEN);
                 currentState = state;
                 break;
-            case DARK:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+            case BLOCK_GRABBED:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+                currentState = state;
+                break;
+            case INIT:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
                 currentState = state;
                 break;
         }

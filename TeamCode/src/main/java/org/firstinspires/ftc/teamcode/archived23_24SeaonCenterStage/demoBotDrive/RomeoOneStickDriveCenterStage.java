@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.demoBotDrive;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -50,6 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Romeo one stick drive", group="Linear OpMode")
+@Disabled
 public class RomeoOneStickDriveCenterStage extends LinearOpMode {
 
     // Declare OpMode members.

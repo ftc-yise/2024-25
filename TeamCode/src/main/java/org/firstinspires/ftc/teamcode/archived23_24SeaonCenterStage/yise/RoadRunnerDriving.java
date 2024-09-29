@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise;
+/*package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -79,99 +79,6 @@ public class RoadRunnerDriving {
     }
 
     //Calibrate position using the middle april tag
-    /*public void calibratePos(AprilTagDetection detection) {
-        if (Parameters.allianceColor == Parameters.Color.RED) {
-            drive.setPoseEstimate(new Pose2d(55.5 - detection.ftcPose.y, -(36.25 + detection.ftcPose.x), drive.getPoseEstimate().getHeading()));
-        } else {
-            drive.setPoseEstimate(new Pose2d(55.5 - detection.ftcPose.y, 36.25 + detection.ftcPose.x, drive.getPoseEstimate().getHeading()));
-        }
-    }
 
-    //Roadrunner pathing to navigate to a corner based on alliance color
-    public void navigateToCorner() {
-        //Check if it is not driving already
-        if (!drive.isBusy()) {
-            //Check for alliance color
-            if (Parameters.allianceColor == Parameters.Color.RED) {
-                Trajectory navigateToCorner = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-51, 51, Math.toRadians(135)))
-                        .build();
-                drive.followTrajectory(navigateToCorner);
-
-            } else {
-                Trajectory navigateToCorner = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-51, -51, Math.toRadians(-135)))
-                        .build();
-                drive.followTrajectory(navigateToCorner);
-
-            }
-        }
-    }
-
-    //Navigate to closest board distance
-    public void dropPixelNear() {
-
-        if (!drive.isBusy()) {
-            if (Parameters.allianceColor == Parameters.Color.RED) {
-
-                Trajectory dropPixelNear = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(50.5,-36, Math.toRadians(180)))
-                        .build();
-                drive.followTrajectory(dropPixelNear);
-
-            } else {
-
-                Trajectory dropPixelNear = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(50.5,36, Math.toRadians(180)))
-                        .build();
-                drive.followTrajectory(dropPixelNear);
-
-            }
-        }
-    }
-
-    //Navigate to middle board distance
-    public void dropPixelMid() {
-
-        if (!drive.isBusy()) {
-            if (Parameters.allianceColor == Parameters.Color.RED) {
-
-                Trajectory dropPixelMid = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(46,-36, Math.toRadians(180)))
-                        .build();
-                drive.followTrajectory(dropPixelMid);
-
-            } else {
-
-                Trajectory dropPixelMid = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(46,36, Math.toRadians(180)))
-                        .build();
-                drive.followTrajectory(dropPixelMid);
-
-            }
-        }
-    }
-
-    //Navigate to far board distance
-    public void dropPixelFar() {
-
-        if (!drive.isBusy()) {
-            if (Parameters.allianceColor == Parameters.Color.RED) {
-
-                Trajectory dropPixelFar = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(39,-36, Math.toRadians(180)))
-                        .build();
-                drive.followTrajectory(dropPixelFar);
-
-            } else {
-
-                Trajectory dropPixelFar = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(39,36, Math.toRadians(180)))
-                        .build();
-                drive.followTrajectory(dropPixelFar);
-
-            }
-        }
-    }*/
-}
+}*/
 

@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.demoBotDrive;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -49,6 +50,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="Romeo tank drive", group="Iterative OpMode")
+@Disabled
 public class RomeoTankDriveCenterStage extends OpMode
 {
     // Declare OpMode members.

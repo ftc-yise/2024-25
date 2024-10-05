@@ -59,7 +59,6 @@ public class allyTestDrive extends LinearOpMode {
             double rightBackPower = vertical + horizontal - turn;
 
 
-
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
@@ -96,3 +95,4 @@ public class allyTestDrive extends LinearOpMode {
             telemetry.update();
         }
     }
+}

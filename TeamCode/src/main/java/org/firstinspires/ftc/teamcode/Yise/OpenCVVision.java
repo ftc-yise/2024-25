@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Yise;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -27,6 +28,7 @@ public class OpenCVVision {
     boolean Error = false;
 
     private Servo outtake;
+
     OpenCvWebcam webcam;
     detectBluePipeline pipelineB;
     detectRedPipeline pipelineR;
@@ -41,9 +43,12 @@ public class OpenCVVision {
     }
 
     private Color currentColor;
+    public OpenCVVision(){
+
+    }
 
 
-    //Constructor
+    //Main Constructor
     public OpenCVVision(HardwareMap hardwareMap) {
         // Initialize Servo
         outtake = hardwareMap.get(Servo.class, "outtake");
@@ -52,12 +57,17 @@ public class OpenCVVision {
 
         // Initialize the webcam
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-
         // Set the pipeline
         pipelineR = new detectRedPipeline();
         pipelineB = new detectBluePipeline();
         pipelineY = new detectYellowPIpeline();
+
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        FtcDashboard.getInstance().startCameraStream(webcam, 25);
+
+        // Set the pipeline
+        webcam.setPipeline(pipelineY);
+        currentColor = Color.YELLOW;
 
         // Open the camera device asynchronously
         webcam.setMillisecondsPermissionTimeout(2000); // Timeout for obtaining permission is configurable. Set before opening.

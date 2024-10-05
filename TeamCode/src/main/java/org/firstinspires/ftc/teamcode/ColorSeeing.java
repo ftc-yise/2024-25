@@ -6,10 +6,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Yise.OpenCVVision;
-@TeleOp(name="OpenCVDriveTest", group="Linear OpMode")
+@TeleOp(name="OpenCVTest", group="Linear OpMode")
 public class ColorSeeing extends LinearOpMode {
-    // create instance of OpenCV class
-    OpenCVVision vision = new OpenCVVision(hardwareMap);
+
+    OpenCVVision vision = new OpenCVVision();
+
 
     // Declare OpMode members for each of the 4 motors.
     private DcMotor leftFrontDrive = null;
@@ -19,10 +20,12 @@ public class ColorSeeing extends LinearOpMode {
 
     private Servo outtake = null;
 
+    private boolean loop = true;
+
     @Override
     public void runOpMode() {
-
-
+        // create instance of OpenCV class
+        OpenCVVision vision = new OpenCVVision(hardwareMap);
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
@@ -38,9 +41,28 @@ public class ColorSeeing extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        vision.setCameraPipeline(OpenCVVision.Color.RED);
+        vision.setCameraPipeline(OpenCVVision.Color.RED);// Wait for the game to start (driver presses PLAY)
 
-    waitForStart();
+        telemetry.addData("Status", "Initialized");
+
+        telemetry.addData("Color:", vision.getColor());
+        telemetry.addData("centroid", vision.getLargestContourCentroid());
+
+        telemetry.addLine();
+
+        telemetry.addData("Corner T", vision.getTopRightCorner());
+        telemetry.addData("Corner B", vision.getBottomRightCorner());
+        telemetry.update();
+
+            if (gamepad1.right_trigger > 0.75){
+                vision.setCameraPipeline(OpenCVVision.Color.BLUE);
+            } else if (gamepad1.left_trigger > 0.75){
+                vision.setCameraPipeline(OpenCVVision.Color.RED);
+            } else {
+                vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
+            }
+
+        waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -48,13 +70,20 @@ public class ColorSeeing extends LinearOpMode {
             if (gamepad1.right_trigger > 0.75){
                 vision.setCameraPipeline(OpenCVVision.Color.BLUE);
             } else if (gamepad1.left_trigger > 0.75){
-                vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
-            } else {
                 vision.setCameraPipeline(OpenCVVision.Color.RED);
+            } else {
+                vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
             }
 
             telemetry.addData("Color:", vision.getColor());
+            telemetry.addData("centroid", vision.getLargestContourCentroid());
+
+            telemetry.addLine();
+
+            telemetry.addData("Corner T", vision.getTopRightCorner());
+            telemetry.addData("Corner B", vision.getBottomRightCorner());
             telemetry.update();
 
         }
-    }}
+    }
+}

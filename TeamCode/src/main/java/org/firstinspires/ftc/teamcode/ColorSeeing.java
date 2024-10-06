@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Yise.OpenCVVision;
+import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
 @TeleOp(name="OpenCVTest", group="Linear OpMode")
 public class ColorSeeing extends LinearOpMode {
 

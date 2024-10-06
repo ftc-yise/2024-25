@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise;
+package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yiseArchived;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;

@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise;
+package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yiseArchived;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

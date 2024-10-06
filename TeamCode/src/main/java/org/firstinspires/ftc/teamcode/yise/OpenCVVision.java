@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Yise;
+package org.firstinspires.ftc.teamcode.yise;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;

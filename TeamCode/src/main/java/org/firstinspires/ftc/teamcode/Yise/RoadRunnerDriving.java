@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Yise;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -48,6 +49,28 @@ public class RoadRunnerDriving {
 
     }
 
+    public void fieldCentricDrive(Gamepad gamepad){
+        // Read pose
+        Pose2d poseEstimate = drive.getPoseEstimate();
+
+        // Create a vector from the gamepad x/y inputs
+        // Then, rotate that vector by the inverse of that heading
+        Vector2d input = new Vector2d(
+                -gamepad.left_stick_y,
+                -gamepad.left_stick_x
+        ).rotated(-poseEstimate.getHeading());
+
+        // Pass in the rotated input + right stick value for rotation
+        // Rotation is not part of the rotated input thus must be passed in separately
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        input.getX(),
+                        input.getY(),
+                        -gamepad.right_stick_x
+                )
+        );
+    }
+
     public void updateFromDpad(double x, double y, double heading) {
         drive.setWeightedDrivePower(new Pose2d(x, y, heading));
     }
@@ -59,10 +82,10 @@ public class RoadRunnerDriving {
         // Set the speedMultiplier in case of SLOW mode
         if (currentSpeed == Speeds.SLOW) {
             currentSpeed = Speeds.NORMAL;
-            speedMultiplier = 1;
+            speedMultiplier = 0.5;
         } else {
             currentSpeed = Speeds.SLOW;
-            speedMultiplier = 0.5;
+            speedMultiplier = 0.25;
         }
     }
 

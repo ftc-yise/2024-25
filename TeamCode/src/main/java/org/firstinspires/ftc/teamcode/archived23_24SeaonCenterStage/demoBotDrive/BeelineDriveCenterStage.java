@@ -1,15 +1,16 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.demoBotDrive;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @TeleOp(name="Beeline", group="Linear Opmode")
-public class BeelineDrive extends LinearOpMode {
+@Disabled
+public class BeelineDriveCenterStage extends LinearOpMode {
 
 
     // Declare OpMode members for each of the 4 motors.
@@ -32,10 +33,10 @@ public class BeelineDrive extends LinearOpMode {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "LeftFrontDrive");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "LeftBackDrive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "RightFrontDrive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "RightBackDrive");
         //fireServo = hardwareMap.get(Servo.class, "fire_servo");
         //barrel = hardwareMap.get(CRServo.class, "barrel" );
 
@@ -79,8 +80,8 @@ public class BeelineDrive extends LinearOpMode {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             //double vertical   = -gamepad1.right_stick_x;  // Note: pushing stick forward gives negative value
-            double vertical     =  gamepad1.left_stick_x;
-            double turn     =  gamepad1.left_stick_y;
+            double vertical     =  gamepad1.left_stick_y;
+            double turn     =  gamepad1.left_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -95,7 +96,7 @@ public class BeelineDrive extends LinearOpMode {
             max = Math.max(max, Math.abs(leftBackPower));
             max = Math.max(max, Math.abs(rightBackPower));
 
-
+            
             /* verticle =y
                horizontal = x
                turn = r*/

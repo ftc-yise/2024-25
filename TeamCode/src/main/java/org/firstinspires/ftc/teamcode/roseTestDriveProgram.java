@@ -2,10 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.yise.LedLights;
+import org.firstinspires.ftc.teamcode.yise.ledLights;
 
 
 @TeleOp(name="Competition drive", group="Linear Opmode")
@@ -19,7 +18,7 @@ public class roseTestDriveProgram extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        LedLights leds = new LedLights(hardwareMap);
+        ledLights leds = new ledLights(hardwareMap);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -34,13 +33,13 @@ public class roseTestDriveProgram extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.dpad_down) {
-               leds.setLed(LedLights.ledStates.BLOCK_GRABBED);
+               leds.setLed(ledLights.ledStates.BLOCK_GRABBED);
             } else if (gamepad1.dpad_up) {
-                leds.setLed(LedLights.ledStates.ARM_READY);
+                leds.setLed(ledLights.ledStates.ARM_READY);
             } else if (gamepad1.dpad_left) {
-                leds.setLed(LedLights.ledStates.ENDGAME);
+                leds.setLed(ledLights.ledStates.ENDGAME);
             } else if (gamepad1.dpad_right) {
-                leds.setLed(LedLights.ledStates.INIT);
+                leds.setLed(ledLights.ledStates.INIT);
             }
 
 

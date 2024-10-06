@@ -34,12 +34,15 @@ public class OpenCVVision {
     detectRedPipeline pipelineR;
     detectYellowPIpeline pipelineY;
 
+    plainVisionPipeline PVP;
+
 
     // Used to set which color block to look for.
     public enum Color {
         RED,
         BLUE,
-        YELLOW
+        YELLOW,
+        TEST
     }
 
     private Color currentColor;
@@ -61,6 +64,8 @@ public class OpenCVVision {
         pipelineR = new detectRedPipeline();
         pipelineB = new detectBluePipeline();
         pipelineY = new detectYellowPIpeline();
+
+        PVP = new plainVisionPipeline();
 
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         FtcDashboard.getInstance().startCameraStream(webcam, 25);
@@ -575,6 +580,26 @@ public class OpenCVVision {
             }
         }
 
+    class plainVisionPipeline extends OpenCvPipeline
+    {
+        boolean viewportPaused;
+        @Override
+        public Mat processFrame(Mat input)
+        {
+            Imgproc.rectangle(
+                    input,
+                    new Point(
+                            input.cols()/4,
+                            input.rows()/4),
+                    new Point(
+                            input.cols()*(3f/4f),
+                            input.rows()*(3f/4f)),
+                    new Scalar(0, 255, 0), 4);
+
+            return input;
+        }
+    }
+
     //Set which color we should detect
     public void setCameraPipeline(Color colorDetection){
         switch (colorDetection) {
@@ -589,6 +614,10 @@ public class OpenCVVision {
             case YELLOW:
                 webcam.setPipeline(pipelineY);
                 currentColor = Color.YELLOW;
+                break;
+            case TEST:
+                webcam.setPipeline(PVP);
+                currentColor = Color.TEST;
                 break;
         }
     }

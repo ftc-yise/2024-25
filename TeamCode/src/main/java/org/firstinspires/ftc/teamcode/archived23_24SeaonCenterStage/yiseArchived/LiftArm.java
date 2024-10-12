@@ -123,7 +123,7 @@ public class LiftArm {
     }
     public void closeTrapdoor() {
         trapdoor.setPosition(0.7);
-    }
+    }.
 
     public void reloadPlane() {
         plane.setPosition(-0.2);

@@ -39,11 +39,14 @@ public class jackMotorTesting extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.dpad_down) {
-                left.setPower(0.1f);
-                right.setPower(0.1f);
+                left.setPower(0.01f);
+                right.setPower(0.01f);
             } else if (gamepad1.dpad_up) {
-                right.setPower(-0.1f);
-                left.setPower(-0.1f);
+                right.setPower(-0.01f);
+                left.setPower(-0.01f);
+            }else {
+                right.setPower(0f);
+                left.setPower(0f);
             }
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

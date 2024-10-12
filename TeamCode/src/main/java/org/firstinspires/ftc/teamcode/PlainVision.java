@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
 
-@TeleOp(name="OpenCVPlainVision", group="Linear OpMode")
-public class PlainVisionTest extends LinearOpMode {
+@TeleOp(name="PlainVisionOpenCV", group="Vision")
+public class PlainVision extends LinearOpMode {
 
     OpenCVVision vision = new OpenCVVision();
 
@@ -42,7 +42,7 @@ public class PlainVisionTest extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        vision.setCameraPipeline(OpenCVVision.Color.TEST);// Wait for the game to start (driver presses PLAY)
+        vision.setCameraPipeline(OpenCVVision.Color.TEST);
 
         telemetry.addData("Status", "Initialized");
 
@@ -59,6 +59,7 @@ public class PlainVisionTest extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
             vision.setCameraPipeline(OpenCVVision.Color.TEST);
 
             telemetry.addData("Color:", vision.getColor());

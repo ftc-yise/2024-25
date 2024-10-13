@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.yise;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
@@ -27,8 +26,6 @@ public class OpenCVVision {
     //used to detect if the camera turns on or not
     boolean Error = false;
 
-    private Servo outtake;
-
     OpenCvWebcam webcam;
     detectBluePipeline pipelineB;
     detectRedPipeline pipelineR;
@@ -50,10 +47,6 @@ public class OpenCVVision {
 
     //Main Constructor
     public OpenCVVision(HardwareMap hardwareMap) {
-        // Initialize Servo
-        outtake = hardwareMap.get(Servo.class, "outtake");
-
-        outtake.setPosition(-1);
 
         // Initialize the webcam
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -606,8 +599,20 @@ public class OpenCVVision {
         return largestContourCentroid;
     }
 
+    public double getLargestContourCentroidX() {
+        return largestContourCentroid.x;
+    }
+
     public Point getTopRightCorner() {
         return topRightCorner;
+    }
+
+    public double getTopRightCornerX() {
+        return topRightCorner.x;
+    }
+
+    public double getTopRightCornerY() {
+        return topRightCorner.y;
     }
 
     public Point getBottomRightCorner() {

@@ -38,31 +38,35 @@ public class jackMotorTesting extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            //left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-           // right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-           // left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           // right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           // left.setTargetPosition(100);
-           //4 right.setTargetPosition(100);
+            left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
             telemetry.addData("Target position", "left position: " + left.getTargetPosition());
             telemetry.addData("Target position", "right position: " + right.getTargetPosition());
             telemetry.addData("Servo position", "servo1 position: " + servo1.getPosition());
 
             if (gamepad1.dpad_down) {
+                left.setTargetPosition(100);
+                right.setTargetPosition(100);
                 left.setPower(0.3);
                 right.setPower(0.3);
             } else if (gamepad1.dpad_up) {
-                right.setPower(-0.3);
-                left.setPower(-0.3);
+                left.setTargetPosition(0);
+                right.setTargetPosition(0);
+                right.setPower(0.3);
+                left.setPower(0.3);
             } else if (gamepad1.dpad_left) {
                 servo1.setPosition(0.2);
             } else if (gamepad1.dpad_right) {
                 servo1.setPosition(0.7);
-            } else {
-                right.setPower(0.0);
-                left.setPower(0.0);
             }
+            //else {
+            //    right.setPower(0.0);
+            //    left.setPower(0.0);
+            //}
             telemetry.addData("Current position", "left position: " + left.getCurrentPosition());
             telemetry.addData("Current position", "right position: " + right.getCurrentPosition());
             telemetry.update();

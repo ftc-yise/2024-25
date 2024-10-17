@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
-@TeleOp(name="OpenCVTest", group="Linear OpMode")
-public class ColorSeeing extends LinearOpMode {
+@TeleOp(name="PlainVision", group="Linear OpMode")
+public class plainVision extends LinearOpMode {
 
     OpenCVVision vision = new OpenCVVision();
 
@@ -37,7 +37,7 @@ public class ColorSeeing extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        vision.setCameraPipeline(OpenCVVision.Color.RED);// Wait for the game to start (driver presses PLAY)
+        vision.setCameraPipeline(OpenCVVision.Color.TEST);// Wait for the game to start (driver presses PLAY)
 
         telemetry.addData("Status", "Initialized");
 
@@ -50,26 +50,12 @@ public class ColorSeeing extends LinearOpMode {
         telemetry.addData("Corner B", vision.getBottomRightCorner());
         telemetry.update();
 
-            if (gamepad1.right_trigger > 0.75){
-                vision.setCameraPipeline(OpenCVVision.Color.BLUE);
-            } else if (gamepad1.left_trigger > 0.75){
-                vision.setCameraPipeline(OpenCVVision.Color.RED);
-            } else {
-                vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
-            }
-
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            if (gamepad1.right_trigger > 0.75){
-                vision.setCameraPipeline(OpenCVVision.Color.BLUE);
-            } else if (gamepad1.left_trigger > 0.75){
-                vision.setCameraPipeline(OpenCVVision.Color.RED);
-            } else {
-                vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
-            }
+                vision.setCameraPipeline(OpenCVVision.Color.TEST);
 
             telemetry.addData("Color:", vision.getColor());
             telemetry.addData("centroid", vision.getLargestContourCentroid());

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.yise;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
@@ -31,12 +32,15 @@ public class OpenCVVision {
     detectRedPipeline pipelineR;
     detectYellowPIpeline pipelineY;
 
+    plainVisionPipeline PVP;
+
 
     // Used to set which color block to look for.
     public enum Color {
         RED,
         BLUE,
-        YELLOW
+        YELLOW,
+        TEST
     }
 
     private Color currentColor;
@@ -54,6 +58,8 @@ public class OpenCVVision {
         pipelineR = new detectRedPipeline();
         pipelineB = new detectBluePipeline();
         pipelineY = new detectYellowPIpeline();
+
+        PVP = new plainVisionPipeline();
 
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         FtcDashboard.getInstance().startCameraStream(webcam, 25);
@@ -90,156 +96,156 @@ public class OpenCVVision {
 
 
     // Define Yellow detecting pipeline as a non-static inner class
-        public static class detectRedPipeline extends OpenCvPipeline {
-            Mat blackBackground = new Mat();
-            Mat contoursOnBlackBackground = new Mat();
-            Mat lineTest = new Mat();
-            List<MatOfPoint> contoursList = new ArrayList<>();
+    public static class detectRedPipeline extends OpenCvPipeline {
+        Mat blackBackground = new Mat();
+        Mat contoursOnBlackBackground = new Mat();
+        Mat lineTest = new Mat();
+        List<MatOfPoint> contoursList = new ArrayList<>();
 
-            // Enum for stages
-            enum Stage {
-                CONTOURS_ON_BLACK_BACKGROUND,
-                RAW_IMAGE,
-                LINE_TEST
+        // Enum for stages
+        enum Stage {
+            CONTOURS_ON_BLACK_BACKGROUND,
+            RAW_IMAGE,
+            LINE_TEST
+        }
+
+        private Stage stageToRenderToViewport = Stage.CONTOURS_ON_BLACK_BACKGROUND;
+        private Stage[] stages = Stage.values();
+
+        @Override
+        public void onViewportTapped() {
+            int currentStageNum = stageToRenderToViewport.ordinal();
+            int nextStageNum = currentStageNum + 1;
+            if (nextStageNum >= stages.length) {
+                nextStageNum = 0;
             }
+            stageToRenderToViewport = stages[nextStageNum];
+        }
 
-            private Stage stageToRenderToViewport = Stage.CONTOURS_ON_BLACK_BACKGROUND;
-            private Stage[] stages = Stage.values();
+        @Override
+        public Mat processFrame(Mat input) {
+            // Convert the image to HSV color space
+            Mat hsv = new Mat();
+            Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
 
-            @Override
-            public void onViewportTapped() {
-                int currentStageNum = stageToRenderToViewport.ordinal();
-                int nextStageNum = currentStageNum + 1;
-                if (nextStageNum >= stages.length) {
-                    nextStageNum = 0;
-                }
-                stageToRenderToViewport = stages[nextStageNum];
+            // Define yellow color range in HSV
+            Scalar lowerYellow = new Scalar(20, 40, 40); // Adjust these values as needed
+            Scalar upperYellow = new Scalar(120, 230, 255);
+
+            // Threshold the HSV image to get only yellow colors
+            Mat yellowMask = new Mat();
+            Core.inRange(hsv, lowerYellow, upperYellow, yellowMask);
+
+            // Find contours
+            contoursList.clear();
+            Imgproc.findContours(yellowMask, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+
+            // Sort contours by area in descending order
+            List<ContourArea> contourAreas = new ArrayList<>();
+            for (MatOfPoint contour : contoursList) {
+                double area = Imgproc.contourArea(contour);
+                contourAreas.add(new ContourArea(contour, area));
             }
+            contourAreas.sort((c1, c2) -> Double.compare(c2.area, c1.area)); // Descending order
 
-            @Override
-            public Mat processFrame(Mat input) {
-                // Convert the image to HSV color space
-                Mat hsv = new Mat();
-                Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
+            // Draw contours on the black background
+            blackBackground.release();
+            blackBackground = Mat.zeros(input.size(), input.type());
+            contoursOnBlackBackground.release();
+            blackBackground.copyTo(contoursOnBlackBackground);
+            Imgproc.drawContours(contoursOnBlackBackground, contoursList, -1, new Scalar(0, 0, 255), 2);
 
-                // Define yellow color range in HSV
-                Scalar lowerYellow = new Scalar(20, 40, 40); // Adjust these values as needed
-                Scalar upperYellow = new Scalar(120, 230, 255);
+            // Initialize variables for the largest and second-largest contours
+            MatOfPoint largestContour = null;
+            MatOfPoint secondLargestContour = null;
+            largestContourArea = 0;
+            secondLargestContourArea = 0;
 
-                // Threshold the HSV image to get only yellow colors
-                Mat yellowMask = new Mat();
-                Core.inRange(hsv, lowerYellow, upperYellow, yellowMask);
+            if (contourAreas.size() > 0) {
+                // Largest contour
+                largestContour = contourAreas.get(0).contour;
+                largestContourArea = contourAreas.get(0).area;
 
-                // Find contours
-                contoursList.clear();
-                Imgproc.findContours(yellowMask, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
-                // Sort contours by area in descending order
-                List<ContourArea> contourAreas = new ArrayList<>();
-                for (MatOfPoint contour : contoursList) {
-                    double area = Imgproc.contourArea(contour);
-                    contourAreas.add(new ContourArea(contour, area));
-                }
-                contourAreas.sort((c1, c2) -> Double.compare(c2.area, c1.area)); // Descending order
-
-                // Draw contours on the black background
-                blackBackground.release();
-                blackBackground = Mat.zeros(input.size(), input.type());
-                contoursOnBlackBackground.release();
-                blackBackground.copyTo(contoursOnBlackBackground);
-                Imgproc.drawContours(contoursOnBlackBackground, contoursList, -1, new Scalar(0, 0, 255), 2);
-
-                // Initialize variables for the largest and second-largest contours
-                MatOfPoint largestContour = null;
-                MatOfPoint secondLargestContour = null;
-                largestContourArea = 0;
-                secondLargestContourArea = 0;
-
-                if (contourAreas.size() > 0) {
-                    // Largest contour
-                    largestContour = contourAreas.get(0).contour;
-                    largestContourArea = contourAreas.get(0).area;
-
-                    if (contourAreas.size() > 1) {
-                        // Second-largest contour
-                        secondLargestContour = contourAreas.get(1).contour;
-                        secondLargestContourArea = contourAreas.get(1).area;
-                    }
-
-                    // Compute the minimum-area rectangle for the largest contour
-                    if (largestContour != null) {
-                        RotatedRect minAreaRect = Imgproc.minAreaRect(new MatOfPoint2f(largestContour.toArray()));
-
-                        // Get the box points
-                        Point[] boxPoints = new Point[4];
-                        MatOfPoint2f boxPointsMat = new MatOfPoint2f();
-                        Imgproc.boxPoints(minAreaRect, boxPointsMat);
-                        boxPoints = boxPointsMat.toArray();
-
-                        // Draw the bounding box on the contours
-                        for (int i = 0; i < 4; i++) {
-                            Imgproc.line(contoursOnBlackBackground, boxPoints[i], boxPoints[(i + 1) % 4], new Scalar(0, 255, 0), 2);
-                        }
-
-                        // Calculate the angle of the line
-                        topRightCorner = boxPoints[1];
-                        bottomRightCorner = boxPoints[2];
-                        lineAngle = calculateAngle(boxPoints[0], boxPoints[2]);
-
-                        // Calculate perpendicular angles
-                        perpendicularAngle1 = (lineAngle + 90) % 360;
-                        perpendicularAngle2 = (lineAngle - 90) % 360;
-
-                        // Normalize angles to be within [0, 360) degrees
-                        if (perpendicularAngle1 < 0) perpendicularAngle1 += 360;
-                        if (perpendicularAngle2 < 0) perpendicularAngle2 += 360;
-                    }
+                if (contourAreas.size() > 1) {
+                    // Second-largest contour
+                    secondLargestContour = contourAreas.get(1).contour;
+                    secondLargestContourArea = contourAreas.get(1).area;
                 }
 
-                // Choose the correct stage to render
-                switch (stageToRenderToViewport) {
-                    case CONTOURS_ON_BLACK_BACKGROUND: {
-                        return contoursOnBlackBackground;
+                // Compute the minimum-area rectangle for the largest contour
+                if (largestContour != null) {
+                    RotatedRect minAreaRect = Imgproc.minAreaRect(new MatOfPoint2f(largestContour.toArray()));
+
+                    // Get the box points
+                    Point[] boxPoints = new Point[4];
+                    MatOfPoint2f boxPointsMat = new MatOfPoint2f();
+                    Imgproc.boxPoints(minAreaRect, boxPointsMat);
+                    boxPoints = boxPointsMat.toArray();
+
+                    // Draw the bounding box on the contours
+                    for (int i = 0; i < 4; i++) {
+                        Imgproc.line(contoursOnBlackBackground, boxPoints[i], boxPoints[(i + 1) % 4], new Scalar(0, 255, 0), 2);
                     }
-                    case RAW_IMAGE: {
-                        Mat rawWithContours = new Mat();
-                        input.copyTo(rawWithContours);
-                        Imgproc.drawContours(rawWithContours, contoursList, -1, new Scalar(0, 0, 255), 2);
-                        return rawWithContours;
-                    }
-                    case LINE_TEST: {
-                        return lineTest;
-                    }
-                    default: {
-                        return input;
-                    }
+
+                    // Calculate the angle of the line
+                    topRightCorner = boxPoints[1];
+                    bottomRightCorner = boxPoints[2];
+                    lineAngle = calculateAngle(boxPoints[0], boxPoints[2]);
+
+                    // Calculate perpendicular angles
+                    perpendicularAngle1 = (lineAngle + 90) % 360;
+                    perpendicularAngle2 = (lineAngle - 90) % 360;
+
+                    // Normalize angles to be within [0, 360) degrees
+                    if (perpendicularAngle1 < 0) perpendicularAngle1 += 360;
+                    if (perpendicularAngle2 < 0) perpendicularAngle2 += 360;
                 }
             }
 
-
-
-            // Method to calculate the angle between two points
-            private double calculateAngle(Point p1, Point p2) {
-                // Compute the difference in coordinates
-                double deltaY = p2.y - p1.y;
-                double deltaX = p2.x - p1.x;
-
-                // Calculate the angle in radians and convert to degrees
-                double angleRadians = Math.atan2(deltaY, deltaX);
-                double angleDegrees = Math.toDegrees(angleRadians);
-
-                // Normalize angle to be within 0 to 360 degrees
-                if (angleDegrees < 0) {
-                    angleDegrees += 360;
+            // Choose the correct stage to render
+            switch (stageToRenderToViewport) {
+                case CONTOURS_ON_BLACK_BACKGROUND: {
+                    return contoursOnBlackBackground;
                 }
-
-                return angleDegrees;
+                case RAW_IMAGE: {
+                    Mat rawWithContours = new Mat();
+                    input.copyTo(rawWithContours);
+                    Imgproc.drawContours(rawWithContours, contoursList, -1, new Scalar(0, 0, 255), 2);
+                    return rawWithContours;
+                }
+                case LINE_TEST: {
+                    return lineTest;
+                }
+                default: {
+                    return input;
+                }
             }
+        }
+
+
+
+        // Method to calculate the angle between two points
+        private double calculateAngle(Point p1, Point p2) {
+            // Compute the difference in coordinates
+            double deltaY = p2.y - p1.y;
+            double deltaX = p2.x - p1.x;
+
+            // Calculate the angle in radians and convert to degrees
+            double angleRadians = Math.atan2(deltaY, deltaX);
+            double angleDegrees = Math.toDegrees(angleRadians);
+
+            // Normalize angle to be within 0 to 360 degrees
+            if (angleDegrees < 0) {
+                angleDegrees += 360;
+            }
+
+            return angleDegrees;
+        }
         //getter method
         public int getContourCount() {
             return contoursList.size();
         }
-        }
+    }
 
     // Define Blue detecting pipeline as a non-static inner class
     public static class detectBluePipeline extends OpenCvPipeline {
@@ -558,15 +564,35 @@ public class OpenCVVision {
 
 
     // Inner class to store contour and its area
-        private static class ContourArea {
-            MatOfPoint contour;
-            double area;
+    private static class ContourArea {
+        MatOfPoint contour;
+        double area;
 
-            ContourArea(MatOfPoint contour, double area) {
-                this.contour = contour;
-                this.area = area;
-            }
+        ContourArea(MatOfPoint contour, double area) {
+            this.contour = contour;
+            this.area = area;
         }
+    }
+
+    class plainVisionPipeline extends OpenCvPipeline
+    {
+        boolean viewportPaused;
+        @Override
+        public Mat processFrame(Mat input)
+        {
+            Imgproc.rectangle(
+                    input,
+                    new Point(
+                            input.cols()/4,
+                            input.rows()/4),
+                    new Point(
+                            input.cols()*(3f/4f),
+                            input.rows()*(3f/4f)),
+                    new Scalar(0, 255, 0), 4);
+
+            return input;
+        }
+    }
 
     //Set which color we should detect
     public void setCameraPipeline(Color colorDetection){
@@ -582,6 +608,10 @@ public class OpenCVVision {
             case YELLOW:
                 webcam.setPipeline(pipelineY);
                 currentColor = Color.YELLOW;
+                break;
+            case TEST:
+                webcam.setPipeline(PVP);
+                currentColor = Color.TEST;
                 break;
         }
     }
@@ -599,13 +629,10 @@ public class OpenCVVision {
         return largestContourCentroid;
     }
 
-    public double getLargestContourCentroidX() {
-        return largestContourCentroid.x;
-    }
-
     public Point getTopRightCorner() {
         return topRightCorner;
     }
+
 
     public double getTopRightCornerX() {
         return topRightCorner.x;

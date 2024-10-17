@@ -146,7 +146,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         // We switch the state to AUTOMATIC_CONTROL
 
                         Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
-                                .splineTo(targetAVector, targetAHeading)
+                                .lineTo(targetAVector)
                                 .build();
 
                         drive.followTrajectoryAsync(traj1);
@@ -179,8 +179,8 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                                     .build();
                             drive.followTrajectoryAsync(runToSub);
 
-                           xToBlock = ((vision.getTopRightCornerX() - 160) + (-24.6153845)) / 49.23076923076923;
-                           yToBlock = -27.75 + (((vision.getTopRightCornerY() - 120) - 172.3076923076923) / 49.23076923076923);
+                        xToBlock = ((vision.getTopRightCornerX() - 160) + (-40/2)) / 40;
+                        yToBlock = -27.75 + (((vision.getTopRightCornerY() - 120) - (43.5 * 3.5)) / 40);
 
                             // The coordinates we want the bot to automatically go to when we hold right right button
                             Vector2d targetBlockVector = new Vector2d(-xToBlock, yToBlock);
@@ -204,8 +204,8 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                                 .build();
                         drive.followTrajectoryAsync(runToSub);
 
-                        xToBlock = ((vision.getTopRightCornerX() - 160) + (-49.23076923076923/2)) / 49.23076923076923;
-                        yToBlock = -27.75 + (((vision.getTopRightCornerY() - 120) - (49.23076923076923 * 3.5)) / 49.23076923076923);
+                        xToBlock = ((vision.getTopRightCornerX() - 160) + (-40/2)) / 40;
+                        yToBlock = -27.75 + (((vision.getTopRightCornerY() - 120) - (43.5 * 3.5)) / 40);
 
                         // The coordinates we want the bot to automatically go to when we hold right right button
                         Vector2d targetBlockVector = new Vector2d(-xToBlock, yToBlock);

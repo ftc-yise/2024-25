@@ -1,12 +1,7 @@
 package org.firstinspires.ftc.teamcode.yise;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yiseArchived.LiftArm;
-
 
 public class liftArm {
     public DcMotor armLeft, armRight;

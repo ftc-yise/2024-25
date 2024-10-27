@@ -47,8 +47,6 @@ public class jackMotorTesting extends LinearOpMode {
             //    right.setPower(0.0);
             //    left.setPower(0.0);
             //}
-            telemetry.addData("Current position", "left position: " + left.getCurrentPosition());
-            telemetry.addData("Current position", "right position: " + right.getCurrentPosition());
             telemetry.update();
         }
     }

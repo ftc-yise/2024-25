@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -43,10 +42,6 @@ public class jackMotorTesting extends LinearOpMode {
             } else if (gamepad1.dpad_right) {
                 servo1.setPosition(0.7);
             }
-            //else {
-            //    right.setPower(0.0);
-            //    left.setPower(0.0);
-            //}
             telemetry.update();
         }
     }

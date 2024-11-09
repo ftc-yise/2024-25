@@ -28,9 +28,6 @@ public class liftArm {
         //Reset arm motor encoders
         armLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        // Set starting arm position
-        setArmPosition(liftArm.armPosition.DOWN);
     }
 
     public void setArmPosition(liftArm.armPosition targetArmPosition) {
@@ -41,24 +38,43 @@ public class liftArm {
         switch (targetArmPosition) {
             case DOWN:
                 armLeft.setTargetPosition(0);
-                //armRight.setTargetPosition(0);
-                armMotorPower = 0.25;
+                armRight.setTargetPosition(0);
+                armMotorPower = 1.00;
                 break;
             case UP:
-                armLeft.setTargetPosition(1);
-                //armRight.setTargetPosition(-1);
-                armMotorPower = 0.25;
+                armLeft.setTargetPosition(600);
+                armRight.setTargetPosition(600);
+                armMotorPower = 1.00;
                 break;
         }
-
         // Run motors to position using defined power level
         armLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //armRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armLeft.setPower(armMotorPower);
-        //armRight.setPower(armMotorPower);
-        currentArmPosition = targetArmPosition;
+        armRight.setPower(armMotorPower);
 
         leftArmMotorPositionValue = armLeft.getCurrentPosition();
         rightArmMotorPositionValue = armRight.getCurrentPosition();
+    }
+    public void zeroPower() {
+        if (!armLeft.isBusy()) {
+            armLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            armLeft.setPower(0.01);
+            armRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            armRight.setPower(0.01);
+        }
+    }
+
+    public void manualPowerUp() {
+            armLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            armLeft.setPower(1);
+            armRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            armRight.setPower(1);
+    }
+    public void manualPowerDown() {
+        armLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armLeft.setPower(-1);
+        armRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armRight.setPower(-1);
     }
 }

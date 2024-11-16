@@ -26,9 +26,9 @@ public class jackMotorTesting extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.dpad_down) {
-               arm.setArmPosition(liftArm.armPosition.DOWN);
+               arm.setLiftPosition(liftArm.armPosition.DOWN);
             } else if (gamepad1.dpad_up) {
-                arm.setArmPosition(liftArm.armPosition.UP);
+                arm.setLiftPosition(liftArm.armPosition.UP);
             }
             telemetry.addData("Left Encoder Position", arm.leftArmMotorPositionValue);
             telemetry.addData("Right Encoder Position", arm.rightArmMotorPositionValue);

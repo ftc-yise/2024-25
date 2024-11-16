@@ -26,18 +26,35 @@ public class Encoder extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.dpad_down) {
-               arm.setArmPosition(liftArm.armPosition.DOWN);
+               arm.setLiftPosition(liftArm.armPosition.DOWN);
             } else if (gamepad1.dpad_up) {
-                arm.setArmPosition(liftArm.armPosition.UP);
+                arm.setLiftPosition(liftArm.armPosition.UP);
             } else if (gamepad1.left_bumper) {
-                arm.manualPowerDown();
+                arm.manualPowerDownLift();
             }else if (gamepad1.right_bumper) {
-                arm.manualPowerUp();
+                arm.manualPowerUpLift();
             } else {
-                arm.zeroPower();
+                arm.zeroPowerLift();
             }
-            telemetry.addData("Left Encoder Position", arm.leftArmMotorPositionValue);
-            telemetry.addData("Right Encoder Position", arm.rightArmMotorPositionValue);
+
+            if (gamepad1.right_trigger > 0.75) {
+               arm.manualPowerUpPulley();
+            } else if (gamepad1.left_trigger > 0.75) {
+                arm.manualPowerDownPulley();
+            } else if (gamepad1.dpad_left) {
+                arm.setPulleyPosition(liftArm.PulleyPosition.UP);
+            } else if (gamepad1.dpad_right) {
+                arm.setPulleyPosition(liftArm.PulleyPosition.DOWN);
+            }else {
+                arm.zeroPowerPulley();
+            }
+
+            telemetry.addData("Left Lift Encoder Position", arm.leftArmMotorPositionValue);
+            telemetry.addData("Right Lift Encoder Position", arm.rightArmMotorPositionValue);
+
+            telemetry.addData("Pulley Right", arm.getPulleyPositionR());
+            telemetry.addData("Pulley Left", arm.getPulleyPositionL());
+
             telemetry.update();
         }
     }

@@ -71,6 +71,9 @@ public class fieldCentricDrive extends LinearOpMode {
             telemetry.addData("Vertical input: ", gamepad1.left_stick_y);
             telemetry.addData("Turn input: ", gamepad1.right_stick_x);
 
+            telemetry.addLine();
+
+
             telemetry.update();
         }
     }

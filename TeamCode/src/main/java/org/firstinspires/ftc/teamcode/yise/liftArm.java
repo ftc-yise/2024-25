@@ -99,45 +99,45 @@ public class liftArm {
     public void zeroPowerLift() {
         if (!liftLeft.isBusy()) {
             liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftLeft.setPower(0.01);
+            liftLeft.setPower(0.05);
             liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftRight.setPower(0.01);
+            liftRight.setPower(0.05);
         }
     }
 
     public void zeroPowerPulley() {
         if (!liftLeft.isBusy()) {
-            liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftLeft.setPower(0.01);
-            liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftRight.setPower(0.01);
+            pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyLeft.setPower(0.01);
+            pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyRight.setPower(0.01);
         }
     }
 
     public void manualPowerUpLift() {
             liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftLeft.setPower(1);
+            liftLeft.setPower(0.35);
             liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftRight.setPower(1);
+            liftRight.setPower(0.35);
     }
     public void manualPowerDownLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftLeft.setPower(-1);
+        liftLeft.setPower(-0.35);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftRight.setPower(-1);
+        liftRight.setPower(-0.35);
     }
 
     public void manualPowerUpPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyLeft.setPower(1);
+        pulleyLeft.setPower(0.5);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyRight.setPower(1);
+        pulleyRight.setPower(0.5);
     }
     public void manualPowerDownPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyLeft.setPower(-1);
+        pulleyLeft.setPower(-0.5);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyRight.setPower(-1);
+        pulleyRight.setPower(-0.5);
     }
 
 
@@ -148,10 +148,7 @@ public class liftArm {
         return pulleyRight.getCurrentPosition();
     }
 
-    public double getLiftPositionL() {
-        return liftLeft.getCurrentPosition();
-    }
-    public double getLiftPositionR() {
-        return liftRight.getCurrentPosition();
+    public double PulleyPower() {
+        return pulleyLeft.getPower();
     }
 }

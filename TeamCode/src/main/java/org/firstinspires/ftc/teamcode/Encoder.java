@@ -41,10 +41,6 @@ public class Encoder extends LinearOpMode {
                arm.manualPowerUpPulley();
             } else if (gamepad1.left_trigger > 0.75) {
                 arm.manualPowerDownPulley();
-            } else if (gamepad1.dpad_left) {
-                arm.setPulleyPosition(liftArm.PulleyPosition.UP);
-            } else if (gamepad1.dpad_right) {
-                arm.setPulleyPosition(liftArm.PulleyPosition.DOWN);
             }else {
                 arm.zeroPowerPulley();
             }

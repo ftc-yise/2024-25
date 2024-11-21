@@ -12,8 +12,8 @@ public class liftArm {
     }
 
     public enum PulleyPosition {
-        DOWN,
-        UP
+        IN,
+        OUT
     }
 
     public armPosition currentArmPosition;
@@ -44,21 +44,16 @@ public class liftArm {
     }
 
     public void setLiftPosition(liftArm.armPosition targetArmPosition) {
-        // Make sure arm motors are using encoders
-        liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //armRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        switch (targetArmPosition) {
+            switch (targetArmPosition) {
             case DOWN:
                 liftLeft.setTargetPosition(0);
                 liftRight.setTargetPosition(0);
-                armMotorPower = 1.00;
+                armMotorPower = 100;
                 break;
             case UP:
-                liftLeft.setTargetPosition(600);
-                liftRight.setTargetPosition(600);
-                armMotorPower = 1.00;
+                liftLeft.setTargetPosition(410);
+                liftRight.setTargetPosition(410);
+                armMotorPower = 100;
                 break;
         }
         // Run motors to position using defined power level
@@ -66,38 +61,28 @@ public class liftArm {
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftLeft.setPower(armMotorPower);
         liftRight.setPower(armMotorPower);
-
-        leftArmMotorPositionValue = liftLeft.getCurrentPosition();
-        rightArmMotorPositionValue = liftRight.getCurrentPosition();
     }
 
     public void setPulleyPosition(liftArm.PulleyPosition targetPulleyPosition) {
-        // Make sure arm motors are using encoders
-        pulleyLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        pulleyRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //armRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         switch (targetPulleyPosition) {
-            case DOWN:
+            case IN:
                 pulleyLeft.setTargetPosition(0);
                 pulleyRight.setTargetPosition(0);
-                pulleyMotorPower = 1.00;
                 break;
-            case UP:
-                pulleyLeft.setTargetPosition(1500);
-                pulleyRight.setTargetPosition(1500);
-                pulleyMotorPower = 1.00;
+            case OUT:
+                pulleyLeft.setTargetPosition(4300);
+                pulleyRight.setTargetPosition(4300);
                 break;
         }
         // Run motors to position using defined power level
         pulleyLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pulleyRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        pulleyLeft.setPower(pulleyMotorPower);
-        pulleyRight.setPower(pulleyMotorPower);
+        pulleyLeft.setPower(1);
+        pulleyRight.setPower(-1);
     }
 
     public void zeroPowerLift() {
-        if (!liftLeft.isBusy()) {
+        if (!liftLeft.isBusy() && !liftRight.isBusy()) {
             liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftLeft.setPower(0.05);
             liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -106,7 +91,7 @@ public class liftArm {
     }
 
     public void zeroPowerPulley() {
-        if (!liftLeft.isBusy()) {
+        if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
             pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             pulleyLeft.setPower(0.01);
             pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -129,9 +114,9 @@ public class liftArm {
 
     public void manualPowerUpPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyLeft.setPower(0.5);
+        pulleyLeft.setPower(1);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyRight.setPower(0.5);
+        pulleyRight.setPower(1);
     }
     public void manualPowerDownPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -148,7 +133,18 @@ public class liftArm {
         return pulleyRight.getCurrentPosition();
     }
 
-    public double PulleyPower() {
+    public double getLiftPositionL() {
+        return liftLeft.getCurrentPosition();
+    }
+    public double getLiftPositionR() {
+        return liftRight.getCurrentPosition();
+    }
+
+
+    public double PulleyPowerL() {
         return pulleyLeft.getPower();
+    }
+    public double PulleyPowerR() {
+        return pulleyRight.getPower();
     }
 }

@@ -41,16 +41,23 @@ public class Encoder extends LinearOpMode {
                arm.manualPowerUpPulley();
             } else if (gamepad1.left_trigger > 0.75) {
                 arm.manualPowerDownPulley();
-            }else {
+            }else if (gamepad1.dpad_left) {
+                arm.setPulleyPosition(liftArm.PulleyPosition.IN);
+            } else if (gamepad1.dpad_right) {
+                arm.setPulleyPosition(liftArm.PulleyPosition.OUT);}
+            else {
                 arm.zeroPowerPulley();
             }
 
-            telemetry.addData("Left Lift Encoder Position", arm.leftArmMotorPositionValue);
-            telemetry.addData("Right Lift Encoder Position", arm.rightArmMotorPositionValue);
+            telemetry.addData("Left Lift Encoder Position", arm.getLiftPositionL());
+            telemetry.addData("Right Lift Encoder Position", arm.getLiftPositionR());
 
             telemetry.addData("Pulley Right", arm.getPulleyPositionR());
             telemetry.addData("Pulley Left", arm.getPulleyPositionL());
 
+            telemetry.addData("Pulley PowerL", arm.PulleyPowerL());
+            telemetry.addData("Pulley PowerR", arm.PulleyPowerR());
+            
             telemetry.update();
         }
     }

@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.yise;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class liftArm {
     // Arm Variables
     public DcMotor liftLeft, liftRight, pulleyLeft, pulleyRight;
+    public Servo wrist, claw, shoulder, elbow;
     public enum armPosition {
         DOWN,
         UP
@@ -31,9 +33,15 @@ public class liftArm {
         pulleyLeft = hardwareMap.get(DcMotor.class, "pulleyLeft");
         pulleyRight = hardwareMap.get(DcMotor.class, "pulleyRight");
 
+        wrist = hardwareMap.get(Servo.class, "wrist");
+        claw = hardwareMap.get(Servo.class, "claw");
+        shoulder = hardwareMap.get(Servo.class, "shoulder");
+        elbow = hardwareMap.get(Servo.class, "elbow");
+
         //Set motor directions
         liftLeft.setDirection(DcMotor.Direction.REVERSE);
         pulleyLeft.setDirection(DcMotor.Direction.REVERSE);
+        shoulder.setDirection(Servo.Direction.REVERSE);
 
         //Reset arm motor encoders
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -41,6 +49,11 @@ public class liftArm {
 
         pulleyLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pulleyRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        setShoulderPosition(1);
+        setElbowPosition(0);
+        setWristPosition(0);
+        setClawPosition(0);
     }
 
     public void setLiftPosition(liftArm.armPosition targetArmPosition) {
@@ -123,6 +136,19 @@ public class liftArm {
         pulleyLeft.setPower(-0.5);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyRight.setPower(-0.5);
+    }
+
+    public void setWristPosition(double position) {
+        wrist.setPosition(position);
+    }
+    public void setClawPosition(double position) {
+        claw.setPosition(position);
+    }
+    public void setShoulderPosition(double position) {
+        shoulder.setPosition(position);
+        }
+    public void setElbowPosition(double position) {
+        elbow.setPosition(position);
     }
 
 

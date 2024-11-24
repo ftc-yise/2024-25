@@ -26,19 +26,19 @@ public class ledLights {
     public void setLed(ledStates state) {
         switch (state) {
             case ENDGAME:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP2_LARSON_SCANNER);
                 currentState = state;
                 break;
             case ARM_READY:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_GREEN);
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                 currentState = state;
                 break;
             case BLOCK_GRABBED:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
                 currentState = state;
                 break;
             case INIT:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
                 currentState = state;
                 break;
         }

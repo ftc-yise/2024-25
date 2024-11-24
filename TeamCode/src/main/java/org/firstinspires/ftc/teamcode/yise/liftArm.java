@@ -69,12 +69,9 @@ public class liftArm {
                 pulleyLeft.setTargetPosition(0);
                 pulleyRight.setTargetPosition(0);
                 break;
-            case MIDDLE:
-                pulleyLeft.setTargetPosition(2000);
-                pulleyRight.setTargetPosition(2000);
             case OUT:
-                pulleyLeft.setTargetPosition(3500);
-                pulleyRight.setTargetPosition(3500);
+                pulleyLeft.setTargetPosition(3600);
+                pulleyRight.setTargetPosition(3600);
                 break;
         }
         // Run motors to position using defined power level

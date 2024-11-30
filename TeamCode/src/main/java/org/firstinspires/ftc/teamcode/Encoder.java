@@ -113,7 +113,7 @@ public class Encoder extends LinearOpMode {
                         break;
                     case 1:
                         arm.setShoulderPosition(1);
-                        if (arm.shoulder.getPosition() == 1) { // Replace with your own position checking logic
+                        if (arm.ShoulderR.getPosition() == 1) { // Replace with your own position checking logic
                             state++;
                         }
                         break;
@@ -149,7 +149,7 @@ public class Encoder extends LinearOpMode {
                         break;
                     case 1:
                         arm.setShoulderPosition(0);
-                        if (arm.shoulder.getPosition() == 0) { // Replace with your own position checking logic
+                        if (arm.ShoulderR.getPosition() == 0) { // Replace with your own position checking logic
                             state--;
                         }
                         break;
@@ -160,6 +160,12 @@ public class Encoder extends LinearOpMode {
                         }
                         break;
                 }
+            }
+
+            if (gamepad1.x){
+                arm.setShoulderPosition(1);
+            } else if (gamepad1.y) {
+                arm.setShoulderPosition(0);
             }
 
 
@@ -183,7 +189,7 @@ public class Encoder extends LinearOpMode {
 
             telemetry.addLine();
 
-            telemetry.addData("shoulder", arm.shoulder.getPosition());
+            telemetry.addData("shoulder", arm.ShoulderR.getPosition());
             telemetry.addData("elbow", arm.elbow.getPosition());
             telemetry.addData("wrist", arm.wrist.getPosition());
             telemetry.addData("claw", arm.claw.getPosition());

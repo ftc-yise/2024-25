@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class liftArm {
     // Arm Variables
     public DcMotor liftLeft, liftRight, pulleyLeft, pulleyRight;
-    public Servo wrist, claw, shoulder, elbow;
+    public Servo wrist, claw, shoulderL, ShoulderR, elbow;
     public enum armPosition {
         DOWN,
         UP
@@ -35,13 +35,14 @@ public class liftArm {
 
         wrist = hardwareMap.get(Servo.class, "wrist");
         claw = hardwareMap.get(Servo.class, "claw");
-        shoulder = hardwareMap.get(Servo.class, "shoulder");
+        shoulderL = hardwareMap.get(Servo.class, "shoulderL");
+        ShoulderR = hardwareMap.get(Servo.class, "shoulderR");
         elbow = hardwareMap.get(Servo.class, "elbow");
 
         //Set motor directions
         liftLeft.setDirection(DcMotor.Direction.REVERSE);
         pulleyLeft.setDirection(DcMotor.Direction.REVERSE);
-        shoulder.setDirection(Servo.Direction.REVERSE);
+        shoulderL.setDirection(Servo.Direction.REVERSE);
 
         //Reset arm motor encoders
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -145,8 +146,9 @@ public class liftArm {
         claw.setPosition(position);
     }
     public void setShoulderPosition(double position) {
-        shoulder.setPosition(position);
-        }
+        shoulderL.setPosition(position);
+        ShoulderR.setPosition(position);
+    }
     public void setElbowPosition(double position) {
         elbow.setPosition(position);
     }

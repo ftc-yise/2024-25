@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -53,9 +52,9 @@ public class Encoder extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.dpad_down) {
-               arm.setLiftPosition(liftArm.armPosition.DOWN);
+               arm.setLiftPosition(liftArm.liftPosition.DOWN);
             } else if (gamepad1.dpad_up) {
-                arm.setLiftPosition(liftArm.armPosition.UP);
+                arm.setLiftPosition(liftArm.liftPosition.UP);
             } else if (gamepad1.left_bumper) {
                 arm.manualPowerDownLift();
             }else if (gamepad1.right_bumper) {
@@ -106,25 +105,25 @@ public class Encoder extends LinearOpMode {
                         state = 0; // Initialize the sequence
                         break;
                     case 0:
-                        arm.setElbowPosition(0);
+                        arm.manualSetElbowPosition(0);
                         if (arm.elbow.getPosition() == 0) { // Replace with your own position checking logic
                             state++;
                         }
                         break;
                     case 1:
-                        arm.setShoulderPosition(1);
-                        if (arm.ShoulderR.getPosition() == 1) { // Replace with your own position checking logic
+                        arm.manualSetShoulderPosition(1);
+                        if (arm.shoulderR.getPosition() == 1) { // Replace with your own position checking logic
                             state++;
                         }
                         break;
                     case 2:
-                        arm.setWristPosition(0);
+                        arm.manualSetWristPosition(0);
                         if (arm.wrist.getPosition() == 0) { // Replace with your own position checking logic
                             state++;
                         }
                         break;
                     case 3:
-                        arm.setClawPosition(0);
+                        arm.manualSetClawPosition(0);
                         if (arm.claw.getPosition() == 0) { // Replace with your own position checking logic
                             state = -1; // Reset state
                         }
@@ -136,25 +135,25 @@ public class Encoder extends LinearOpMode {
                         state = 3; // Initialize the reverse sequence
                         break;
                     case 3:
-                        arm.setClawPosition(1);
+                        arm.manualSetClawPosition(1);
                         if (arm.claw.getPosition() == 1) { // Replace with your own position checking logic
                             state--;
                         }
                         break;
                     case 2:
-                        arm.setWristPosition(1);
+                        arm.manualSetWristPosition(1);
                         if (arm.wrist.getPosition() == 1) { // Replace with your own position checking logic
                             state--;
                         }
                         break;
                     case 1:
-                        arm.setShoulderPosition(0);
-                        if (arm.ShoulderR.getPosition() == 0) { // Replace with your own position checking logic
+                        arm.manualSetShoulderPosition(0);
+                        if (arm.shoulderR.getPosition() == 0) { // Replace with your own position checking logic
                             state--;
                         }
                         break;
                     case 0:
-                        arm.setElbowPosition(1);
+                        arm.manualSetElbowPosition(1);
                         if (arm.elbow.getPosition() == 1) { // Replace with your own position checking logic
                             state = -1; // Reset state
                         }
@@ -163,9 +162,9 @@ public class Encoder extends LinearOpMode {
             }
 
             if (gamepad1.x){
-                arm.setShoulderPosition(1);
+                arm.manualSetShoulderPosition(1);
             } else if (gamepad1.y) {
-                arm.setShoulderPosition(0);
+                arm.manualSetShoulderPosition(0);
             }
 
 
@@ -189,7 +188,7 @@ public class Encoder extends LinearOpMode {
 
             telemetry.addLine();
 
-            telemetry.addData("shoulder", arm.ShoulderR.getPosition());
+            telemetry.addData("shoulder", arm.shoulderR.getPosition());
             telemetry.addData("elbow", arm.elbow.getPosition());
             telemetry.addData("wrist", arm.wrist.getPosition());
             telemetry.addData("claw", arm.claw.getPosition());

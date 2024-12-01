@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class liftArm {
     // Arm Variables
     public DcMotor liftLeft, liftRight, pulleyLeft, pulleyRight;
-    public Servo wrist, claw, shoulderL, ShoulderR, elbow;
-    public enum armPosition {
+    public Servo wrist, claw, shoulderL, shoulderR, elbow;
+    public enum liftPosition {
         DOWN,
         UP
     }
@@ -17,12 +17,25 @@ public class liftArm {
         IN,
         MIDDLE, OUT
     }
+    public enum armPosition {
+        UP,
+        DOWN
+    }
+    public enum clawPosition {
+        OPEN,
+        CLOSED
+    }
+    public enum wristPosition{
+       ONE,
+       TWO,
+       THREE
+    }
 
-    public armPosition currentArmPosition;
-    public double armMotorPower;
+    public liftPosition currentLiftPosition;
+    public double liftMotorPower;
     public double pulleyMotorPower;
-    public double leftArmMotorPositionValue;
-    public double rightArmMotorPositionValue;
+    public double leftLiftMotorPositionValue;
+    public double rightLiftMotorPositionValue;
 
     // Constructor
     public liftArm(HardwareMap hardwareMap) {
@@ -36,7 +49,7 @@ public class liftArm {
         wrist = hardwareMap.get(Servo.class, "wrist");
         claw = hardwareMap.get(Servo.class, "claw");
         shoulderL = hardwareMap.get(Servo.class, "shoulderL");
-        ShoulderR = hardwareMap.get(Servo.class, "shoulderR");
+        shoulderR = hardwareMap.get(Servo.class, "shoulderR");
         elbow = hardwareMap.get(Servo.class, "elbow");
 
         //Set motor directions
@@ -51,30 +64,30 @@ public class liftArm {
         pulleyLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pulleyRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        setShoulderPosition(1);
-        setElbowPosition(0);
-        setWristPosition(0);
-        setClawPosition(0);
+        manualSetShoulderPosition(1);
+        manualSetElbowPosition(0);
+        manualSetWristPosition(0);
+        manualSetClawPosition(0);
     }
 
-    public void setLiftPosition(liftArm.armPosition targetArmPosition) {
-            switch (targetArmPosition) {
+    public void setLiftPosition(liftPosition targetLiftPosition) {
+            switch (targetLiftPosition) {
             case DOWN:
                 liftLeft.setTargetPosition(0);
                 liftRight.setTargetPosition(0);
-                armMotorPower = 100;
+                liftMotorPower = 1;
                 break;
             case UP:
                 liftLeft.setTargetPosition(410);
                 liftRight.setTargetPosition(410);
-                armMotorPower = 100;
+                liftMotorPower = 1;
                 break;
         }
         // Run motors to position using defined power level
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftLeft.setPower(armMotorPower);
-        liftRight.setPower(armMotorPower);
+        liftLeft.setPower(liftMotorPower);
+        liftRight.setPower(liftMotorPower);
     }
 
     public void setPulleyPosition(liftArm.PulleyPosition targetPulleyPosition) {
@@ -92,7 +105,7 @@ public class liftArm {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pulleyRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pulleyLeft.setPower(1);
-        pulleyRight.setPower(-1);
+        pulleyRight.setPower(1);
     }
 
     public void zeroPowerLift() {
@@ -139,21 +152,54 @@ public class liftArm {
         pulleyRight.setPower(-0.5);
     }
 
-    public void setWristPosition(double position) {
+    public void manualSetWristPosition (double position) {
         wrist.setPosition(position);
     }
-    public void setClawPosition(double position) {
+    public void manualSetClawPosition (double position) {
         claw.setPosition(position);
     }
-    public void setShoulderPosition(double position) {
+    public void manualSetShoulderPosition (double position) {
         shoulderL.setPosition(position);
-        ShoulderR.setPosition(position);
+        shoulderR.setPosition(position);
     }
-    public void setElbowPosition(double position) {
+    public void manualSetElbowPosition (double position) {
         elbow.setPosition(position);
     }
-
-
+    public void setArmPosition(armPosition targetArmPosition){
+        switch (targetArmPosition) {
+            case UP:
+                manualSetShoulderPosition();
+                manualSetElbowPosition();
+                break;
+            case DOWN:
+                manualSetShoulderPosition();
+                manualSetElbowPosition();
+                break;
+        }
+    }
+    public void setWristPosition(wristPosition targetWristPosition){
+        switch (targetWristPosition) {
+            case ONE:
+                manualSetWristPosition();
+                break;
+            case TWO:
+                manualSetWristPosition();
+                break;
+            case THREE:
+                manualSetWristPosition();
+                break;
+        }
+    }
+    public void setClawPosition(clawPosition targetClawPosition){
+        switch (targetClawPosition) {
+            case OPEN:
+                manualSetClawPosition();
+                break;
+            case CLOSED:
+                manualSetClawPosition();
+                break;
+        }
+    }
     public double getPulleyPositionL() {
         return pulleyLeft.getCurrentPosition();
     }

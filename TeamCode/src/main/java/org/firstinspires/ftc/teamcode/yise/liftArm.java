@@ -168,35 +168,35 @@ public class liftArm {
     public void setArmPosition(armPosition targetArmPosition){
         switch (targetArmPosition) {
             case UP:
-                manualSetShoulderPosition();
-                manualSetElbowPosition();
+                manualSetShoulderPosition(0);
+                manualSetElbowPosition(0);
                 break;
             case DOWN:
-                manualSetShoulderPosition();
-                manualSetElbowPosition();
+                manualSetShoulderPosition(0);
+                manualSetElbowPosition(0);
                 break;
         }
     }
     public void setWristPosition(wristPosition targetWristPosition){
         switch (targetWristPosition) {
             case ONE:
-                manualSetWristPosition();
+                manualSetWristPosition(0);
                 break;
             case TWO:
-                manualSetWristPosition();
+                manualSetWristPosition(0);
                 break;
             case THREE:
-                manualSetWristPosition();
+                manualSetWristPosition(0);
                 break;
         }
     }
     public void setClawPosition(clawPosition targetClawPosition){
         switch (targetClawPosition) {
             case OPEN:
-                manualSetClawPosition();
+                manualSetClawPosition(0);
                 break;
             case CLOSED:
-                manualSetClawPosition();
+                manualSetClawPosition(0);
                 break;
         }
     }

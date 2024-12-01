@@ -15,7 +15,7 @@ public class liftArm {
 
     public enum PulleyPosition {
         IN,
-        OUT
+        MIDDLE, OUT
     }
 
     public armPosition currentArmPosition;
@@ -84,8 +84,8 @@ public class liftArm {
                 pulleyRight.setTargetPosition(0);
                 break;
             case OUT:
-                pulleyLeft.setTargetPosition(4300);
-                pulleyRight.setTargetPosition(4300);
+                pulleyLeft.setTargetPosition(3600);
+                pulleyRight.setTargetPosition(3600);
                 break;
         }
         // Run motors to position using defined power level

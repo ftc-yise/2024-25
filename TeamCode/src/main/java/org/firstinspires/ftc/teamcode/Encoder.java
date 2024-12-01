@@ -99,7 +99,7 @@ public class Encoder extends LinearOpMode {
                 canChangeSpeeds = true;
             }
 
-// Inside your loop or control method
+// Servo control Step method
             if (gamepad1.a) {
                 switch (state) {
                     case -1:

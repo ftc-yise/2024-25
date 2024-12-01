@@ -75,6 +75,12 @@ public class Encoder extends LinearOpMode {
                 arm.zeroPowerPulley();
             }
 
+            if (gamepad2.dpad_up) {
+                arm.setClawPosition(liftArm.clawPosition.OPEN);
+            } else if (gamepad2.dpad_down) {
+                arm.setClawPosition(liftArm.clawPosition.CLOSED);
+            }
+
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double forward   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double strafe =  gamepad1.left_stick_x;
@@ -98,74 +104,6 @@ public class Encoder extends LinearOpMode {
                 canChangeSpeeds = true;
             }
 
-// Servo control Step method
-            if (gamepad1.a) {
-                switch (state) {
-                    case -1:
-                        state = 0; // Initialize the sequence
-                        break;
-                    case 0:
-                        arm.manualSetElbowPosition(0);
-                        if (arm.elbow.getPosition() == 0) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 1:
-                        arm.manualSetShoulderPosition(1);
-                        if (arm.shoulderR.getPosition() == 1) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 2:
-                        arm.manualSetWristPosition(0);
-                        if (arm.wrist.getPosition() == 0) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 3:
-                        arm.manualSetClawPosition(0);
-                        if (arm.claw.getPosition() == 0) { // Replace with your own position checking logic
-                            state = -1; // Reset state
-                        }
-                        break;
-                }
-            } else if (gamepad1.b) {
-                switch (state) {
-                    case -1:
-                        state = 3; // Initialize the reverse sequence
-                        break;
-                    case 3:
-                        arm.manualSetClawPosition(1);
-                        if (arm.claw.getPosition() == 1) { // Replace with your own position checking logic
-                            state--;
-                        }
-                        break;
-                    case 2:
-                        arm.manualSetWristPosition(1);
-                        if (arm.wrist.getPosition() == 1) { // Replace with your own position checking logic
-                            state--;
-                        }
-                        break;
-                    case 1:
-                        arm.manualSetShoulderPosition(0);
-                        if (arm.shoulderR.getPosition() == 0) { // Replace with your own position checking logic
-                            state--;
-                        }
-                        break;
-                    case 0:
-                        arm.manualSetElbowPosition(1);
-                        if (arm.elbow.getPosition() == 1) { // Replace with your own position checking logic
-                            state = -1; // Reset state
-                        }
-                        break;
-                }
-            }
-
-            if (gamepad1.x){
-                arm.manualSetShoulderPosition(1);
-            } else if (gamepad1.y) {
-                arm.manualSetShoulderPosition(0);
-            }
 
 
 

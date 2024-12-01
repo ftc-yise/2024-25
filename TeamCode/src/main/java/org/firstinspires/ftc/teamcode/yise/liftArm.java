@@ -64,10 +64,10 @@ public class liftArm {
         pulleyLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pulleyRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        manualSetShoulderPosition(1);
-        manualSetElbowPosition(0);
-        manualSetWristPosition(0);
-        manualSetClawPosition(0);
+        //manualSetShoulderPosition(1);
+        //manualSetElbowPosition(0);
+        //manualSetWristPosition(0);
+        // manualSetClawPosition(0);
     }
 
     public void setLiftPosition(liftPosition targetLiftPosition) {
@@ -196,7 +196,7 @@ public class liftArm {
                 manualSetClawPosition(0);
                 break;
             case CLOSED:
-                manualSetClawPosition(0);
+                manualSetClawPosition(1);
                 break;
         }
     }

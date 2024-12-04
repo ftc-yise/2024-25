@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yiseArchived;
+/*package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yiseArchived;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -26,7 +26,7 @@ public class RoadRunnerDriving {
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
-        drive.setPoseEstimate(PoseStorage.currentPose);
+        drive.setPoseEstimate(poseStorage.currentPose);
 
         // set default value for speed
         currentSpeed = Speeds.NORMAL;
@@ -81,4 +81,4 @@ public class RoadRunnerDriving {
     //Calibrate position using the middle april tag
 
 }
-
+*/

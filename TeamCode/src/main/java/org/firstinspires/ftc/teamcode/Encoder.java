@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -22,7 +21,10 @@ public class Encoder extends LinearOpMode {
     // Declare a state variable
     int state = -1;
 
-    private double slowSpeed = 0.4;
+    public Boolean RightBumperPressed = false;
+    public double wrist = 0;
+
+    private double slowSpeed = 0.65;
     private double fullSpeed = 1;
     private double currentSpeed = 1;
     private boolean canChangeSpeeds = true;
@@ -52,28 +54,47 @@ public class Encoder extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if (gamepad1.dpad_down) {
-               arm.setLiftPosition(liftArm.armPosition.DOWN);
-            } else if (gamepad1.dpad_up) {
-                arm.setLiftPosition(liftArm.armPosition.UP);
-            } else if (gamepad1.left_bumper) {
-                arm.manualPowerDownLift();
-            }else if (gamepad1.right_bumper) {
-                arm.manualPowerUpLift();
-            } else {
-                arm.zeroPowerLift();
+            if (gamepad2.dpad_down) {
+                switch (state) {
+                    case -1:
+                        state = 0; // Initialize the sequence
+                        break;
+                    case 0:
+                        arm.setLiftPosition(liftArm.liftPosition.BASKET);
+                        if (arm.getLiftPositionL() >= 200) { // Replace with your own position checking logic
+                            state++;
+                        }
+                        break;
+                    case 1:
+                        arm.setPulleyPosition(liftArm.PulleyPosition.HOME);
+
+
+
+
+
+                    arm.setShoulderPosition(0);
+                    arm.setElbowPosition(0.125);
+                }
+            } else if (gamepad2.dpad_up) {
+                arm.setPulleyPosition(liftArm.PulleyPosition.BASKET);
+            }else if (gamepad2.dpad_right) {
+                arm.setPulleyPosition(liftArm.PulleyPosition.SEARCH);
+            }else if (gamepad2.dpad_left) {
+                arm.setPulleyPosition(liftArm.PulleyPosition.SUBMERSABLE);
+            } else if (gamepad2.options) {
+                arm.manualPowerDownPulley();
+            } else if (gamepad2.touchpad) {
+                arm.manualPowerUpPulley();
+            } else if (arm.getCurrentPulleyPosition() != liftArm.PulleyPosition.HOME){
+                arm.zeroPowerPulley();
             }
 
-            if (gamepad1.right_trigger > 0.75) {
-               arm.manualPowerUpPulley();
-            } else if (gamepad1.left_trigger > 0.75) {
-                arm.manualPowerDownPulley();
-            }else if (gamepad1.dpad_left) {
-                arm.setPulleyPosition(liftArm.PulleyPosition.IN);
-            } else if (gamepad1.dpad_right) {
-                arm.setPulleyPosition(liftArm.PulleyPosition.OUT);}
-            else {
-                arm.zeroPowerPulley();
+            if (gamepad2.y) {
+                arm.setLiftPosition(liftArm.liftPosition.HOME);
+            }else if (gamepad2.b) {
+                arm.setLiftPosition(liftArm.liftPosition.SUBMERSABLE);
+            }  else if (arm.getCurrentLiftPosition() == liftArm.liftPosition.BASKET) {
+                arm.zeroPowerLift();
             }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
@@ -81,12 +102,18 @@ public class Encoder extends LinearOpMode {
             double strafe =  gamepad1.left_stick_x;
             double turn     =  gamepad1.right_stick_x;
 
+            if (gamepad1.right_stick_button){
+                strafe = 0.25;
+            } else if (gamepad1.left_stick_button) {
+                strafe = -0.25;
+            }
+
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
             double leftFrontPower  = forward + strafe - turn;
             double rightFrontPower = forward - strafe + turn;
-            double leftBackPower   = forward + strafe + turn;
-            double rightBackPower  = forward - strafe - turn;
+            double leftBackPower   = -forward + strafe + turn;
+            double rightBackPower  = -forward - strafe - turn;
 
             if (gamepad1.y && canChangeSpeeds) {
                 canChangeSpeeds = false;
@@ -99,75 +126,39 @@ public class Encoder extends LinearOpMode {
                 canChangeSpeeds = true;
             }
 
-// Servo control Step method
-            if (gamepad1.a) {
-                switch (state) {
-                    case -1:
-                        state = 0; // Initialize the sequence
-                        break;
-                    case 0:
-                        arm.setElbowPosition(0);
-                        if (arm.elbow.getPosition() == 0) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 1:
-                        arm.setShoulderPosition(1);
-                        if (arm.ShoulderR.getPosition() == 1) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 2:
-                        arm.setWristPosition(0);
-                        if (arm.wrist.getPosition() == 0) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 3:
-                        arm.setClawPosition(0);
-                        if (arm.claw.getPosition() == 0) { // Replace with your own position checking logic
-                            state = -1; // Reset state
-                        }
-                        break;
+            // Claw control method
+            if (gamepad2.right_bumper && !RightBumperPressed) {
+                RightBumperPressed = true;
+                if (arm.claw.getPosition() == 1) {
+                    arm.claw.setPosition(0);;
+                } else {
+                    arm.claw.setPosition(1);
                 }
-            } else if (gamepad1.b) {
-                switch (state) {
-                    case -1:
-                        state = 3; // Initialize the reverse sequence
-                        break;
-                    case 3:
-                        arm.setClawPosition(1);
-                        if (arm.claw.getPosition() == 1) { // Replace with your own position checking logic
-                            state--;
-                        }
-                        break;
-                    case 2:
-                        arm.setWristPosition(1);
-                        if (arm.wrist.getPosition() == 1) { // Replace with your own position checking logic
-                            state--;
-                        }
-                        break;
-                    case 1:
-                        arm.setShoulderPosition(0);
-                        if (arm.ShoulderR.getPosition() == 0) { // Replace with your own position checking logic
-                            state--;
-                        }
-                        break;
-                    case 0:
-                        arm.setElbowPosition(1);
-                        if (arm.elbow.getPosition() == 1) { // Replace with your own position checking logic
-                            state = -1; // Reset state
-                        }
-                        break;
-                }
+            } else if (!gamepad2.right_bumper) {
+                RightBumperPressed = false;
             }
 
-            if (gamepad1.x){
-                arm.setShoulderPosition(1);
-            } else if (gamepad1.y) {
+            if (gamepad2.right_trigger > 0.75) {
+                arm.setShoulderPosition(0.25);
+                arm.setElbowPosition(0);
+            } else if (gamepad2.left_trigger > 0.75) {
                 arm.setShoulderPosition(0);
+                arm.setElbowPosition(0.125);
+            } else if (gamepad2.x) {
+                arm.setShoulderPosition(0.675);
+                arm.setElbowPosition(0.2);
+            } else if (gamepad2.left_bumper) {
+                arm.setShoulderPosition(1);
+                arm.setElbowPosition(0.65);
             }
 
+            if (gamepad2.left_stick_x > .15){
+                arm.setWristPosition(wrist);
+                wrist += 0.0185;
+            } else if (gamepad2.left_stick_x < -0.15) {
+                arm.setWristPosition(wrist);
+                wrist -= 0.0185;
+            }
 
 
             // Send calculated power to wheels
@@ -193,7 +184,7 @@ public class Encoder extends LinearOpMode {
             telemetry.addData("elbow", arm.elbow.getPosition());
             telemetry.addData("wrist", arm.wrist.getPosition());
             telemetry.addData("claw", arm.claw.getPosition());
-            
+
             telemetry.update();
         }
     }

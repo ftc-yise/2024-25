@@ -5,22 +5,26 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class liftArm {
+    //storage to make sure we don't over extend ever
+    private PulleyPosition currentPulleyPosition;
+    private liftPosition currentLiftPosition;
+
+
     // Arm Variables
     public DcMotor liftLeft, liftRight, pulleyLeft, pulleyRight;
     public Servo wrist, claw, shoulderL, ShoulderR, elbow;
-    public enum armPosition {
-        DOWN,
-        UP
+    public enum liftPosition {
+        HOME,
+        SUBMERSABLE,
+        BASKET
     }
 
     public enum PulleyPosition {
-        IN,
-        MIDDLE, OUT
+        HOME,
+        SUBMERSABLE, BASKET, SEARCH
     }
 
-    public armPosition currentArmPosition;
     public double armMotorPower;
-    public double pulleyMotorPower;
     public double leftArmMotorPositionValue;
     public double rightArmMotorPositionValue;
 
@@ -51,24 +55,31 @@ public class liftArm {
         pulleyLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pulleyRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        setShoulderPosition(1);
+        setShoulderPosition(0);
         setElbowPosition(0);
         setWristPosition(0);
-        setClawPosition(0);
+        setClawPosition(1);
     }
 
-    public void setLiftPosition(liftArm.armPosition targetArmPosition) {
-            switch (targetArmPosition) {
-            case DOWN:
+    public void setLiftPosition(liftPosition targetLiftPosition) {
+        this.currentLiftPosition = targetLiftPosition; // Store the current position
+        switch (targetLiftPosition) {
+            case BASKET:
+                liftLeft.setTargetPosition(600);
+                liftRight.setTargetPosition(600);
+                armMotorPower = 100;
+                break;
+            case HOME:
                 liftLeft.setTargetPosition(0);
                 liftRight.setTargetPosition(0);
+                armMotorPower = 0.25;
+                break;
+            case SUBMERSABLE:
+                liftLeft.setTargetPosition(285);
+                liftRight.setTargetPosition(285);
                 armMotorPower = 100;
                 break;
-            case UP:
-                liftLeft.setTargetPosition(410);
-                liftRight.setTargetPosition(410);
-                armMotorPower = 100;
-                break;
+
         }
         // Run motors to position using defined power level
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -78,14 +89,23 @@ public class liftArm {
     }
 
     public void setPulleyPosition(liftArm.PulleyPosition targetPulleyPosition) {
+        this.currentPulleyPosition = targetPulleyPosition; // Store the current position
         switch (targetPulleyPosition) {
-            case IN:
+            case HOME:
                 pulleyLeft.setTargetPosition(0);
                 pulleyRight.setTargetPosition(0);
                 break;
-            case OUT:
-                pulleyLeft.setTargetPosition(3600);
-                pulleyRight.setTargetPosition(3600);
+            case BASKET:
+                pulleyLeft.setTargetPosition(4350);
+                pulleyRight.setTargetPosition(4350);
+                break;
+            case SUBMERSABLE:
+                pulleyLeft.setTargetPosition(1700);
+                pulleyRight.setTargetPosition(1700);
+                break;
+            case SEARCH:
+                pulleyLeft.setTargetPosition(2000);
+                pulleyRight.setTargetPosition(2000);
                 break;
         }
         // Run motors to position using defined power level
@@ -98,9 +118,9 @@ public class liftArm {
     public void zeroPowerLift() {
         if (!liftLeft.isBusy() && !liftRight.isBusy()) {
             liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftLeft.setPower(0.05);
+            liftLeft.setPower(0.08);
             liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftRight.setPower(0.05);
+            liftRight.setPower(0.08);
         }
     }
 
@@ -114,10 +134,10 @@ public class liftArm {
     }
 
     public void manualPowerUpLift() {
-            liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftLeft.setPower(0.35);
-            liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftRight.setPower(0.35);
+        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftLeft.setPower(0.35);
+        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftRight.setPower(0.35);
     }
     public void manualPowerDownLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -174,5 +194,13 @@ public class liftArm {
     }
     public double PulleyPowerR() {
         return pulleyRight.getPower();
+    }
+
+    public PulleyPosition getCurrentPulleyPosition() {
+        return currentPulleyPosition; // Return the stored current position
+    }
+
+    public liftPosition getCurrentLiftPosition() {
+        return currentLiftPosition; // Return the stored current position
     }
 }

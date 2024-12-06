@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class liftArm {
+public class LiftClass {
     //storage to make sure we don't over extend ever
     private PulleyPosition currentPulleyPosition;
     private liftPosition currentLiftPosition;
@@ -29,7 +29,7 @@ public class liftArm {
     public double rightArmMotorPositionValue;
 
     // Constructor
-    public liftArm(HardwareMap hardwareMap) {
+    public LiftClass(HardwareMap hardwareMap) {
         //Initialize arm motors
         liftLeft = hardwareMap.get(DcMotor.class, "liftleft");
         liftRight = hardwareMap.get(DcMotor.class, "liftright");
@@ -88,7 +88,7 @@ public class liftArm {
         liftRight.setPower(armMotorPower);
     }
 
-    public void setPulleyPosition(liftArm.PulleyPosition targetPulleyPosition) {
+    public void setPulleyPosition(LiftClass.PulleyPosition targetPulleyPosition) {
         this.currentPulleyPosition = targetPulleyPosition; // Store the current position
         switch (targetPulleyPosition) {
             case HOME:
@@ -127,9 +127,9 @@ public class liftArm {
     public void zeroPowerPulley() {
         if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
             pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyLeft.setPower(0.01);
+            pulleyLeft.setPower(0.05);
             pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyRight.setPower(0.01);
+            pulleyRight.setPower(0.05);
         }
     }
 

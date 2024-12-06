@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.yise.liftArm;
+import org.firstinspires.ftc.teamcode.yise.LiftClass;
 
 @TeleOp(name="jack Motor Testing", group="Linear Opmode")
 public class jackMotorTesting extends LinearOpMode {
@@ -14,7 +14,7 @@ public class jackMotorTesting extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        liftArm arm = new liftArm(hardwareMap);
+        LiftClass arm = new LiftClass(hardwareMap);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -26,13 +26,10 @@ public class jackMotorTesting extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.dpad_down) {
-               arm.setLiftPosition(liftArm.liftPosition.DOWN);
+               arm.setLiftPosition(LiftClass.liftPosition.HOME);
             } else if (gamepad1.dpad_up) {
-                arm.setLiftPosition(liftArm.liftPosition.UP);
+                arm.setLiftPosition(LiftClass.liftPosition.BASKET);
             }
-            telemetry.addData("Left Encoder Position", arm.leftLiftMotorPositionValue);
-            telemetry.addData("Right Encoder Position", arm.rightLiftMotorPositionValue);
-            telemetry.update();
         }
     }
 }

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.yise.liftArm;
+import org.firstinspires.ftc.teamcode.yise.LiftClass;
 
 @TeleOp(name="Encoder Testing", group="Linear Opmode")
 public class Encoder extends LinearOpMode {
@@ -22,6 +22,13 @@ public class Encoder extends LinearOpMode {
     int state = -1;
 
     public Boolean RightBumperPressed = false;
+    public Boolean buttonPressed = false;
+
+    public Boolean Uptapped = false;
+    public Boolean Downtapped = false;
+    public Boolean Lefttapped = false;
+    public Boolean Righttapped = false;
+
     public double wrist = 0;
 
     private double slowSpeed = 0.65;
@@ -32,7 +39,7 @@ public class Encoder extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        liftArm arm = new liftArm(hardwareMap);
+        LiftClass arm = new LiftClass(hardwareMap);
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "LeftFrontDrive");
@@ -53,47 +60,174 @@ public class Encoder extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
+            if (gamepad2.dpad_up){
+                Uptapped = true;
+            } else if (gamepad2.dpad_down){
+                Downtapped = true;
+            } else if (gamepad2.dpad_left){
+                Lefttapped = true;
+            } else if (gamepad2.dpad_right){
+                Righttapped = true;
+            }
 
-            if (gamepad2.dpad_down) {
+            if (Uptapped) {
+
                 switch (state) {
-                    case -1:
-                        state = 0; // Initialize the sequence
+                    case -1:  // Initialize the
+                        arm.setShoulderPosition(0.25);
+                        arm.setElbowPosition(0);
+                        state = 0;
                         break;
-                    case 0:
-                        arm.setLiftPosition(liftArm.liftPosition.BASKET);
-                        if (arm.getLiftPositionL() >= 200) { // Replace with your own position checking logic
+                    case 0:  // Initialize the
+                        if (!buttonPressed) {
+                            arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            buttonPressed = true;
+                        }
+                        if (arm.getPulleyPositionL() <= 350) {
                             state++;
                         }
                         break;
                     case 1:
-                        arm.setPulleyPosition(liftArm.PulleyPosition.HOME);
-
-
-
-
-
-                    arm.setShoulderPosition(0);
-                    arm.setElbowPosition(0.125);
+                        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
+                        if (arm.getLiftPositionL() >= 300) { // Replace with your own position checking logic
+                            state++;
+                        }
+                        break;
+                    case 2:
+                        arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
+                        if (arm.getPulleyPositionR() >= 3000) { // Replace with your own position checking logic
+                            state++;
+                        }
+                        break;
+                        case 3:
+                            arm.setShoulderPosition(1);
+                            arm.setElbowPosition(0.65);
+                        state = -1;
+                        Uptapped = false;
+                        break;
                 }
-            } else if (gamepad2.dpad_up) {
-                arm.setPulleyPosition(liftArm.PulleyPosition.BASKET);
-            }else if (gamepad2.dpad_right) {
-                arm.setPulleyPosition(liftArm.PulleyPosition.SEARCH);
-            }else if (gamepad2.dpad_left) {
-                arm.setPulleyPosition(liftArm.PulleyPosition.SUBMERSABLE);
+            } else if (Downtapped) {
+                switch (state){
+                    case -1:  // Initialize the
+                        arm.setShoulderPosition(0.25);
+                        arm.setElbowPosition(0);
+                        state = 0;
+                        break;
+                    case 0:  // Initialize the
+                        if (!buttonPressed) {
+                            arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            buttonPressed = true;
+                        }
+                        if (arm.getPulleyPositionL() <= 350) {
+                            state++;
+                        }
+                        break;
+                    case 1:
+                        arm.setLiftPosition(LiftClass.liftPosition.HOME);
+                        if (arm.getLiftPositionL() <= 100) { // Replace with your own position checking logic
+                            state++;
+                        }
+                        break;
+                    case 2:
+                        arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                        if (arm.getPulleyPositionR() <= 400) { // Replace with your own position checking logic
+                            state++;
+                        }
+                        break;
+                    case 3:
+                        arm.setShoulderPosition(0.25);
+                        arm.setElbowPosition(0);
+                        state = -1;
+                        Downtapped = false;
+                        break;
+                }
+            }else if (Righttapped) {
+
+                switch (state){
+                    case -1:  // Initialize the
+                        arm.setShoulderPosition(0.25);
+                        arm.setElbowPosition(0);
+                        state = 0;
+                        break;
+                    case 0:  // Initialize the
+                        if (!buttonPressed) {
+                            arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            buttonPressed = true;
+                            }
+                        if (arm.getPulleyPositionL() <= 350) {
+                            state++;
+                        }
+                        break;
+                    case 1:
+                        arm.setLiftPosition(LiftClass.liftPosition.HOME);
+                        if (arm.getLiftPositionL() <= 100) { // Replace with your own position checking logic
+                            state++;
+                        }
+                        break;
+                    case 2:
+                        arm.setPulleyPosition(LiftClass.PulleyPosition.SEARCH);
+                        if (arm.getPulleyPositionR() >= 1500) { // Replace with your own position checking logic
+                            state++;
+                        }
+                        break;
+                    case 3:
+                        arm.setShoulderPosition(0.585);
+                        arm.setElbowPosition(0);
+                        state = -1;
+                        Righttapped = false;
+                        break;
+                }
+            }else if (Lefttapped) {
+
+                switch (state) {
+                    case -1:  // Initialize the
+                        arm.setShoulderPosition(0.25);
+                        arm.setElbowPosition(0);
+                        state = 0;
+                        break;
+                    case 0:  // Initialize the
+                        if (!buttonPressed) {
+                            arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            buttonPressed = true;
+                        }
+                        if (arm.getPulleyPositionL() <= 350) {
+                            state++;
+                        }
+                        break;
+                    case 1:
+                        arm.setLiftPosition(LiftClass.liftPosition.SUBMERSABLE);
+                        if (arm.getLiftPositionL() >= 100) { // Replace with your own position checking logic
+                            state++;
+                        }
+                        break;
+                    case 2:
+                        arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSABLE);
+                        if (arm.getPulleyPositionR() >= 1500) { // Replace with your own position checking logic
+                            state++;
+                        }
+                        break;
+                    case 3:
+                        arm.setShoulderPosition(0.5);
+                        arm.setElbowPosition(0.125);
+                        state = -1;
+                        Lefttapped = false;
+                        break;
+                }
             } else if (gamepad2.options) {
                 arm.manualPowerDownPulley();
             } else if (gamepad2.touchpad) {
                 arm.manualPowerUpPulley();
-            } else if (arm.getCurrentPulleyPosition() != liftArm.PulleyPosition.HOME){
+            } else if (arm.getCurrentPulleyPosition() != LiftClass.PulleyPosition.HOME){
                 arm.zeroPowerPulley();
             }
 
+            if (!gamepad2.dpad_down && !gamepad2.dpad_up && !gamepad2.dpad_left && !gamepad2.dpad_right){
+                buttonPressed = false;
+            }
+
             if (gamepad2.y) {
-                arm.setLiftPosition(liftArm.liftPosition.HOME);
-            }else if (gamepad2.b) {
-                arm.setLiftPosition(liftArm.liftPosition.SUBMERSABLE);
-            }  else if (arm.getCurrentLiftPosition() == liftArm.liftPosition.BASKET) {
+                arm.setLiftPosition(LiftClass.liftPosition.HOME);
+            }  else if (arm.getCurrentLiftPosition() == LiftClass.liftPosition.BASKET) {
                 arm.zeroPowerLift();
             }
 
@@ -127,14 +261,14 @@ public class Encoder extends LinearOpMode {
             }
 
             // Claw control method
-            if (gamepad2.right_bumper && !RightBumperPressed) {
+            if (gamepad1.right_bumper || gamepad2.right_bumper && !RightBumperPressed) {
                 RightBumperPressed = true;
                 if (arm.claw.getPosition() == 1) {
                     arm.claw.setPosition(0);;
                 } else {
                     arm.claw.setPosition(1);
                 }
-            } else if (!gamepad2.right_bumper) {
+            } else if (!gamepad2.right_bumper && !gamepad1.right_bumper) {
                 RightBumperPressed = false;
             }
 
@@ -184,6 +318,8 @@ public class Encoder extends LinearOpMode {
             telemetry.addData("elbow", arm.elbow.getPosition());
             telemetry.addData("wrist", arm.wrist.getPosition());
             telemetry.addData("claw", arm.claw.getPosition());
+
+            telemetry.addData("button pressed", buttonPressed);
 
             telemetry.update();
         }

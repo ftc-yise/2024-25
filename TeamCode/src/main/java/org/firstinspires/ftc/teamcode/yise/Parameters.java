@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class Parameters extends LinearOpMode {
 
     public enum AutonomousConfig {
-        NET,
+        BASKET,
         OBSERVATION
     }
 
@@ -58,7 +58,7 @@ public class Parameters extends LinearOpMode {
             telemetry.update();
 
             if (gamepad1.a) {
-                    autoConfig = AutonomousConfig.NET;
+                    autoConfig = AutonomousConfig.BASKET;
             } else if (gamepad1.b) {
                 autoConfig = AutonomousConfig.OBSERVATION;
             }

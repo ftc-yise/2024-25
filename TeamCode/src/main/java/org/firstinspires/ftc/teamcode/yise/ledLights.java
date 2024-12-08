@@ -7,8 +7,6 @@ public class ledLights {
     public final RevBlinkinLedDriver lights;
     public ledStates currentState;
 
-
-
     public enum ledStates {
         INIT,
         ARM_READY,

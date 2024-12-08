@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.trajectoryse
 import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise.DriveColorExample;
 import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise.IntakeSystem;
 import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise.LedLights;
-import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise.LiftArm;
+import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise.LiftClass;
 import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise.Parameters;
 import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise.PoseStorage;
 import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yise.TensorflowVision;
@@ -74,7 +74,7 @@ public class Auto extends LinearOpMode {
     }
     
     //Drop purple pixel and navigate to white stack
-    public TrajectorySequence purplePixel(SampleMecanumDrive drive, Pose2d startPose, LiftArm arm) {
+    public TrajectorySequence purplePixel(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm) {
         //Create all position variables that will be changed
         double heading = 0;
         double x = 0;
@@ -201,7 +201,7 @@ public class Auto extends LinearOpMode {
     }
 
     //Navigating to and dropping yellow pixel
-    public TrajectorySequence yellowPixel(SampleMecanumDrive drive, Pose2d startPose, LiftArm arm) {
+    public TrajectorySequence yellowPixel(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm) {
         //Position of backboard, y will change based on prop, x is constant distance from it
         double backdropX = 47;
         double backdropY = 0;
@@ -243,7 +243,7 @@ public class Auto extends LinearOpMode {
         TrajectorySequence backdrop = drive.trajectorySequenceBuilder(startPose)
                 .forward(3)
                 .addDisplacementMarker( () -> {
-                    arm.extend(LiftArm.Distance.AUTO);
+                    arm.extend(LiftClass.Distance.AUTO);
                 })
                 .lineToLinearHeading(new Pose2d(backdropX, backdropY, Math.toRadians(backdropHeading)))
                 .back(5)
@@ -252,7 +252,7 @@ public class Auto extends LinearOpMode {
         TrajectorySequence farDriveToBackdrop = drive.trajectorySequenceBuilder(startPose)
                 .back(60)
                 .addDisplacementMarker(40, () -> {
-                    arm.extend(LiftArm.Distance.LOW);
+                    arm.extend(LiftClass.Distance.LOW);
                 })
                 .splineTo(new Vector2d(backdropX, backdropY), Math.toRadians(0))
                 .back(5)
@@ -315,7 +315,7 @@ public class Auto extends LinearOpMode {
         }
     }
 
-    public TrajectorySequence driveToBackdrop(SampleMecanumDrive drive, Pose2d startPose, LiftArm arm) {
+    public TrajectorySequence driveToBackdrop(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm) {
         double backdropX = 47;
         double backdropY = 0;
 
@@ -328,7 +328,7 @@ public class Auto extends LinearOpMode {
         TrajectorySequence seq = drive.trajectorySequenceBuilder(startPose)
                 .back(60)
                 .addDisplacementMarker(40, () -> {
-                    arm.extend(LiftArm.Distance.LOW);
+                    arm.extend(LiftClass.Distance.LOW);
                 })
                 .splineTo(new Vector2d(47, backdropY), Math.toRadians(0))
                 .back(3)
@@ -342,7 +342,7 @@ public class Auto extends LinearOpMode {
 
         //Initialize RR
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        LiftArm arm = new LiftArm(hardwareMap);
+        LiftClass arm = new LiftClass(hardwareMap);
         TensorflowVision vision = new TensorflowVision(hardwareMap);
         LedLights leds = new LedLights(hardwareMap);
         DriveColorExample colorSensors = new DriveColorExample(hardwareMap);

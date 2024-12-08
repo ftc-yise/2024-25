@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class LiftArm {
+public class archivedLiftArm {
     public DcMotor slide, hand;
     public Servo trapdoor;
     public Servo purplePixel;
@@ -33,7 +33,7 @@ public class LiftArm {
 
 
     //Constructor
-    public LiftArm(HardwareMap hardwareMap) {
+    public archivedLiftArm(HardwareMap hardwareMap) {
         //Initialize motors and servos
         hand = hardwareMap.get(DcMotor.class, "hand");
         slide = hardwareMap.get(DcMotor.class, "slide");

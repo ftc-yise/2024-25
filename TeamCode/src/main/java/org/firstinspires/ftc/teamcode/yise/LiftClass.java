@@ -58,7 +58,7 @@ public class LiftClass {
         setShoulderPosition(0);
         setElbowPosition(0);
         setWristPosition(0);
-        setClawPosition(1);
+        setClawPosition(0);
     }
 
     public void setLiftPosition(liftPosition targetLiftPosition) {

@@ -15,7 +15,7 @@
 
  import org.firstinspires.ftc.teamcode.yise.poseStorage;
 
- @Autonomous(name="Autonomous", group="Linear Opmode")
+ @Autonomous(name="Auto", group="Linear Opmode")
 
  public class Auto extends LinearOpMode {
 
@@ -28,9 +28,9 @@
  public TrajectorySequence InitialBlock(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm) {
 
   //Create all position variables that will be changed
-  double heading = 0;
-  double x = 0;
-  double y = 0;
+  double heading;
+  double x;
+  double y;
   int DirectionalMulti = 1;
 
   final int[] state = {-1};
@@ -53,12 +53,12 @@
 
   } else if (Parameters.allianceColor == Parameters.Color.BLUE && Parameters.autoConfig == Parameters.AutonomousConfig.BASKET) {
    //start position should be 36, 64, 0
-   heading = 45;
+   heading = -135;
    x = 48;
    y = 48;
 
 
-  } else if (Parameters.allianceColor == Parameters.Color.BLUE && Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
+  } else {
    //start position should be -12, 64, -90
    heading = -90;
    x = 0;
@@ -73,8 +73,12 @@
 
           //Go to calculated position
           .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)))
-          .forward(-8 * DirectionalMulti)
-          .addDisplacementMarker(() -> {
+          .waitSeconds(2)
+          .forward(8)
+          .strafeRight(8)
+          .strafeLeft(8)
+          .back(8)
+          /*.addDisplacementMarker(() -> {
            if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
             switch (state[0]) {
              case -1:  // Initialize the
@@ -167,7 +171,7 @@
                 break;
               }
            }
-          })
+          })*/
           .build();
 
   //Return the built sequence so it can be run
@@ -396,27 +400,29 @@
     // Red Observation config
     startX = -36;
     startY = -64.875;
-    startHeading = Math.toRadians(180);
+    startHeading = Math.toRadians(90);
    } else if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION && Parameters.allianceColor == Parameters.Color.BLUE) {
     // Blue Observation config
     startX = 36;
     startY = 64;
-    startHeading = Math.toRadians(0);
+    startHeading = Math.toRadians(-90);
    } else if (Parameters.autoConfig == Parameters.AutonomousConfig.BASKET && Parameters.allianceColor == Parameters.Color.RED) {
     // Red Net config
-    startX = -48;
-    startY = -48;
-    startHeading = Math.toRadians(45);
+    startX = -36;
+    startY = -64.875;
+    startHeading = Math.toRadians(180);
    } else {
     // Blue Net config
-    startX = 48;
-    startY = 48;
-    startHeading = Math.toRadians(-135);
+    startX = 36;
+    startY =64;
+    startHeading = Math.toRadians(0);
    }
 
 // Create the start pose using the calculated startX, startY, and startHeading
    Pose2d startPose = new Pose2d(startX, startY, Math.toRadians(startHeading));
    drive.setPoseEstimate(startPose);
+
+   waitForStart();
 
    TrajectorySequence InitialBlock = InitialBlock(drive, startPose, arm);
    TrajectorySequence driveTo1stBlock = BlockPickup(drive, InitialBlock.end(), arm, 0);
@@ -431,13 +437,13 @@
    TrajectorySequence park = Parking(drive, score3rdBlock.end());
 
    drive.followTrajectorySequence(InitialBlock);
-   drive.followTrajectorySequence(driveTo1stBlock);
+   /*drive.followTrajectorySequence(driveTo1stBlock);
    drive.followTrajectorySequence(score1stBlock);
    drive.followTrajectorySequence(driveTo2ndBlock);
    drive.followTrajectorySequence(score2ndBlock);
    drive.followTrajectorySequence(driveTo3rdBlock);
    drive.followTrajectorySequence(score3rdBlock);
-   drive.followTrajectorySequence(park);
+   drive.followTrajectorySequence(park);*/
 
    poseStorage.currentPose = drive.getPoseEstimate();
   }

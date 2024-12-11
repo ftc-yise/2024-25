@@ -43,7 +43,7 @@ public class RoadRunnerDriving {
         if (!gamepad.dpad_down && !gamepad.dpad_up && !gamepad.dpad_left && !gamepad.dpad_right) {
             x = -gamepad.left_stick_y * speedMultiplier;
             y = -gamepad.left_stick_x * speedMultiplier;
-            heading = -gamepad.right_stick_x * speedMultiplier;
+            heading = gamepad.right_stick_x * speedMultiplier;
             drive.setWeightedDrivePower(new Pose2d(x, y, heading));
         }
 
@@ -82,7 +82,7 @@ public class RoadRunnerDriving {
         // Set the speedMultiplier in case of SLOW mode
         if (currentSpeed == Speeds.SLOW) {
             currentSpeed = Speeds.NORMAL;
-            speedMultiplier = 0.5;
+            speedMultiplier = 1;
         } else {
             currentSpeed = Speeds.SLOW;
             speedMultiplier = 0.25;

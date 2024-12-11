@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yiseArchived;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="Game Values (RUN THIS EVERY MATCH)", group="Linear OpMode")
+@TeleOp(name="Archived Game Values (RUN THIS EVERY MATCH)", group="Linear OpMode")
+@Disabled
 public class Parameters extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.

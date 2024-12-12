@@ -54,17 +54,18 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         lastEncPositions = lastTrackingEncPositions;
         lastEncVels = lastTrackingEncVels;
 
+
         // motor port 2
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "RightBackDrive"));
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "RightFrontDrive"));
         // motor port 1
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "LeftBackDrive"));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "LeftBackDrive"));
         // motor port 0
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "LeftFrontDrive"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
-        //frontEncoder.setDirection(Encoder.Direction.REVERSE);
-        //leftEncoder.setDirection(Encoder.Direction.REVERSE);
-        //rightEncoder.setDirection(Encoder.Direction.REVERSE);
+        /*frontEncoder.setDirection(Encoder.Direction.REVERSE);
+        leftEncoder.setDirection(Encoder.Direction.REVERSE);
+        rightEncoder.setDirection(Encoder.Direction.REVERSE);*/
     }
 
     public static double encoderTicksToInches(double ticks) {

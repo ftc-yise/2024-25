@@ -64,8 +64,8 @@ public class LiftClass {
         this.currentLiftPosition = targetLiftPosition; // Store the current position
         switch (targetLiftPosition) {
             case BASKET:
-                liftLeft.setTargetPosition(600);
-                liftRight.setTargetPosition(600);
+                liftLeft.setTargetPosition(495);
+                liftRight.setTargetPosition(495);
                 armMotorPower = 100;
                 break;
             case HOME:
@@ -95,8 +95,8 @@ public class LiftClass {
                 pulleyRight.setTargetPosition(0);
                 break;
             case BASKET:
-                pulleyLeft.setTargetPosition(4350);
-                pulleyRight.setTargetPosition(4350);
+                pulleyLeft.setTargetPosition(3900);
+                pulleyRight.setTargetPosition(3900);
                 break;
             case SUBMERSABLE:
                 pulleyLeft.setTargetPosition(1700);
@@ -129,6 +129,15 @@ public class LiftClass {
             pulleyLeft.setPower(0.06);
             pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             pulleyRight.setPower(0.06);
+        }
+    }
+
+    public void heroPowerPulley() {
+        if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
+            pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyLeft.setPower(-0.35);
+            pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyRight.setPower(-0.35);
         }
     }
 

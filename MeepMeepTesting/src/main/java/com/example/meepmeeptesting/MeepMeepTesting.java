@@ -10,6 +10,34 @@ import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
+        RoadRunnerBotEntity RedObservation1214 = new DefaultBotBuilder(meepMeep)
+                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 14.25)
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(0, -64,  Math.toRadians(90)))
+                        .forward(18)
+                        .back(4)
+                        .lineTo(new Vector2d(36, -48))
+                        .lineTo(new Vector2d(36, 0))
+                        .turn(Math.toRadians(180))
+                        .waitSeconds(1)
+                        .strafeLeft(12)
+                        .lineTo(new Vector2d(52,-60))
+                        .build());
+
+
+        RoadRunnerBotEntity BlueObservation1214 = new DefaultBotBuilder(meepMeep)
+                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 14.25)
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(0, 64,  Math.toRadians(-90)))
+                        .forward(18)
+                        .back(4)
+                        .lineTo(new Vector2d(-36, 48))
+                        .lineTo(new Vector2d(-36, 0))
+                        .turn(Math.toRadians(180))
+                        .waitSeconds(1)
+                        .strafeLeft(12)
+                        .lineTo(new Vector2d(-52,60))
+                        .build());
 
         RoadRunnerBotEntity RedNet = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -113,10 +141,12 @@ public class MeepMeepTesting {
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(RedNet)
+                .addEntity(BlueObservation1214)
+                .addEntity(RedObservation1214)
+                /*.addEntity(RedNet)
                 .addEntity(blueNet)
                 .addEntity(redObservation)
-                .addEntity(blueObservation)
+                .addEntity(blueObservation)*/
                 .start();
     }
 }

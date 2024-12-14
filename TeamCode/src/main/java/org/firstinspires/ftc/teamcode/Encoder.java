@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -49,9 +50,9 @@ public class Encoder extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "LeftBackDrive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "RightBackDrive");
 
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
 
@@ -71,22 +72,22 @@ public class Encoder extends LinearOpMode {
             double strafe =  gamepad1.left_stick_x;
             double turn     =  gamepad1.right_stick_x;
 
-            if (gamepad2.dpad_up) {
+            if (gamepad1.dpad_up) {
                 forward = 0.2;
-            } else if (gamepad2.dpad_down) {
+            } else if (gamepad1.dpad_down) {
                 forward = -0.2;
-            } else if (gamepad2.dpad_left) {
-                strafe = 0.2;
-            } else if (gamepad2.dpad_right) {
+            } else if (gamepad1.dpad_left) {
+                strafe = -0.2;
+            } else if (gamepad1.dpad_right) {
                 strafe = 0.2;
             }
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = forward + strafe - turn;
-            double rightFrontPower = forward - strafe + turn;
-            double leftBackPower   = -forward + strafe + turn;
-            double rightBackPower  = -forward - strafe - turn;
+            double leftFrontPower  = forward + strafe + turn;
+            double rightFrontPower = -forward + strafe + turn;
+            double leftBackPower   = -forward + strafe - turn;
+            double rightBackPower  = -forward - strafe + turn;
 
             // Send calculated power to wheels
             leftFrontDrive.setPower(leftFrontPower);
@@ -344,8 +345,8 @@ public class Encoder extends LinearOpMode {
                     arm.setShoulderPosition(0.675);
                     arm.setElbowPosition(0.2);
                 } else if (gamepad2.x) {
-                    arm.setShoulderPosition(1);
-                    arm.setElbowPosition(0.65);
+                    arm.setShoulderPosition(0.65);
+                    arm.setElbowPosition(0.55);
                 }
 
                 if (gamepad1.right_bumper || gamepad2.right_bumper && !RightBumperPressed) {

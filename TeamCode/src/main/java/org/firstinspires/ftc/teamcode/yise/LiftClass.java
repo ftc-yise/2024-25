@@ -65,8 +65,8 @@ public class LiftClass {
         this.currentLiftPosition = targetLiftPosition; // Store the current position
         switch (targetLiftPosition) {
             case BASKET:
-                liftLeft.setTargetPosition(600);
-                liftRight.setTargetPosition(600);
+                liftLeft.setTargetPosition(495);
+                liftRight.setTargetPosition(495);
                 armMotorPower = 100;
                 break;
             case HOME:
@@ -96,8 +96,8 @@ public class LiftClass {
                 pulleyRight.setTargetPosition(0);
                 break;
             case BASKET:
-                pulleyLeft.setTargetPosition(4350);
-                pulleyRight.setTargetPosition(4350);
+                pulleyLeft.setTargetPosition(3900);
+                pulleyRight.setTargetPosition(3900);
                 break;
             case SUBMERSABLE:
                 pulleyLeft.setTargetPosition(2150);

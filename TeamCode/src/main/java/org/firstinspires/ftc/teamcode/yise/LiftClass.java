@@ -12,7 +12,7 @@ public class LiftClass {
 
     // Arm Variables
     public DcMotor liftLeft, liftRight, pulleyLeft, pulleyRight;
-    public Servo wrist, claw, shoulderL, ShoulderR, elbow;
+    public Servo claw, wrist, shoulderL, ShoulderR, elbow;
     public enum liftPosition {
         HOME,
         SUBMERSABLE,
@@ -127,9 +127,18 @@ public class LiftClass {
     public void zeroPowerPulley() {
         if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
             pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyLeft.setPower(0.05);
+            pulleyLeft.setPower(0.06);
             pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyRight.setPower(0.05);
+            pulleyRight.setPower(0.06);
+        }
+    }
+
+    public void heroPowerPulley() {
+        if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
+            pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyLeft.setPower(-0.35);
+            pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyRight.setPower(-0.35);
         }
     }
 
@@ -148,19 +157,19 @@ public class LiftClass {
 
     public void manualPowerUpPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyLeft.setPower(1);
+        pulleyLeft.setPower(0.35);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyRight.setPower(1);
+        pulleyRight.setPower(0.35);
     }
     public void manualPowerDownPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyLeft.setPower(-0.5);
+        pulleyLeft.setPower(-0.35);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyRight.setPower(-0.5);
+        pulleyRight.setPower(-0.35);
     }
 
-    public void setWristPosition(double position) {
-        wrist.setPosition(position);
+    public void setWristPower(double power) {
+        wrist.setPosition(power);
     }
     public void setClawPosition(double position) {
         claw.setPosition(position);
@@ -194,6 +203,13 @@ public class LiftClass {
     }
     public double PulleyPowerR() {
         return pulleyRight.getPower();
+    }
+
+    public double LiftPowerL() {
+        return liftLeft.getPower();
+    }
+    public double LiftPowerR() {
+        return liftRight.getPower();
     }
 
     public PulleyPosition getCurrentPulleyPosition() {

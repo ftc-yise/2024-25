@@ -12,7 +12,8 @@ public class ledLights {
         ARM_READY,
         BLOCK_GRABBED,
         ENDGAME,
-
+        RED,
+        BLUE
     }
 
     public ledLights(HardwareMap hardwareMap) {

@@ -33,7 +33,7 @@
            .waitSeconds(Parameters.WAIT)
 
            //Go to calculated position
-           .back(18)
+           .back(20)
            .addDisplacementMarker(() -> {
             if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
              switch (state[0]) {
@@ -96,11 +96,11 @@
            //Go to calculated position
            .waitSeconds(2)
            .forward(4)
-           .lineTo(new Vector2d(-36, 48))
-           .lineTo(new Vector2d(-48, 0))
+           .lineTo(new Vector2d(-30, 48))
+           .lineTo(new Vector2d(-48, 18))
            .turn(Math.toRadians(180))
            .waitSeconds(1)
-           .strafeRight(12)
+           .strafeRight(2)
            .lineTo(new Vector2d(-52,60))
            .build();
 
@@ -483,9 +483,9 @@
     startX = -36;
     startY = -64.875;
     startHeading = Math.toRadians(90);
-   } else if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION && Parameters.allianceColor == Parameters.Color.BLUE) {
+   } else if (Parameters.autoConfig == Parameters.AutonomousConfig.BASKET && Parameters.allianceColor == Parameters.Color.BLUE) {
     // Blue Observation config
-    startX = 0;
+    startX = 36;
     startY = 64;
     startHeading = Math.toRadians(-90);
    } else if (Parameters.autoConfig == Parameters.AutonomousConfig.BASKET && Parameters.allianceColor == Parameters.Color.RED) {
@@ -495,7 +495,7 @@
     startHeading = Math.toRadians(180);
    } else {
     // Blue Net config
-    startX = 36;
+    startX = 0;
     startY =64;
     startHeading = Math.toRadians(0);
    }
@@ -525,23 +525,37 @@
     arm.setShoulderPosition(0.4);
    arm.setElbowPosition(0.125);
    arm.setLiftPosition(LiftClass.liftPosition.SUBMERSABLE);
-   sleep(500);
+   sleep(1000);
    arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSABLE);
-   sleep(600);
-   arm.setShoulderPosition(0);
-   arm.setElbowPosition(0.65);
-   sleep(700);
+   sleep(1000);
+   arm.setShoulderPosition(0.25);
+   arm.setElbowPosition(0);
+
+
+
+   sleep(1000);
+   arm.setShoulderPosition(0.675);
+   arm.setElbowPosition(0.2);
+
+   sleep(1000);
    arm.setClawPosition(1);
 
    sleep(500);
-   arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+   arm.setShoulderPosition(0.25);
+   arm.setElbowPosition(0);
+
    sleep(500);
+   arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+
+   sleep(1000);
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
 
+
+
+
+
+
    sleep(600);
-
-
-
 
    drive.followTrajectorySequence(BlueOG);
 

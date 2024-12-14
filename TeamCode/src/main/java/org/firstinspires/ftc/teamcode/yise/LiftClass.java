@@ -168,7 +168,7 @@ public class LiftClass {
         pulleyRight.setPower(-0.35);
     }
 
-    public void setWristPower(double power) {
+    public void setWristPosition(double power) {
         wrist.setPosition(power);
     }
     public void setClawPosition(double position) {

@@ -56,7 +56,7 @@ public class LiftClass {
         pulleyRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         setShoulderPosition(0);
-        setElbowPosition(0);
+        setElbowPosition(0.5);
         setWristPosition(0);
         setClawPosition(0);
     }
@@ -65,8 +65,8 @@ public class LiftClass {
         this.currentLiftPosition = targetLiftPosition; // Store the current position
         switch (targetLiftPosition) {
             case BASKET:
-                liftLeft.setTargetPosition(600);
-                liftRight.setTargetPosition(600);
+                liftLeft.setTargetPosition(495);
+                liftRight.setTargetPosition(495);
                 armMotorPower = 100;
                 break;
             case HOME:
@@ -96,12 +96,12 @@ public class LiftClass {
                 pulleyRight.setTargetPosition(0);
                 break;
             case BASKET:
-                pulleyLeft.setTargetPosition(4350);
-                pulleyRight.setTargetPosition(4350);
+                pulleyLeft.setTargetPosition(3900);
+                pulleyRight.setTargetPosition(3900);
                 break;
             case SUBMERSABLE:
-                pulleyLeft.setTargetPosition(1700);
-                pulleyRight.setTargetPosition(1700);
+                pulleyLeft.setTargetPosition(2150);
+                pulleyRight.setTargetPosition(2150);
                 break;
             case SEARCH:
                 pulleyLeft.setTargetPosition(2000);

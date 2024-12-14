@@ -53,7 +53,7 @@ public class Parameters extends LinearOpMode {
 
         while (!gamepad1.a && !gamepad1.b) {
             telemetry.addLine("Starting Position \n");
-            telemetry.addLine("X - Net \n O - Observation Zone");
+            telemetry.addLine("X - BASKET \n O - Observation Zone");
 
             telemetry.update();
 

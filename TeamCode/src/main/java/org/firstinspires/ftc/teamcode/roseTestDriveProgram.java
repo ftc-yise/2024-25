@@ -33,9 +33,9 @@ public class roseTestDriveProgram extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.dpad_down) {
-               leds.setLed(ledLights.ledStates.BLOCK_GRABBED);
+               //leds.setLed(ledLights.ledStates.BLOCK_GRABBED);
             } else if (gamepad1.dpad_up) {
-                leds.setLed(ledLights.ledStates.ARM_READY);
+                //leds.setLed(ledLights.ledStates.ARM_READY);
             } else if (gamepad1.dpad_left) {
                 leds.setLed(ledLights.ledStates.ENDGAME);
             } else if (gamepad1.dpad_right) {

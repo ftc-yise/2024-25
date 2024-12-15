@@ -6,10 +6,13 @@
  import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  import com.qualcomm.robotcore.util.ElapsedTime;
 
+ import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yiseArchived.LedLights;
  import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
  import org.firstinspires.ftc.teamcode.yise.LiftClass;
+
+ import org.firstinspires.ftc.teamcode.yise.ledLights;
 
  import org.firstinspires.ftc.teamcode.yise.Parameters;
 
@@ -474,6 +477,8 @@
    LiftClass arm = new LiftClass(hardwareMap);
    poseStorage.currentPose = drive.getPoseEstimate();
 
+   LedLights leds = new LedLights(hardwareMap);
+
    // Variables to store start position and heading
    double startX, startY, startHeading;
 
@@ -501,10 +506,18 @@
    }
 
 // Create the start pose using the calculated startX, startY, and startHeading
-   Pose2d startPose = new Pose2d(startX, startY, Math.toRadians(90));
+   Pose2d startPose = new Pose2d(0, 64, Math.toRadians(90));
    drive.setPoseEstimate(startPose);
 
+   leds.setLed(LedLights.ledStates.INIT);
+
    waitForStart();
+
+   if (Parameters.allianceColor == Parameters.Color.RED) {
+   leds.setLed(LedLights.ledStates.RED);
+   } else {
+    leds.setLed(LedLights.ledStates.BLUE);
+   }
 
    TrajectorySequence BlueOP = BlueObservationPlace(drive, startPose, arm);
    TrajectorySequence BlueOG = BlueObservationGrab(drive, BlueOP.end(), arm);
@@ -533,29 +546,32 @@
 
 
 
-   sleep(1000);
+   sleep(500);
    arm.setShoulderPosition(0.675);
-   arm.setElbowPosition(0.2);
+   arm.setElbowPosition(0);
 
-   sleep(1000);
+   sleep(500);
+   arm.setLiftPosition(LiftClass.liftPosition.HOME);
+
+
+   sleep(700);
    arm.setClawPosition(1);
 
    sleep(500);
    arm.setShoulderPosition(0.25);
    arm.setElbowPosition(0);
 
-   sleep(500);
-   arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+
 
    sleep(1000);
-   arm.setLiftPosition(LiftClass.liftPosition.HOME);
+   arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
 
 
 
 
 
 
-   sleep(600);
+   sleep(400);
 
    drive.followTrajectorySequence(BlueOG);
 

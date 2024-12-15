@@ -16,12 +16,13 @@ public class LiftClass {
     public enum liftPosition {
         HOME,
         SUBMERSABLE,
-        BASKET
+        BASKET,
+        HANG
     }
 
     public enum PulleyPosition {
         HOME,
-        SUBMERSABLE, BASKET, SEARCH
+        SUBMERSABLE, BASKET, SEARCH, HANG
     }
 
     public double armMotorPower;
@@ -79,6 +80,11 @@ public class LiftClass {
                 liftRight.setTargetPosition(285);
                 armMotorPower = 100;
                 break;
+            case HANG:
+                liftLeft.setTargetPosition(265);
+                liftRight.setTargetPosition(265);
+                armMotorPower = 100;
+                break;
 
         }
         // Run motors to position using defined power level
@@ -106,6 +112,11 @@ public class LiftClass {
             case SEARCH:
                 pulleyLeft.setTargetPosition(2000);
                 pulleyRight.setTargetPosition(2000);
+                break;
+
+            case HANG:
+                pulleyLeft.setTargetPosition(2900);
+                pulleyRight.setTargetPosition(2900);
                 break;
         }
         // Run motors to position using defined power level

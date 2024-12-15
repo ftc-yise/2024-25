@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yiseArchived.LedLights;
 import org.firstinspires.ftc.teamcode.yise.LiftClass;
+import org.firstinspires.ftc.teamcode.yise.Parameters;
 import org.firstinspires.ftc.teamcode.yise.RoadRunnerDriving;
+import org.firstinspires.ftc.teamcode.yise.ledLights;
 
 @TeleOp(name="Encoder Testing", group="Linear Opmode")
 public class Encoder extends LinearOpMode {
@@ -20,10 +25,15 @@ public class Encoder extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
+    public RevColorSensorV3 clawSensor;
+
     // Declare a state variable
     int state = -1;
 
     public Boolean RightTriggerPressed = false;
+
+    public Boolean color = false;
+
 
     public Boolean Hang = false;
 
@@ -50,6 +60,8 @@ public class Encoder extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "LeftBackDrive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "RightBackDrive");
 
+        clawSensor = hardwareMap.get(RevColorSensorV3.class, "ClawSensor");
+
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -57,15 +69,27 @@ public class Encoder extends LinearOpMode {
 
 
         RoadRunnerDriving drive = new RoadRunnerDriving(hardwareMap);
+        ledLights leds = new ledLights(hardwareMap);
+
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        leds.setLed(ledLights.ledStates.INIT);
+
         waitForStart();
         runtime.reset();
 
+
+
         while (opModeIsActive()) {
+
+            if (Parameters.allianceColor == Parameters.Color.RED && !color) {
+            leds.setLed(ledLights.ledStates.RED);
+            } else if (!color ) {
+                leds.setLed(ledLights.ledStates.BLUE);
+            }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double forward   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
@@ -125,47 +149,44 @@ public class Encoder extends LinearOpMode {
             }
 
             if (gamepad1.touchpad) {
-                switch (state) {
-                    case -1:  // Initialize the
-                        arm.setShoulderPosition(0.25);
-                        arm.setElbowPosition(0);
-                        state = 0;
-                        break;
-                    case 0:  // Initialize the
-                        if (!buttonPressed) {
-                            arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
-                            buttonPressed = true;
-                        }
-                        if (arm.getPulleyPositionL() <= 350) {
-                            state++;
-                        }
-                        break;
-                    case 1:
-                        arm.setLiftPosition(LiftClass.liftPosition.SUBMERSABLE);
-                        if (arm.getLiftPositionL() >= 300) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 2:
-                        arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-                        if (arm.getPulleyPositionR() >= 3000) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 3:
-                        arm.setShoulderPosition(1);
-                        arm.setElbowPosition(0.65);
-                        state = -1;
-                        Uptapped = false;
-
-                        Hang = true;
-
-                        break;
-                }
-            } else if (Hang && state == -1) {
-            arm.heroPowerPulley();
+                Hang = true;
             }
-
+                if (Hang) {
+                    switch (state) {
+                        case -1:  // Initialize the
+                            arm.setShoulderPosition(0.25);
+                            arm.setElbowPosition(0);
+                            state = 0;
+                            break;
+                        case 0:  // Initialize the
+                            arm.setPulleyPosition(LiftClass.PulleyPosition.HANG);
+                            if (arm.getPulleyPositionL() >= 2400) {
+                                state++;
+                            }
+                            break;
+                        case 1:
+                            arm.setLiftPosition(LiftClass.liftPosition.HANG);
+                            if (arm.getLiftPositionL() >= 150) { // Replace with your own position checking logic
+                                sleep(2000);
+                                state++;
+                            }
+                            break;
+                        case 2:
+                            arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            if (arm.getPulleyPositionR() <= 2300) { // Replace with your own position checking logic
+                                state++;
+                            }
+                            break;
+                        case 3:
+                            Hang = true;
+                            arm.setShoulderPosition(1);
+                            arm.setElbowPosition(0.65);
+                            state++;
+                            break;
+                        case 4:
+                            arm.heroPowerPulley();
+                    }
+                }
 
                 if (Uptapped) {
 
@@ -313,7 +334,7 @@ public class Encoder extends LinearOpMode {
                 } else if (gamepad2.options) {
                     arm.manualPowerDownPulley();
                 } else if (gamepad2.touchpad) {
-                    arm.manualPowerUpPulley();
+                    //arm.manualPowerUpPulley();
                 } else if (arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.BASKET || arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.SUBMERSABLE) {
                     arm.zeroPowerPulley();
                 }
@@ -346,7 +367,7 @@ public class Encoder extends LinearOpMode {
                     arm.setElbowPosition(0.2);
                 } else if (gamepad2.x) {
                     arm.setShoulderPosition(0.65);
-                    arm.setElbowPosition(0.55);
+                    arm.setElbowPosition(0.5);
                 }
 
                 if (gamepad1.right_bumper || gamepad2.right_bumper && !RightBumperPressed) {
@@ -364,7 +385,20 @@ public class Encoder extends LinearOpMode {
                     RightBumperPressed = false;
                 }
 
-                telemetry.addData("Left Lift Encoder Position", arm.getLiftPositionL());
+                if (clawSensor.green() > 650) {
+                    color = true;
+                    leds.setLed(ledLights.ledStates.GRAB_Y);
+                } else if (clawSensor.red() > 400) {
+                    color = true;
+                    leds.setLed(ledLights.ledStates.GRAB_R);
+                } else if (clawSensor.blue() > 400) {
+                    leds.setLed(ledLights.ledStates.GRAB_B);
+                    color = true;
+                } else {
+                    color = false;
+                }
+
+            telemetry.addData("Left Lift Encoder Position", arm.getLiftPositionL());
                 telemetry.addData("Right Lift Encoder Position", arm.getLiftPositionR());
 
                 telemetry.addData("Pulley Right", arm.getPulleyPositionR());
@@ -389,6 +423,12 @@ public class Encoder extends LinearOpMode {
                 telemetry.addData("wrist", arm.wrist.getPosition());
 
                 telemetry.addData("button pressed", buttonPressed);
+
+                telemetry.addLine();
+
+                telemetry.addData("colorR", clawSensor.red());
+                telemetry.addData("colorB", clawSensor.blue());
+                telemetry.addData("colorG", clawSensor.green());
 
                 telemetry.update();
             }

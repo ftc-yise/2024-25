@@ -9,11 +9,13 @@ public class ledLights {
 
     public enum ledStates {
         INIT,
-        ARM_READY,
-        BLOCK_GRABBED,
-        ENDGAME,
         RED,
-        BLUE
+        BLUE,
+        GRAB_Y,
+        GRAB_B,
+        GRAB_R,
+        ENDGAME,
+
     }
 
     public ledLights(HardwareMap hardwareMap) {
@@ -25,19 +27,31 @@ public class ledLights {
     public void setLed(ledStates state) {
         switch (state) {
             case ENDGAME:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_GRAY);
                 currentState = state;
                 break;
-            case ARM_READY:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_GREEN);
+            case GRAB_Y:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
                 currentState = state;
                 break;
-            case BLOCK_GRABBED:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+            case GRAB_B:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                currentState = state;
+                break;
+            case GRAB_R:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                 currentState = state;
                 break;
             case INIT:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
+                currentState = state;
+                break;
+            case RED:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
+                currentState = state;
+                break;
+            case BLUE:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
                 currentState = state;
                 break;
         }

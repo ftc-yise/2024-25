@@ -546,29 +546,32 @@
 
 
 
-   sleep(1000);
+   sleep(500);
    arm.setShoulderPosition(0.675);
-   arm.setElbowPosition(0.2);
+   arm.setElbowPosition(0);
 
-   sleep(1000);
+   sleep(500);
+   arm.setLiftPosition(LiftClass.liftPosition.HOME);
+
+
+   sleep(700);
    arm.setClawPosition(1);
 
    sleep(500);
    arm.setShoulderPosition(0.25);
    arm.setElbowPosition(0);
 
-   sleep(500);
-   arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+
 
    sleep(1000);
-   arm.setLiftPosition(LiftClass.liftPosition.HOME);
+   arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
 
 
 
 
 
 
-   sleep(600);
+   sleep(400);
 
    drive.followTrajectorySequence(BlueOG);
 

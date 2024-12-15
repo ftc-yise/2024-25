@@ -149,47 +149,44 @@ public class Encoder extends LinearOpMode {
             }
 
             if (gamepad1.touchpad) {
-                switch (state) {
-                    case -1:  // Initialize the
-                        arm.setShoulderPosition(0.25);
-                        arm.setElbowPosition(0);
-                        state = 0;
-                        break;
-                    case 0:  // Initialize the
-                        if (!buttonPressed) {
-                            arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
-                            buttonPressed = true;
-                        }
-                        if (arm.getPulleyPositionL() <= 350) {
-                            state++;
-                        }
-                        break;
-                    case 1:
-                        arm.setLiftPosition(LiftClass.liftPosition.SUBMERSABLE);
-                        if (arm.getLiftPositionL() >= 300) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 2:
-                        arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-                        if (arm.getPulleyPositionR() >= 3000) { // Replace with your own position checking logic
-                            state++;
-                        }
-                        break;
-                    case 3:
-                        arm.setShoulderPosition(1);
-                        arm.setElbowPosition(0.65);
-                        state = -1;
-                        Uptapped = false;
-
-                        Hang = true;
-
-                        break;
-                }
-            } else if (Hang && state == -1) {
-            arm.heroPowerPulley();
+                Hang = true;
             }
-
+                if (Hang) {
+                    switch (state) {
+                        case -1:  // Initialize the
+                            arm.setShoulderPosition(0.25);
+                            arm.setElbowPosition(0);
+                            state = 0;
+                            break;
+                        case 0:  // Initialize the
+                            arm.setPulleyPosition(LiftClass.PulleyPosition.HANG);
+                            if (arm.getPulleyPositionL() >= 2400) {
+                                state++;
+                            }
+                            break;
+                        case 1:
+                            arm.setLiftPosition(LiftClass.liftPosition.HANG);
+                            if (arm.getLiftPositionL() >= 150) { // Replace with your own position checking logic
+                                sleep(2000);
+                                state++;
+                            }
+                            break;
+                        case 2:
+                            arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            if (arm.getPulleyPositionR() <= 2300) { // Replace with your own position checking logic
+                                state++;
+                            }
+                            break;
+                        case 3:
+                            Hang = true;
+                            arm.setShoulderPosition(1);
+                            arm.setElbowPosition(0.65);
+                            state++;
+                            break;
+                        case 4:
+                            arm.heroPowerPulley();
+                    }
+                }
 
                 if (Uptapped) {
 
@@ -337,7 +334,7 @@ public class Encoder extends LinearOpMode {
                 } else if (gamepad2.options) {
                     arm.manualPowerDownPulley();
                 } else if (gamepad2.touchpad) {
-                    arm.manualPowerUpPulley();
+                    //arm.manualPowerUpPulley();
                 } else if (arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.BASKET || arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.SUBMERSABLE) {
                     arm.zeroPowerPulley();
                 }
@@ -370,7 +367,7 @@ public class Encoder extends LinearOpMode {
                     arm.setElbowPosition(0.2);
                 } else if (gamepad2.x) {
                     arm.setShoulderPosition(0.65);
-                    arm.setElbowPosition(0.55);
+                    arm.setElbowPosition(0.5);
                 }
 
                 if (gamepad1.right_bumper || gamepad2.right_bumper && !RightBumperPressed) {

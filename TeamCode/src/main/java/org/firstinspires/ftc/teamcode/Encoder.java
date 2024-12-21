@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -148,7 +149,7 @@ public class Encoder extends LinearOpMode {
                 Righttapped = true;
             }
 
-            if (gamepad1.touchpad) {
+            if (gamepad1.touchpad || gamepad1.ps|| gamepad1.start) {
                 Hang = true;
             }
                 if (Hang) {
@@ -173,17 +174,25 @@ public class Encoder extends LinearOpMode {
                             break;
                         case 2:
                             arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-                            if (arm.getPulleyPositionR() <= 2300) { // Replace with your own position checking logic
+                            if (arm.getPulleyPositionR() <= 150) { // Replace with your own position checking logic
                                 state++;
                             }
                             break;
                         case 3:
-                            Hang = true;
                             arm.setShoulderPosition(1);
                             arm.setElbowPosition(0.65);
                             state++;
                             break;
+
                         case 4:
+                            Hang = true;
+                            arm.setPulleyPosition(LiftClass.PulleyPosition.HANGEND);
+                            if (arm.getPulleyPositionR() >= 600) { // Replace with your own position checking logic
+                                sleep(2000);
+                                state++;
+                            }
+                            break;
+                        case 5:
                             arm.heroPowerPulley();
                     }
                 }
@@ -426,7 +435,9 @@ public class Encoder extends LinearOpMode {
 
                 telemetry.addLine();
 
-                telemetry.addData("colorR", clawSensor.red());
+            telemetry.addData("hang", Hang);
+
+            telemetry.addData("colorR", clawSensor.red());
                 telemetry.addData("colorB", clawSensor.blue());
                 telemetry.addData("colorG", clawSensor.green());
 

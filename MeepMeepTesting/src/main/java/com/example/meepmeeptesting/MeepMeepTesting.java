@@ -29,6 +29,7 @@ public class MeepMeepTesting {
                         .lineToLinearHeading(new Pose2d(40, 40, Math.toRadians(-90)))
                         .forward(30)
                         .strafeRight(17)
+                        .waitSeconds(4)
 
                         .build());
 

@@ -141,12 +141,12 @@ public class MeepMeepTesting {
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(BlueObservation1214)
-                .addEntity(RedObservation1214)
-                /*.addEntity(RedNet)
+               // .addEntity(BlueObservation1214)
+                //.addEntity(RedObservation1214)
+                .addEntity(RedNet)
                 .addEntity(blueNet)
                 .addEntity(redObservation)
-                .addEntity(blueObservation)*/
+                .addEntity(blueObservation)
                 .start();
     }
 }

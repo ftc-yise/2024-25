@@ -49,9 +49,9 @@ public class MeepMeepTesting {
                         .waitSeconds(6)
 
                         //pick up block 2
-                        .lineToLinearHeading(new Pose2d(-40, -40, Math.toRadians(90)))
+                        .lineToLinearHeading(new Pose2d(-40, -42, Math.toRadians(90)))
                         .forward(4)
-                        .strafeLeft(19)
+                        .strafeLeft(18)
                         .waitSeconds(2)
 
                         //place block 2
@@ -66,9 +66,7 @@ public class MeepMeepTesting {
                         .forward(16)
                         .waitSeconds(4)
 
-
                         .build());
-
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK)
                 .setDarkMode(true)

@@ -45,7 +45,7 @@ public class yellowAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         int coneNumber = 3;
-        coneNumber = tensor.readCone();
+        // coneNumber = tensor.readCone();
 
         if (coneNumber == 3){
             endLocation_X = -66;
@@ -80,24 +80,24 @@ public class yellowAuto extends LinearOpMode {
                 .strafeRight(-13)
                 .splineToConstantHeading(new Vector2d(-50, 14), Math.toRadians(90))
                 .addDisplacementMarker(20, () -> {
-                    arm.getTopCone();
+                    // arm.getTopCone();
                 })
                 .addDisplacementMarker(20, () -> {
-                    arm.openGrabber();
+                    // arm.openGrabber();
                 })
                 .turn(Math.toRadians(90))
                 .forward(10)
                 .addTemporalMarker(() -> {
-                    yiseDrive.autoCenterLoop(mecanumDrive.centerModes.CONE);
+                    // yiseDrive.autoCenterLoop(mecanumDrive.centerModes.CONE);
                 })
 
 
                 .addTemporalMarker(() -> {
-                    arm.closeGrabber();
+                    // arm.closeGrabber();
                 })
                 .waitSeconds(1.5)
                 .addTemporalMarker(() -> {
-                    arm.setPoleHeight(liftArm.Heights.HIGH);
+                    // arm.setPoleHeight(liftArm.Heights.HIGH);
                 })
                 .build();
 
@@ -106,7 +106,7 @@ public class yellowAuto extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-10, 14, 45))
                 .forward(2)
                 .addTemporalMarker(() -> {
-                    arm.openGrabber();
+                    // arm.openGrabber();
                 })
                 .waitSeconds(.6)
                 .back(4)
@@ -116,29 +116,29 @@ public class yellowAuto extends LinearOpMode {
                 .turn(Math.toRadians(130))
                 .lineToLinearHeading(new Pose2d(-52, 12, 0))
                 .addDisplacementMarker(20, () -> {
-                    arm.getTopCone();
-                    arm.downOneCone();
+                    // arm.getTopCone();
+                    // arm.downOneCone();
                 })
                 .addTemporalMarker(() -> {
-                    yiseDrive.autoCenterLoop(mecanumDrive.centerModes.CONE);
+                    // yiseDrive.autoCenterLoop(mecanumDrive.centerModes.CONE);
                 })
                 .waitSeconds(.2)
                 .addTemporalMarker(() ->{
-                    arm.closeGrabber();
+                    // arm.closeGrabber();
                 })
                 .waitSeconds(.2)
                 .addTemporalMarker(() ->{
-                    arm.setPoleHeight(liftArm.Heights.HIGH);
+                    // arm.setPoleHeight(liftArm.Heights.HIGH);
                 })
                 .build();
 
         TrajectorySequence endposition_4 = drive.trajectorySequenceBuilder(scorecone_2.end())
                 .lineToLinearHeading(new Pose2d( endLocation_X, endLocation_Y,  Math.toRadians(endHeading_Z)))
                 .addTemporalMarker(() ->{
-                    arm.closeGrabber();
+                    // arm.closeGrabber();
                 })
                 .addTemporalMarker(() ->{
-                    arm.returnToBottom();
+                    // arm.returnToBottom();
                 })
                 .turn(Math.toRadians(90))
                 .build();
@@ -147,15 +147,15 @@ public class yellowAuto extends LinearOpMode {
         // run my trajectories in order
 
         telemetry.addData("cone#", coneNumber);
-        telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
-        telemetry.addData("Distance S Right", yiseDrive.distanceSensorRight);
+        // telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
+        // telemetry.addData("Distance S Right", yiseDrive.distanceSensorRight);
         telemetry.update();
 
         // drive to cone stack with arm at cone 5 height
         drive.followTrajectorySequence(seq_1);
         drive.followTrajectorySequence(scorecone_2);
-        telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
-        telemetry.addData ("Distance S Right", yiseDrive.distanceSensorRight);
+        // telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
+        // telemetry.addData ("Distance S Right", yiseDrive.distanceSensorRight);
         telemetry.update();
         drive.followTrajectorySequence(endposition_4);
 

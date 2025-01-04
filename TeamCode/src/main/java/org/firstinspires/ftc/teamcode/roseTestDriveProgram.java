@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.yise.ledLights;
 
 
-@TeleOp(name="Competition drive", group="Linear Opmode")
+@TeleOp(name="RoseDrive", group="Linear Opmode")
 public class roseTestDriveProgram extends LinearOpMode {
 
 

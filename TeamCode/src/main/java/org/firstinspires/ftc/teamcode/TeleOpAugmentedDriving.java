@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveCancelable;
 
-import org.firstinspires.ftc.teamcode.yise.PoseStorage;
+import org.firstinspires.ftc.teamcode.yise.poseStorage;
 
 import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
 
@@ -48,8 +48,8 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
 
         // Retrieve our pose from the PoseStorage.currentPose static field
         // See AutoTransferPose.java for further details
-        PoseStorage.currentPose = new Pose2d(-32, -64, Math.toRadians(90));
-        drive.setPoseEstimate(PoseStorage.currentPose);
+        poseStorage.currentPose = new Pose2d(-32, -64, Math.toRadians(90));
+        drive.setPoseEstimate(poseStorage.currentPose);
 
         vision.setCameraPipeline(OpenCVVision.Color.RED);
 

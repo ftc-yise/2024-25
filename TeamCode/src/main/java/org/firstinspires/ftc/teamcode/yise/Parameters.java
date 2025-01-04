@@ -1,28 +1,20 @@
-package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.yiseArchived;
+package org.firstinspires.ftc.teamcode.yise;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="Archived Game Values (RUN THIS EVERY MATCH)", group="Linear OpMode")
-@Disabled
+@TeleOp(name="Game Values (RUN THIS EVERY MATCH)", group="Necessity")
 public class Parameters extends LinearOpMode {
 
-    // Declare OpMode members for each of the 4 motors.
-    private ElapsedTime runtime = new ElapsedTime();
-
-    //
     public enum AutonomousConfig {
-        EXTERIOR,
-        INTERIOR
+        BASKET,
+        OBSERVATION
     }
 
     public enum EndingPosition {
-        LEFT,
-        CENTER,
-        RIGHT
+        ACCENT,
+        OBSERVATION
     }
 
     public enum Color {
@@ -61,14 +53,14 @@ public class Parameters extends LinearOpMode {
 
         while (!gamepad1.a && !gamepad1.b) {
             telemetry.addLine("Starting Position \n");
-            telemetry.addLine("X - Exterior \n O - Interior");
+            telemetry.addLine("X - BASKET \n O - Observation Zone");
 
             telemetry.update();
 
             if (gamepad1.a) {
-                autoConfig = AutonomousConfig.EXTERIOR;
+                    autoConfig = AutonomousConfig.BASKET;
             } else if (gamepad1.b) {
-                autoConfig = AutonomousConfig.INTERIOR;
+                autoConfig = AutonomousConfig.OBSERVATION;
             }
         }
 
@@ -78,16 +70,14 @@ public class Parameters extends LinearOpMode {
 
         while (!gamepad1.a && !gamepad1.b && !gamepad1.x) {
             telemetry.addLine("Park Position \n");
-            telemetry.addLine("▢ - Left \n X - Center \n O - Right");
+            telemetry.addLine("▢ - Accent Level 1 \n X - Observation Zone");
 
             telemetry.update();
 
             if (gamepad1.x) {
-                endingPosition = EndingPosition.LEFT;
+                endingPosition = EndingPosition.ACCENT;
             } else if (gamepad1.a) {
-                endingPosition = EndingPosition.CENTER;
-            } else if (gamepad1.b) {
-                endingPosition = EndingPosition.RIGHT;
+                endingPosition = EndingPosition.OBSERVATION;
             }
         }
 

@@ -12,16 +12,17 @@ public class LiftClass {
 
     // Arm Variables
     public DcMotor liftLeft, liftRight, pulleyLeft, pulleyRight;
-    public Servo wrist, claw, shoulderL, ShoulderR, elbow;
+    public Servo claw, wrist, shoulderL, ShoulderR, elbow;
     public enum liftPosition {
         HOME,
         SUBMERSABLE,
-        BASKET
+        BASKET,
+        HANG
     }
 
     public enum PulleyPosition {
         HOME,
-        SUBMERSABLE, BASKET, SEARCH
+        SUBMERSABLE, BASKET, SEARCH, HANG, HANGEND
     }
 
     public double armMotorPower;
@@ -56,17 +57,17 @@ public class LiftClass {
         pulleyRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         setShoulderPosition(0);
-        setElbowPosition(0);
+        setElbowPosition(0.5);
         setWristPosition(0);
-        setClawPosition(1);
+        setClawPosition(0);
     }
 
     public void setLiftPosition(liftPosition targetLiftPosition) {
         this.currentLiftPosition = targetLiftPosition; // Store the current position
         switch (targetLiftPosition) {
             case BASKET:
-                liftLeft.setTargetPosition(600);
-                liftRight.setTargetPosition(600);
+                liftLeft.setTargetPosition(495);
+                liftRight.setTargetPosition(495);
                 armMotorPower = 100;
                 break;
             case HOME:
@@ -77,6 +78,11 @@ public class LiftClass {
             case SUBMERSABLE:
                 liftLeft.setTargetPosition(285);
                 liftRight.setTargetPosition(285);
+                armMotorPower = 100;
+                break;
+            case HANG:
+                liftLeft.setTargetPosition(265);
+                liftRight.setTargetPosition(265);
                 armMotorPower = 100;
                 break;
 
@@ -96,16 +102,26 @@ public class LiftClass {
                 pulleyRight.setTargetPosition(0);
                 break;
             case BASKET:
-                pulleyLeft.setTargetPosition(4350);
-                pulleyRight.setTargetPosition(4350);
+                pulleyLeft.setTargetPosition(3900);
+                pulleyRight.setTargetPosition(3900);
                 break;
             case SUBMERSABLE:
-                pulleyLeft.setTargetPosition(1700);
-                pulleyRight.setTargetPosition(1700);
+                pulleyLeft.setTargetPosition(2150);
+                pulleyRight.setTargetPosition(2150);
                 break;
             case SEARCH:
                 pulleyLeft.setTargetPosition(2000);
                 pulleyRight.setTargetPosition(2000);
+                break;
+
+            case HANG:
+                pulleyLeft.setTargetPosition(2900);
+                pulleyRight.setTargetPosition(2900);
+                break;
+
+            case HANGEND:
+                pulleyLeft.setTargetPosition(800);
+                pulleyRight.setTargetPosition(800);
                 break;
         }
         // Run motors to position using defined power level
@@ -127,9 +143,18 @@ public class LiftClass {
     public void zeroPowerPulley() {
         if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
             pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyLeft.setPower(0.05);
+            pulleyLeft.setPower(0.06);
             pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyRight.setPower(0.05);
+            pulleyRight.setPower(0.06);
+        }
+    }
+
+    public void heroPowerPulley() {
+        if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
+            pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyLeft.setPower(-0.35);
+            pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyRight.setPower(-0.35);
         }
     }
 
@@ -148,19 +173,19 @@ public class LiftClass {
 
     public void manualPowerUpPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyLeft.setPower(1);
+        pulleyLeft.setPower(0.35);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyRight.setPower(1);
+        pulleyRight.setPower(0.35);
     }
     public void manualPowerDownPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyLeft.setPower(-0.5);
+        pulleyLeft.setPower(-0.35);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyRight.setPower(-0.5);
+        pulleyRight.setPower(-0.35);
     }
 
-    public void setWristPosition(double position) {
-        wrist.setPosition(position);
+    public void setWristPosition(double power) {
+        wrist.setPosition(power);
     }
     public void setClawPosition(double position) {
         claw.setPosition(position);
@@ -194,6 +219,13 @@ public class LiftClass {
     }
     public double PulleyPowerR() {
         return pulleyRight.getPower();
+    }
+
+    public double LiftPowerL() {
+        return liftLeft.getPower();
+    }
+    public double LiftPowerR() {
+        return liftRight.getPower();
     }
 
     public PulleyPosition getCurrentPulleyPosition() {

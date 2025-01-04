@@ -1,6 +1,7 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import org.rowlandhall.meepmeep.MeepMeep;
 import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
@@ -79,7 +80,6 @@ public class MeepMeepTesting {
                         .turn(Math.toRadians(-90))
                         .forward(16)
                         .waitSeconds(2)
-
                         .build());
 
 

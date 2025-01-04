@@ -12,8 +12,6 @@
 
  import org.firstinspires.ftc.teamcode.yise.LiftClass;
 
- import org.firstinspires.ftc.teamcode.yise.ledLights;
-
  import org.firstinspires.ftc.teamcode.yise.Parameters;
 
  import org.firstinspires.ftc.teamcode.yise.poseStorage;
@@ -219,13 +217,13 @@
               }
               break;
              case 1:
-              arm.setLiftPosition(LiftClass.liftPosition.SUBMERSABLE);
+              arm.setLiftPosition(LiftClass.liftPosition.SUBMERSIBLE);
               if (arm.getLiftPositionL() >= 300) { // Replace with your own position checking logic
                state[0]++;
               }
               break;
              case 2:
-              arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSABLE);
+              arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSIBLE);
               if (arm.getPulleyPositionR() >= 3000) { // Replace with your own position checking logic
                state[0]++;
               }
@@ -301,13 +299,13 @@
               }
               break;
              case 1:
-              arm.setLiftPosition(LiftClass.liftPosition.SUBMERSABLE);
+              arm.setLiftPosition(LiftClass.liftPosition.SUBMERSIBLE);
               if (arm.getLiftPositionL() >= 300) { // Replace with your own position checking logic
                state[0]++;
               }
               break;
              case 2:
-              arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSABLE);
+              arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSIBLE);
               if (arm.getPulleyPositionR() >= 3000) { // Replace with your own position checking logic
                state[0]++;
               }
@@ -537,9 +535,9 @@
    drive.followTrajectorySequence(BlueOP);
     arm.setShoulderPosition(0.4);
    arm.setElbowPosition(0.125);
-   arm.setLiftPosition(LiftClass.liftPosition.SUBMERSABLE);
+   arm.setLiftPosition(LiftClass.liftPosition.SUBMERSIBLE);
    sleep(1000);
-   arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSABLE);
+   arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSIBLE);
    sleep(1000);
    arm.setShoulderPosition(0.25);
    arm.setElbowPosition(0);

@@ -41,9 +41,9 @@ public class RoadRunnerDriving {
 
         //Set drive power based on gamepad inputs multiplied by the speed variable
         if (!gamepad.dpad_down && !gamepad.dpad_up && !gamepad.dpad_left && !gamepad.dpad_right) {
-            x = gamepad.left_stick_y * speedMultiplier;
-            y = gamepad.left_stick_x * speedMultiplier;
-            heading = gamepad.right_stick_x * speedMultiplier;
+            x = -gamepad.left_stick_y * speedMultiplier;
+            y = -gamepad.left_stick_x * speedMultiplier;
+            heading = -gamepad.right_stick_x * speedMultiplier;
             drive.setWeightedDrivePower(new Pose2d(x, y, heading));
         }
 

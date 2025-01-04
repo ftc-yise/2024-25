@@ -14,7 +14,7 @@ public class ledLights {
         GRAB_Y,
         GRAB_B,
         GRAB_R,
-        ENDGAME,
+        ENDGAME, CLAW_OPEN,
 
     }
 
@@ -52,6 +52,10 @@ public class ledLights {
                 break;
             case BLUE:
                 lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
+                currentState = state;
+                break;
+            case CLAW_OPEN:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
                 currentState = state;
                 break;
         }

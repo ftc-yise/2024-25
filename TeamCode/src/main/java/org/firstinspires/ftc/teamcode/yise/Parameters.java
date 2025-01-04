@@ -12,6 +12,11 @@ public class Parameters extends LinearOpMode {
         OBSERVATION
     }
 
+    public enum Vision {
+        RED,
+        BLUE, YELLOW, TEST
+    }
+
     public enum EndingPosition {
         ACCENT,
         OBSERVATION
@@ -22,9 +27,16 @@ public class Parameters extends LinearOpMode {
         BLUE
     }
 
+    public enum AttachmentMethod {
+        INTERNAL,
+        OVERTHETOP
+    }
+
     public static AutonomousConfig autoConfig;
     public static EndingPosition endingPosition;
     public static Color allianceColor;
+    public static AttachmentMethod attachment;
+    public static Vision vision;
 
     public static double WAIT = 0;
     public boolean xReleased;
@@ -42,6 +54,46 @@ public class Parameters extends LinearOpMode {
                 allianceColor = Color.BLUE;
             } else if (gamepad1.b) {
                 allianceColor = Color.RED;
+            }
+        }
+
+
+        while (gamepad1.a || gamepad1.b) {
+            //WAIT until released
+        }
+
+        while (!gamepad1.a && !gamepad1.b && !gamepad1.y && !gamepad1.x) {
+            telemetry.addLine("Vision Color \n");
+            telemetry.addLine("X - Blue \n O - Red \n Triangle - Yellow \n Square - PlainView");
+
+            telemetry.update();
+
+            if (gamepad1.a) {
+                vision = Vision.BLUE;
+            } else if (gamepad1.b) {
+                vision = Vision.RED;
+            } else if (gamepad1.y) {
+                vision= Vision.YELLOW;
+            } else {
+                vision = Vision.TEST;
+            }
+        }
+
+
+        while (gamepad1.a || gamepad1.b) {
+            //WAIT until released
+        }
+
+        while (!gamepad1.a && !gamepad1.b) {
+            telemetry.addLine("attachment Method \n");
+            telemetry.addLine("X - Over the top \n O - INTERNAL");
+
+            telemetry.update();
+
+            if (gamepad1.a) {
+                attachment = AttachmentMethod.OVERTHETOP;
+            } else if (gamepad1.b) {
+                attachment = AttachmentMethod.INTERNAL;
             }
         }
 

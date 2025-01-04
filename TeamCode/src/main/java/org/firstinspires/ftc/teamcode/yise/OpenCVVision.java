@@ -65,15 +65,15 @@ public class OpenCVVision {
         FtcDashboard.getInstance().startCameraStream(webcam, 25);
 
         // Set the pipeline
-        webcam.setPipeline(pipelineY);
-        currentColor = Color.YELLOW;
+        webcam.setPipeline(pipelineB);
+        currentColor = Color.BLUE;
 
         // Open the camera device asynchronously
         webcam.setMillisecondsPermissionTimeout(2000); // Timeout for obtaining permission is configurable. Set before opening.
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -128,13 +128,13 @@ public class OpenCVVision {
             Mat hsv = new Mat();
             Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
 
-            // Define yellow color range in HSV
-            Scalar lowerYellow = new Scalar(20, 40, 40); // Adjust these values as needed
-            Scalar upperYellow = new Scalar(120, 230, 255);
+            // Define red color range in HSV
+            Scalar lowerRED = new Scalar(359, 100, 45);    // Allow for some variation
+            Scalar upperRED = new Scalar(2.7, 78, 100);    // Capture the bright reds
 
             // Threshold the HSV image to get only yellow colors
             Mat yellowMask = new Mat();
-            Core.inRange(hsv, lowerYellow, upperYellow, yellowMask);
+            Core.inRange(hsv, lowerRED, upperRED, yellowMask);
 
             // Find contours
             contoursList.clear();
@@ -281,8 +281,8 @@ public class OpenCVVision {
             Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
 
             // Define the range for the color blue in HSV
-            Scalar lowerBound = new Scalar(50, 80, 150); // Lower bound of the blue color range
-            Scalar upperBound = new Scalar(140, 255, 255); // Upper bound of the blue color range
+            Scalar lowerBound = new Scalar(220, 74, 14);   // H:234/2, S:47%, V:35% with lower tolerance
+            Scalar upperBound = new Scalar(234, 58, 72);  // Upper bounds with tolerance
 
             // Threshold the HSV image to get only the blue color
             Mat blueMask = new Mat();
@@ -441,11 +441,11 @@ public class OpenCVVision {
 
             // Threshold Cr channel to detect yellow
             Mat crThreshold = new Mat();
-            Imgproc.threshold(crChannel, crThreshold, 175, 255, Imgproc.THRESH_BINARY); // Adjust the lower bound as needed
+            Imgproc.threshold(crChannel, crThreshold, 145, 255, Imgproc.THRESH_BINARY); // Adjust the lower bound as needed
 
             // Threshold Y channel to ensure proper brightness
             Mat yThreshold = new Mat();
-            Imgproc.threshold(yChannel, yThreshold, 100, 255, Imgproc.THRESH_BINARY); // Adjust the lower bound as needed
+            Imgproc.threshold(yChannel, yThreshold, 180, 255, Imgproc.THRESH_BINARY); // Adjust the lower bound as needed
 
             // Combine the Cr and Y channel thresholds
             Mat combinedThreshold = new Mat();

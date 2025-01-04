@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.yise.ledLights;
 // import org.firstinspires.ftc.teamcode.yise.Parameters;
 // import org.firstinspires.ftc.teamcode.yise.poseStorage;
 
-@Autonomous(name = "yellowAuto", group = "Linear Opmode")
+@Autonomous(name = "autoRedPark", group = "Linear Opmode")
 
 public class autoRedPark extends LinearOpMode {
     public float endLocation_X = 0;
@@ -48,18 +48,12 @@ public class autoRedPark extends LinearOpMode {
         // ------------------------------------------------------------------------------------
 
         // Start by defining our start position
-        Pose2d startPose = new Pose2d(-23, -70, 0);
+        Pose2d startPose = new Pose2d(-23, -60, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence red_Side_Park = drive.trajectorySequenceBuilder(startPose)
-                .strafeRight(30)
-                .turn(Math.toRadians(-90))
-                .strafeLeft(17)
-                .forward(30)
-                .turn(Math.toRadians(-90))
-                .forward(16)
-                .waitSeconds(2)
-
+                .lineToLinearHeading(new Pose2d(-42, 12, Math.toRadians(0)))
+                .forward(19)
                 .build();
 
         // run my trajectories in order

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.yise.ledLights;
 // import org.firstinspires.ftc.teamcode.yise.Parameters;
 // import org.firstinspires.ftc.teamcode.yise.poseStorage;
 
-@Autonomous(name = "yellowAuto", group = "Linear Opmode")
+@Autonomous(name = "autoBluePark", group = "Linear Opmode")
 
 public class autoBluePark extends LinearOpMode {
     public float endLocation_X = 0;
@@ -48,18 +49,12 @@ public class autoBluePark extends LinearOpMode {
         // ------------------------------------------------------------------------------------
 
         // Start by defining our start position
-        Pose2d startPose = new Pose2d(23, 70, 0);
+        Pose2d startPose = new Pose2d(23, 60, Math.toRadians(270));
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence blue_Side_Park = drive.trajectorySequenceBuilder(startPose)
-                .strafeRight(-30)
-                .turn(Math.toRadians(-90))
-                .strafeLeft(-17)
-                .forward(-30)
-                .turn(Math.toRadians(90))
-                .forward(16)
-                .waitSeconds(2)
-
+                .lineToLinearHeading(new Pose2d(42, -12, Math.toRadians(180)))
+                .forward(20)
                 .build();
 
         // run my trajectories in order

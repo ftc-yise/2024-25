@@ -15,18 +15,19 @@ public class LiftClass {
 
     //define if the dpad is currently pressed ensuring we don't run through the scoring switch
     // functions repeatedly
-    public static boolean buttonPressed;
+    public boolean buttonPressed = false;
 
     // determining if a dpad has been hit so we don't run throw loops repeatedly and we dont run
     // through two loops at once
-    public static Boolean dpadUptapped = false;
-    public static Boolean dpadDowntapped = false;
-    public static Boolean dpadLefttapped = false;
-    public static Boolean dpadRighttapped = false;
+    public boolean dpadUptapped = false;
+    public boolean dpadDowntapped = false;
+    public boolean dpadLefttapped = false;
+    public boolean dpadRighttapped = false;
 
     //creating a boolean for the hang so we can lock the hang into place
-    public static Boolean hang = false;
-    public static Boolean pulleyHold = false;
+    public boolean hang = false;
+    public boolean pulleyHold = false;
+    public boolean submersibleScoringPosition = false;
 
     //storage to view what the function enum is currently set too
     private PulleyPosition currentPulleyPosition;
@@ -63,6 +64,7 @@ public class LiftClass {
     // define enum for different Arm positions
     public enum armPosition {
         HOME,
+        AUTOPARK,
         SUBMERSIBLESTART,
         SUBMERSIBLEEND,
         BASKET,
@@ -287,6 +289,7 @@ public class LiftClass {
                         setShoulderPosition(0.25);
                         setElbowPosition(0);
                         step = -1;
+                        submersibleScoringPosition = false;
                         dpadDowntapped = false;
                         break;
                 }
@@ -331,6 +334,7 @@ public class LiftClass {
                             break;
                         case 4:
                             step = -1;
+                            submersibleScoringPosition = true;
                             dpadRighttapped = false;
                             break;
                     }
@@ -364,6 +368,7 @@ public class LiftClass {
                                 setShoulderPosition(0.5);
                                 setElbowPosition(0.2);
                                 step = -1;
+                                submersibleScoringPosition = true;
                                 dpadRighttapped = false;
                                 break;
                         }
@@ -394,6 +399,7 @@ public class LiftClass {
                             setWristPosition(0);
                             setLiftPosition(LiftClass.liftPosition.HOME);
                             step = -1;
+                            submersibleScoringPosition = false;
                             dpadRighttapped = false;
                             break;
                     }
@@ -413,6 +419,7 @@ public class LiftClass {
                         case 1:
                             setLiftPosition(LiftClass.liftPosition.HOME);
                             step = -1;
+                            submersibleScoringPosition = false;
                             dpadRighttapped = false;
                             break;
                     }
@@ -452,6 +459,7 @@ public class LiftClass {
                         setShoulderPosition(1);
                         setElbowPosition(0.65);
                         step = -1;
+                        submersibleScoringPosition = false;
                         dpadUptapped = false;
                         break;
                 }
@@ -490,6 +498,40 @@ public class LiftClass {
                         setShoulderPosition(0.4);
                         setElbowPosition(0);
                         step = -1;
+                        submersibleScoringPosition = false;
+                        dpadLefttapped = false;
+                        break;
+                }
+                break;
+
+            //case to move into parking position for level one hang in auto
+            case AUTOPARK:
+                switch (step) {
+                    case -1:  // Initialize the
+                        setShoulderPosition(1);
+                        setElbowPosition(0.5);
+                        step = 0;
+                        break;
+                    case 0:  // Initialize the
+                        if (!buttonPressed) {
+                            setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            buttonPressed = true;
+                        }
+                        if (getPulleyPositionL() <= 350) {
+                            step++;
+                        }
+                        break;
+                    case 1:
+                        setLiftPosition(liftPosition.SUBMERSIBLE);
+                        if (getLiftPositionL() >= 200) { // Replace with your own position checking logic
+                            step++;
+                        }
+                        break;
+                    case 2:
+                        setShoulderPosition(1);
+                        setElbowPosition(0.5);
+                        step = -1;
+                        submersibleScoringPosition = false;
                         dpadLefttapped = false;
                         break;
                 }
@@ -587,13 +629,17 @@ public class LiftClass {
         intake.setPower(power);
     }
 
-    //writer/setter statements for the seven arm movement booleans
+    //writer/setter statements for the eight arm movement booleans
     public void setHangStatus(boolean status) {
         hang = status;
     }
 
     public void setPulleyHoldStatus(boolean status){
         pulleyHold = status;
+    }
+
+    public void setSubmersibleScoringPositionStatus(boolean status){
+        submersibleScoringPosition = status;
     }
 
     public void setDpadUpTappedStatus(boolean status) {
@@ -659,13 +705,17 @@ public class LiftClass {
         return liftRight.getPower();
     }
 
-    // getter statements for the 7 boolean switch program statements
+    // getter statements for the 8 boolean switch program statements
     public boolean getHangStatus() {
         return hang;
     }
 
     public boolean getPulleyHoldStatus(){
         return pulleyHold;
+    }
+
+    public boolean getSubmersibleScoringPosition(){
+        return submersibleScoringPosition;
     }
 
     public boolean getDpadUpTapped() {

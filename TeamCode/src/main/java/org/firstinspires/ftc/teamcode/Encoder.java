@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.yise.LiftClass;
@@ -145,22 +146,21 @@ public class Encoder extends LinearOpMode {
                 arm.setArmPosition(LiftClass.armPosition.BASKET);
 
             } else if (arm.getDpadDownTapped()) {
-                if (arm.getCurrentArmMovement() == LiftClass.armPosition.SUBMERSIBLESTART && !arm.getButtonPressed()) {
+                if (arm.getSubmersibleScoringPosition()) {
                     arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLEEND);
 
-                } else if (!arm.getButtonPressed()){
+                } else{
                     arm.setArmPosition(LiftClass.armPosition.HOME);
-
                 }
+
             } else if (arm.getDpadLeftTapped()) {
                 arm.setArmPosition(LiftClass.armPosition.SEARCH);
 
             } else if (arm.getDpadRightTapped()) {
-                if (arm.getCurrentArmMovement() == LiftClass.armPosition.SUBMERSIBLESTART && !arm.getButtonPressed()) {
+                if (arm.getSubmersibleScoringPosition()) {
                     arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLEEND);
-                } else if (!arm.getButtonPressed()) {
+                } else {
                     arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLESTART);
-
                 }
 
             } else if (gamepad2.options) {
@@ -285,14 +285,13 @@ public class Encoder extends LinearOpMode {
                 color = false;
             }
 
-            telemetry.addData("Left Lift Encoder Position", arm.getLiftPositionL());
-            telemetry.addData("Right Lift Encoder Position", arm.getLiftPositionR());
-
             telemetry.addData("Pulley Right", arm.getPulleyPositionR());
             telemetry.addData("Pulley Left", arm.getPulleyPositionL());
 
-            telemetry.addLine();
+            telemetry.addData("Left Lift Encoder Position", arm.getLiftPositionL());
+            telemetry.addData("Right Lift Encoder Position", arm.getLiftPositionR());
 
+            telemetry.addLine();
             telemetry.addData("Pulley PowerL", arm.PulleyPowerL());
             telemetry.addData("Pulley PowerR", arm.PulleyPowerR());
 
@@ -302,28 +301,32 @@ public class Encoder extends LinearOpMode {
             telemetry.addLine();
             telemetry.addData("pullyPose", arm.getCurrentPulleyPosition());
             telemetry.addData("liftPose", arm.getCurrentLiftPosition());
-            telemetry.addLine();
 
+            telemetry.addLine();
             telemetry.addData("shoulder", arm.ShoulderR.getPosition());
             telemetry.addData("elbow", arm.elbow.getPosition());
             telemetry.addData("claw", arm.claw.getPosition());
             telemetry.addData("wrist", arm.wrist.getPosition());
 
-            telemetry.addData("button pressed", arm.getButtonPressed());
-
             telemetry.addLine();
-
-            telemetry.addData("hang", arm.getHangStatus());
-
             telemetry.addData("colorR", clawSensor.red());
             telemetry.addData("colorB", clawSensor.blue());
             telemetry.addData("colorG", clawSensor.green());
+
             telemetry.addLine();
             telemetry.addData("pulleyhold", arm.getPulleyHoldStatus());
             telemetry.addData("taregtpose", arm.pulleyLeft.getTargetPosition());
+            telemetry.addData("hang", arm.getHangStatus());
+            telemetry.addData("button pressed", arm.getButtonPressed());
 
             telemetry.addLine();
             telemetry.addData("armmovement", arm.getCurrentArmMovement());
+
+            telemetry.addLine();
+            telemetry.addData("dpad right status", arm.getDpadRightTapped());
+            telemetry.addData("dpad left status", arm.getDpadLeftTapped());
+            telemetry.addData("dpad up status", arm.getDpadUpTapped());
+            telemetry.addData("dpad down status", arm.getDpadDownTapped());
 
             telemetry.update();
         }

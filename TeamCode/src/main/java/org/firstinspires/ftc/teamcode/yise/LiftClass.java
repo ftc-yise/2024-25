@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.yise;
 
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -512,24 +513,15 @@ public class LiftClass {
                         setElbowPosition(0.5);
                         step = 0;
                         break;
-                    case 0:  // Initialize the
-                        if (!buttonPressed) {
-                            setPulleyPosition(LiftClass.PulleyPosition.HOME);
-                            buttonPressed = true;
-                        }
-                        if (getPulleyPositionL() <= 350) {
-                            step++;
-                        }
-                        break;
-                    case 1:
+                    case 0:
+                        manualPowerUpLift();
                         setLiftPosition(liftPosition.SUBMERSIBLE);
-                        if (getLiftPositionL() >= 200) { // Replace with your own position checking logic
                             step++;
-                        }
                         break;
                     case 2:
-                        setShoulderPosition(1);
+                        setShoulderPosition(0.25);
                         setElbowPosition(0.5);
+                        sleep(1000);
                         step = -1;
                         submersibleScoringPosition = false;
                         dpadLefttapped = false;
@@ -571,9 +563,9 @@ public class LiftClass {
     // setting power to both lift and pulley to maneuver them without the use of motor encoders
     public void manualPowerUpLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftLeft.setPower(0.35);
+        liftLeft.setPower(0.5);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftRight.setPower(0.35);
+        liftRight.setPower(0.5);
     }
     public void manualPowerDownLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -614,10 +606,18 @@ public class LiftClass {
     public void setWristPosition(double power) {
         wrist.setPosition(power);
     }
+    public void CloseClaw() {
+        claw.setPosition(0);
+    }
+    public void OpenClaw() {
+        claw.setPosition(1);
+    }
+
     public void setClawPosition(double position) {
         claw.setPosition(position);
     }
-    public void setShoulderPosition(double position) {
+
+        public void setShoulderPosition(double position) {
         shoulderL.setPosition(position);
         ShoulderR.setPosition(position);
     }

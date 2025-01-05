@@ -78,6 +78,120 @@ public class yellowAutoRedBucket extends LinearOpMode {
         // telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
         // telemetry.addData("Distance S Right", yiseDrive.distanceSensorRight);
         telemetry.update();
+        drive.followTrajectorySequence(place_Block_1);
+
+        arm.setElbowPosition(0);
+        arm.setShoulderPosition(0.25);
+
+        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
+
+        sleep(250);
+
+        arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
+
+        sleep(2300);
+
+        arm.setElbowPosition(0.65);
+        arm.setShoulderPosition(1);
+        sleep(400);
+
+        arm.setClawPosition(1);
+
+        sleep(500);
+
+        arm.setElbowPosition(0);
+        arm.setShoulderPosition(0.25);
+        arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+
+        sleep(1500);
+        arm.setLiftPosition(LiftClass.liftPosition.HOME);
+        sleep(250);
+
+        drive.followTrajectorySequence(pick_Up_Block_2);
+
+        arm.setShoulderPosition(0.6);
+        arm.setElbowPosition(0.02);
+        sleep(250);
+        arm.CloseClaw();
+
+        //drive.followTrajectorySequence(place_Block_2);
+
+       /* arm.setElbowPosition(0);
+        arm.setShoulderPosition(0.25);
+
+        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
+
+        sleep(250);
+
+        arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
+
+        sleep(2300);
+
+        arm.setElbowPosition(0.65);
+        arm.setShoulderPosition(1);
+        sleep(400);
+
+        arm.setClawPosition(1);
+
+        sleep(500);
+
+        arm.setElbowPosition(0);
+        arm.setShoulderPosition(0.25);
+        arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+
+        sleep(1500);
+        arm.setLiftPosition(LiftClass.liftPosition.HOME);
+        sleep(250); */
+
+        /* drive.followTrajectorySequence(pick_Up_Block_3);
+        arm.setShoulderPosition(0.6);
+        arm.setElbowPosition(0.02);
+        sleep(250);
+        arm.CloseClaw(); */
+
+        /*drive.followTrajectorySequence(place_Block_3);
+        arm.setElbowPosition(0);
+        arm.setShoulderPosition(0.25);
+
+        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
+
+        sleep(250);
+
+        arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
+
+        sleep(2300);
+
+        arm.setElbowPosition(0.65);
+        arm.setShoulderPosition(1);
+        sleep(400);
+
+        arm.setClawPosition(1);
+
+        sleep(500);
+
+        arm.setElbowPosition(0);
+        arm.setShoulderPosition(0.25);
+        arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+
+        sleep(1500);
+        arm.setLiftPosition(LiftClass.liftPosition.HOME);
+        sleep(250); */
+
+        /*drive.followTrajectorySequence(park_At_Submersible_And_Hang);
+         arm.setElbowPosition(0);
+        arm.setShoulderPosition(1);
+        sleep(300);
+        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
+        sleep(1500);
+        arm.setArmPosition(LiftClass.armPosition.AUTOPARK);
+        sleep(500);
+         */
+        // telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
+        // telemetry.addData ("Distance S Right", yiseDrive.distanceSensorRight);
+        telemetry.update();
+
+        //drive.followTrajectorySequence(seq_2);
+
 
         drive.followTrajectorySequence(place_Block_1);
         drive.followTrajectorySequence(pick_Up_Block_2);

@@ -46,7 +46,8 @@ public class yellowAutoBlueBucket extends LinearOpMode {
                 .build();
 
         TrajectorySequence pick_Up_Block_2 = drive.trajectorySequenceBuilder(place_Block_1.end())
-                .lineToLinearHeading(new Pose2d(48, 35.75, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(48, 25, Math.toRadians(270)))
+                .forward(5)
                 .waitSeconds(3)
                 .build();
 
@@ -107,6 +108,8 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setLiftPosition(LiftClass.liftPosition.HOME);
         sleep(250);
 
+        arm.setPulleyPower(0);
+
         drive.followTrajectorySequence(pick_Up_Block_2);
 
         arm.setShoulderPosition(0.6);
@@ -114,9 +117,11 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         sleep(250);
         arm.CloseClaw();
 
-        //drive.followTrajectorySequence(place_Block_2);
 
-       /* arm.setElbowPosition(0);
+
+        drive.followTrajectorySequence(place_Block_2);
+
+        arm.setElbowPosition(0);
         arm.setShoulderPosition(0.25);
 
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
@@ -141,7 +146,7 @@ public class yellowAutoBlueBucket extends LinearOpMode {
 
         sleep(1500);
         arm.setLiftPosition(LiftClass.liftPosition.HOME);
-        sleep(250); */
+        sleep(250);
 
         /* drive.followTrajectorySequence(pick_Up_Block_3);
         arm.setShoulderPosition(0.6);

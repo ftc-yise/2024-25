@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.yise.LiftClass;
 
 /**
  * This is a simple teleop routine for debugging your motor configuration.
@@ -48,6 +49,7 @@ public class MotorDirectionDebugger extends LinearOpMode {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        LiftClass arm = new LiftClass(hardwareMap);
 
         telemetry.addLine("Press play to begin the debugging opmode");
         telemetry.update();
@@ -84,6 +86,15 @@ public class MotorDirectionDebugger extends LinearOpMode {
             } else {
                 drive.setMotorPowers(0, 0, 0, 0);
                 telemetry.addLine("Running Motor: None");
+            }
+
+            if(gamepad1.right_bumper){
+                arm.setShoulderPosition(0.3);
+                arm.setElbowPosition(0);
+                arm.setClawPosition(0);
+            } else if (gamepad1.left_bumper) {
+                arm.setShoulderPosition(0.25);
+                arm.setElbowPosition(0);
             }
 
             telemetry.update();

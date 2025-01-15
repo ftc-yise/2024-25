@@ -73,6 +73,7 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 14.25)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(12, -64,  Math.toRadians(90)))
+                        .forward(5)
                         .strafeRight(16)
                         .splineToLinearHeading(new Pose2d(48, -12, Math.toRadians(-90)), Math.toRadians(-470))
                         .forward(48)
@@ -115,13 +116,20 @@ public class MeepMeepTesting {
 
                         .build());
 
+        RoadRunnerBotEntity SpecimenHangBlue = new DefaultBotBuilder(meepMeep)
+                .setConstraints(60,60,Math.toRadians(180),Math.toRadians(180),15)
+                        .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-64.875, 72, Math.toRadians(90)))
+                                .back(2)
+                                .splineToLinearHeading(new Pose2d(0, 30, Math.toRadians(90)), Math.toRadians(270))
+                                .build());
+
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(botBlue)
-                .addEntity(botRed)
+                //.addEntity(botBlue)
+                //.addEntity(botRed)
                 .addEntity(botBluePark)
-                .addEntity(botRedPark)
+                .addEntity(SpecimenHangBlue)
                 .start();
     }
 }

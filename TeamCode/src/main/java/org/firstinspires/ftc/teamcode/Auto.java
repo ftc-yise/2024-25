@@ -16,7 +16,7 @@
 
  import org.firstinspires.ftc.teamcode.yise.poseStorage;
 
- @Autonomous(name="Auto", group="Linear Opmode")
+ @Autonomous(name="SpecimenHangAuto", group="Linear Opmode")
 
  public class Auto extends LinearOpMode {
 
@@ -108,47 +108,44 @@
    //Return the built sequence so it can be run
    return mySequence;
   }
+
+  public TrajectorySequence InitialBlockScore(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm) {
+   //Build the trajectory sequence
+   TrajectorySequence mySequence = drive.trajectorySequenceBuilder(startPose)
+           //Wait for however long drivers want before moving
+           .waitSeconds(Parameters.WAIT)
+
+           //Go to calculated position
+           .strafeRight(9)
+           .back(33)
+           .build();
+
+   //Return the built sequence so it can be run
+   return mySequence;
+  }
+
  //Attach SPECIMEN on High CHAMBER or SAMPLE on
 
- public TrajectorySequence InitialBlock(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm) {
+ public TrajectorySequence InitialBlockPickUp(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm) {
 
   //Create all position variables that will be changed
   double heading;
   double x;
   double y;
-  int DirectionalMulti = 1;
-
-  final int[] state = {-1};
-
 
   //Get the alliance color and starting side of truss
   //Calculate coordinates depending on prop location
-  if (Parameters.allianceColor == Parameters.Color.RED && Parameters.autoConfig == Parameters.AutonomousConfig.BASKET) {
-   //start position should be -36, -64.875, 180
-   heading = -135;
-   x = -48;
-   y = -48;
-
-  } else if (Parameters.allianceColor == Parameters.Color.RED && Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
+  if (Parameters.allianceColor == Parameters.Color.RED) {
    //start position should be 12, -64, 90
-   heading = 90;
-   x = 0;
-   y = -30;
-   DirectionalMulti = -1;
-
-  } else if (Parameters.allianceColor == Parameters.Color.BLUE && Parameters.autoConfig == Parameters.AutonomousConfig.BASKET) {
-   //start position should be 36, 64, 0
-   heading = -135;
+   heading = -90;
    x = 48;
-   y = 48;
-
+   y = -12;
 
   } else {
    //start position should be -12, 64, -90
-   heading = -90;
-   x = 0;
-   y = 30;
-   DirectionalMulti = -1;
+   heading = 90;
+   x = -48;
+   y = 12;
   }
 
   //Build the trajectory sequence
@@ -157,104 +154,11 @@
           .waitSeconds(Parameters.WAIT)
 
           //Go to calculated position
-          .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading + 180)))
-          .waitSeconds(2)
-          .forward(8* DirectionalMulti)
-          .addDisplacementMarker(() -> {
-           if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
-            switch (state[0]) {
-             case -1:  // Initialize the
-              arm.setShoulderPosition(0.25);
-              arm.setElbowPosition(0);
-              state[0] = 0;
-              break;
-             case 0:  // Initialize the
-              arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-              if (arm.getPulleyPositionL() <= 350) {
-               state[0]++;
-              }
-              break;
-             case 1:
-              arm.setLiftPosition(LiftClass.liftPosition.BASKET);
-              if (arm.getLiftPositionL() >= 300) { // Replace with your own position checking logic
-               state[0]++;
-              }
-              break;
-             case 2:
-              arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
-              if (arm.getPulleyPositionR() >= 3000) { // Replace with your own position checking logic
-               state[0]++;
-              }
-              break;
-             case 3:
-              arm.setShoulderPosition(1);
-              arm.setElbowPosition(0.65);
-              sleep(2000);
-              arm.setClawPosition(1);
-              state[0]++;
-              break;
-             case 4:
-             arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-             if (arm.getPulleyPositionR() <= 750) {
-              arm.setLiftPosition(LiftClass.liftPosition.HOME);
-              if (arm.getLiftPositionR() <= 300){
-               state[0] = -1;
-              }
-             }
-             break;
-            }
-           } else {
-            switch (state[0]) {
-             case -1:  // Initialize the
-              arm.setShoulderPosition(0.25);
-              arm.setElbowPosition(0);
-              state[0] = 0;
-              break;
-             case 0:  // Initialize the
-              arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-              if (arm.getPulleyPositionL() <= 350) {
-               state[0]++;
-              }
-              break;
-             case 1:
-              arm.setLiftPosition(LiftClass.liftPosition.SUBMERSIBLE);
-              if (arm.getLiftPositionL() >= 300) { // Replace with your own position checking logic
-               state[0]++;
-              }
-              break;
-             case 2:
-              arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSIBLE);
-              if (arm.getPulleyPositionR() >= 3000) { // Replace with your own position checking logic
-               state[0]++;
-              }
-              break;
-             case 3:
-              arm.setShoulderPosition(1);
-              arm.setElbowPosition(0.65);
-              sleep(2000);
-              arm.setClawPosition(1);
-              state[0]++;
-              break;
-             case 4:
-              arm.setLiftPosition(LiftClass.liftPosition.HOME);
-              if (arm.getLiftPositionL() <= 200) {
-               arm.setClawPosition(0);
-               state[0]++;
-              }
-               break;
-               case 5:
-                arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-                if (arm.getPulleyPositionR() <= 750) {
-                 arm.setLiftPosition(LiftClass.liftPosition.HOME);
-                 if (arm.getLiftPositionR() <= 300){
-                  state[0] = -1;
-                 }
-                }
-                break;
-              }
-           }
-          })
-          .back(8)
+          .forward(5)
+          .strafeLeft(32)
+          .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)))
+          .waitSeconds(0.25)
+          .forward(44)
           .build();
 
   //Return the built sequence so it can be run
@@ -263,179 +167,50 @@
 
   //Navigating to and picking up Yellow or Team Sample
   public TrajectorySequence BlockScore(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm) {
-   double scoreX = 0;
-   double scoreY = 0;
-   double scoreHeading = 0;
+  int DiectionalMulti = 1;
 
-   final int[] state = {-1};
-
-   if (Parameters.allianceColor == Parameters.Color.RED && Parameters.autoConfig == Parameters.AutonomousConfig.BASKET) {
-    scoreX = -48;
-    scoreY = -12;
-    scoreHeading = -90;
-   } else if (Parameters.allianceColor == Parameters.Color.BLUE && Parameters.autoConfig == Parameters.AutonomousConfig.BASKET) {
-    scoreX = -48;
-    scoreY = 12;
-    scoreHeading = -270;
+   if (Parameters.allianceColor == Parameters.Color.RED) {
+    DiectionalMulti = -DiectionalMulti;
    }
    TrajectorySequence blockScoreObservation = drive.trajectorySequenceBuilder(startPose)
-           .forward(-48)
+           .waitSeconds(.1)
+           .back(2)
+           .splineToLinearHeading(new Pose2d(0, 31 * DiectionalMulti, Math.toRadians(90 * DiectionalMulti)), Math.toRadians(270))
            .build();
-
-   TrajectorySequence blockScoreBasket = drive.trajectorySequenceBuilder(startPose)
-           .lineToLinearHeading(new Pose2d(scoreX, scoreY, Math.toRadians(scoreHeading)))
-           .back(5)
-           .addDisplacementMarker(() -> {
-            switch (state[0]) {
-             case -1:  // Initialize the
-              arm.setShoulderPosition(0.25);
-              arm.setElbowPosition(0);
-              state[0] = 0;
-              break;
-             case 0:  // Initialize the
-              arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-              if (arm.getPulleyPositionL() <= 350) {
-               state[0]++;
-              }
-              break;
-             case 1:
-              arm.setLiftPosition(LiftClass.liftPosition.SUBMERSIBLE);
-              if (arm.getLiftPositionL() >= 300) { // Replace with your own position checking logic
-               state[0]++;
-              }
-              break;
-             case 2:
-              arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSIBLE);
-              if (arm.getPulleyPositionR() >= 3000) { // Replace with your own position checking logic
-               state[0]++;
-              }
-              break;
-             case 3:
-              arm.setShoulderPosition(1);
-              arm.setElbowPosition(0.65);
-              sleep(2000);
-              arm.setClawPosition(1);
-              state[0]++;
-              break;
-             case 4:
-              arm.setLiftPosition(LiftClass.liftPosition.HOME);
-              if (arm.getLiftPositionL() <= 200) {
-               arm.setClawPosition(0);
-               state[0]++;
-              }
-              break;
-             case 5:
-              arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-              if (arm.getPulleyPositionR() <= 750) {
-               arm.setLiftPosition(LiftClass.liftPosition.HOME);
-               if (arm.getLiftPositionR() <= 300){
-                state[0] = -1;
-               }
-              }
-              break;
-            }
-           })
-           .build();
-
-   if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
     return blockScoreObservation;
-   } else {
-    return blockScoreBasket;
-   }
   }
 
    //Navigating to and scoring Yellow or Team Sample
-   public TrajectorySequence BlockPickup(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm, int runs) {
+   public TrajectorySequence LodgeBlockIntoObservation(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm, int runsX) {
     double blockX = 0;
     double blockY = 0;
     double blockHeading = 0;
     double blockTangent = 0;
+    double runsY = 0;
 
-    final int[] state = {-1};
-
-    if (Parameters.allianceColor == Parameters.Color.RED && Parameters.autoConfig == Parameters.AutonomousConfig.BASKET) {
-     blockX = -48;
-     blockY = -12;
-     blockHeading = -90;
-     blockTangent = 180;
-    } else if (Parameters.allianceColor == Parameters.Color.RED && Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
-     blockX = 48;
+    if (Parameters.allianceColor == Parameters.Color.RED) {
+     //56, -12, Math.toRadians(-90), Math.toRadians(0)
+     blockX = 56;
      blockY = -12;
      blockHeading = -90;
      blockTangent = 0;
-    } else if (Parameters.allianceColor == Parameters.Color.BLUE && Parameters.autoConfig == Parameters.AutonomousConfig.BASKET) {
-     blockX = 48;
-     blockY = 16;
-     blockHeading = -270;
-     blockTangent = 360;
-     runs = -runs;
-    } else if (Parameters.allianceColor == Parameters.Color.BLUE && Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
-     blockX = -48;
+    } else {
+     blockX = -56;
      blockY = 12;
-     blockHeading = -270;
+     blockHeading = 90;
      blockTangent = 180;
 
-     runs = -runs;
+     runsX = -runsX;
     }
 
-    if (runs == 2){
-     if (Parameters.allianceColor == Parameters.Color.BLUE && Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION){
-      blockTangent = -470;
-     } else if (Parameters.allianceColor == Parameters.Color.RED && Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
-      blockTangent = -470;
-     }
-    }
+    runsX = runsX * 4;
+
     TrajectorySequence blockPickUpObservation = drive.trajectorySequenceBuilder(startPose)
-            .splineToLinearHeading(new Pose2d(blockX + (8.4375 * runs), blockY, Math.toRadians(blockHeading + 180)), Math.toRadians(blockTangent))
-            .back(5)
+            .splineToLinearHeading(new Pose2d(blockX + runsX, blockY, Math.toRadians(blockHeading)), Math.toRadians(blockTangent))
+            .forward(39.5 + runsY)
             .build();
 
-    TrajectorySequence blockPickUpBasket = drive.trajectorySequenceBuilder(startPose)
-            .splineToLinearHeading(new Pose2d(blockX + (8.4375 * runs), blockY, Math.toRadians(blockHeading)), Math.toRadians(blockTangent))
-            .back(5)
-            .addDisplacementMarker(() -> {
-             switch (state[0]) {
-              case -1:  // Initialize the
-               arm.setShoulderPosition(0.25);
-               arm.setElbowPosition(0);
-               state[0] = 0;
-               break;
-              case 0:  // Initialize the
-               arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-               if (arm.getPulleyPositionL() <= 350) {
-                state[0]++;
-               }
-               break;
-              case 1:
-               state[0]++;
-               break;
-              case 2:
-               arm.setPulleyPosition(LiftClass.PulleyPosition.SEARCH);
-               if (arm.getPulleyPositionR() >= 3000) { // Replace with your own position checking logic
-                state[0]++;
-               }
-               break;
-              case 3:
-               arm.setShoulderPosition(0.585);
-               arm.setElbowPosition(0);
-               sleep(2000);
-               arm.setClawPosition(0);
-               state[0]++;
-               break;
-              case 4:
-               arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-               if (arm.getPulleyPositionR() <= 750) { // Replace with your own position checking logic
-                state[0] = -1;
-               }
-             }
-            })
-            .build();
-
-    if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION) {
      return blockPickUpObservation;
-    } else {
-     return blockPickUpBasket;
-    }
   }
 
 //Navigating to parking pose
@@ -481,30 +256,22 @@
    double startX, startY, startHeading;
 
 // Determine the start pose based on autoConfig and allianceColor
-   if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION && Parameters.allianceColor == Parameters.Color.RED) {
-    // Red Observation config
-    startX = -36;
-    startY = -64.875;
-    startHeading = Math.toRadians(90);
-   } else if (Parameters.autoConfig == Parameters.AutonomousConfig.BASKET && Parameters.allianceColor == Parameters.Color.BLUE) {
-    // Blue Observation config
-    startX = 36;
-    startY = 64;
-    startHeading = Math.toRadians(-90);
-   } else if (Parameters.autoConfig == Parameters.AutonomousConfig.BASKET && Parameters.allianceColor == Parameters.Color.RED) {
-    // Red Net config
-    startX = -36;
-    startY = -64.875;
-    startHeading = Math.toRadians(180);
+   if (Parameters.allianceColor == Parameters.Color.RED) {
+    // Red Specimen Hang config
+    //12, -64,  Math.toRadians(90)
+    startX = 4.875;
+    startY = -64;
+    startHeading = -90;
    } else {
-    // Blue Net config
-    startX = 0;
-    startY =64;
-    startHeading = Math.toRadians(0);
+    // Blue Specimen Hang config
+    //-12, 64,  Math.toRadians(-90)
+    startX = -4.875;
+    startY = 64;
+    startHeading =90;
    }
 
 // Create the start pose using the calculated startX, startY, and startHeading
-   Pose2d startPose = new Pose2d(0, 64, Math.toRadians(90));
+   Pose2d startPose = new Pose2d(startX, startY, Math.toRadians(startHeading));
    drive.setPoseEstimate(startPose);
 
    leds.setLed(LedLights.ledStates.INIT);
@@ -517,67 +284,55 @@
     leds.setLed(LedLights.ledStates.BLUE);
    }
 
-   TrajectorySequence BlueOP = BlueObservationPlace(drive, startPose, arm);
-   TrajectorySequence BlueOG = BlueObservationGrab(drive, BlueOP.end(), arm);
+   TrajectorySequence InitialBlockScore = InitialBlockScore(drive, startPose, arm);
 
-   TrajectorySequence InitialBlock = InitialBlock(drive, startPose, arm);
-   TrajectorySequence driveTo1stBlock = BlockPickup(drive, InitialBlock.end(), arm, 0);
-   TrajectorySequence score1stBlock = BlockScore(drive, driveTo1stBlock.end(), arm);
+   TrajectorySequence InitialBlockPickUp = InitialBlockPickUp(drive, InitialBlockScore.end(), arm);
 
-   TrajectorySequence driveTo2ndBlock = BlockPickup(drive, score1stBlock.end(), arm, 1);
-   TrajectorySequence score2ndBlock = BlockScore(drive, driveTo2ndBlock.end(), arm);
+   TrajectorySequence SecondBlockPickUp = LodgeBlockIntoObservation(drive, InitialBlockPickUp.end(), arm, 0);
+   TrajectorySequence ThirdBlockPickup = LodgeBlockIntoObservation(drive, SecondBlockPickUp.end(), arm, 1);
 
-   TrajectorySequence driveTo3rdBlock = BlockPickup(drive, score2ndBlock.end(), arm, 2);
-   TrajectorySequence score3rdBlock = BlockScore(drive, driveTo3rdBlock.end(), arm);
+   TrajectorySequence score1stBlock = BlockScore(drive, ThirdBlockPickup.end(), arm);
+   TrajectorySequence score2ndBlock = BlockScore(drive, score1stBlock.end(), arm);
+   TrajectorySequence score3rdBlock = BlockScore(drive, score2ndBlock.end(), arm);
 
    TrajectorySequence park = Parking(drive, score3rdBlock.end());
 
-   drive.followTrajectorySequence(BlueOP);
-    arm.setShoulderPosition(0.4);
-   arm.setElbowPosition(0.125);
-   arm.setLiftPosition(LiftClass.liftPosition.SUBMERSIBLE);
-   sleep(1000);
-   arm.setPulleyPosition(LiftClass.PulleyPosition.SUBMERSIBLE);
-   sleep(1000);
-   arm.setShoulderPosition(0.25);
+   drive.followTrajectorySequence(InitialBlockScore);
+
+   arm.setLiftPosition(LiftClass.liftPosition.BASKET);
+   while (arm.getLiftPositionL() <= 400) {
+    sleep(50); // Check every 100ms
+   }
+
+
+   arm.setShoulderPosition(0.3);
    arm.setElbowPosition(0);
+   arm.setClawPosition(0);
 
+   sleep(2000);
 
-
-   sleep(500);
-   arm.setShoulderPosition(0.675);
-   arm.setElbowPosition(0);
-
-   sleep(500);
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
-
-
-   sleep(700);
+   while (arm.getLiftPositionL() >= 375) {
+    sleep(50);
+   }
    arm.setClawPosition(1);
 
-   sleep(500);
+   sleep(250);
+
+   arm.setShoulderPosition(0.45);
+   arm.setElbowPosition(1);
+
+   drive.followTrajectorySequence(InitialBlockPickUp);
+   drive.followTrajectorySequence(SecondBlockPickUp);
+
    arm.setShoulderPosition(0.25);
    arm.setElbowPosition(0);
 
-
-
-   sleep(1000);
-   arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
-
-
-
-
-
-
-   sleep(400);
-
-   drive.followTrajectorySequence(BlueOG);
-
-   /*drive.followTrajectorySequence(InitialBlock);
-   drive.followTrajectorySequence(driveTo1stBlock);
+   drive.followTrajectorySequence(ThirdBlockPickup);
+   arm.setClawPosition(0);
+   sleep(250);
    drive.followTrajectorySequence(score1stBlock);
-   drive.followTrajectorySequence(driveTo2ndBlock);
-   drive.followTrajectorySequence(score2ndBlock);
+   /*drive.followTrajectorySequence(score2ndBlock);
    drive.followTrajectorySequence(driveTo3rdBlock);
    drive.followTrajectorySequence(score3rdBlock);
    drive.followTrajectorySequence(park);*/

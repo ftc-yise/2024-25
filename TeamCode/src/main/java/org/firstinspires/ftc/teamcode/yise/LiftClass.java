@@ -599,7 +599,9 @@ public class LiftClass {
 
     // setting custom positions and power for servos
     public void setPulleyPower(double power) {
+        pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyLeft.setPower(power);
+        pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyRight.setPower(power);
     }
 

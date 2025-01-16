@@ -52,7 +52,7 @@ public class yellowAutoBlueBucket extends LinearOpMode {
                 .build();
 
         TrajectorySequence place_Block_2 = drive.trajectorySequenceBuilder(pick_Up_Block_2.end())
-                .lineToLinearHeading(new Pose2d(53, 52, Math.toRadians(225)))
+                .lineToLinearHeading(new Pose2d(53, 51.95, Math.toRadians(225)))
                 .waitSeconds(1)
                 .build();
 
@@ -126,7 +126,7 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         drive.followTrajectorySequence(place_Block_2);
 
         arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.25);
+        arm.setShoulderPosition(1);
 
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
@@ -153,8 +153,13 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setShoulderPosition(0.25);
         arm.setPulleyPower(-1);
 
-        while (arm.getPulleyPositionR() <50){
+         while (arm.getPulleyPositionR() >75) {
             sleep(50);
+        }
+
+        arm.setPulleyPower(0);
+
+        arm.setLiftPosition(LiftClass.liftPosition.HOME);
 
          drive.followTrajectorySequence(pick_Up_Block_3);
         arm.setShoulderPosition(0.6);
@@ -164,7 +169,7 @@ public class yellowAutoBlueBucket extends LinearOpMode {
 
         drive.followTrajectorySequence(place_Block_3);
         arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.25);
+        arm.setShoulderPosition(1);
 
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
@@ -191,10 +196,12 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setShoulderPosition(0.25);
         arm.setPulleyPower(-1);
 
-        while (arm.getPulleyPositionR() <50){
+        while (arm.getPulleyPositionR() >50){
             sleep(50);
         }
+        arm.setPulleyPower(0);
         arm.setLiftPosition(LiftClass.liftPosition.HOME);
+
         sleep(250);
 
         //drive.followTrajectorySequence(park_At_Submersible_And_Hang);
@@ -203,7 +210,4 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         telemetry.update();
 
         //drive.followTrajectorySequence(seq_2);
-
-
-    }
-}
+}}

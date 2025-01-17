@@ -88,7 +88,6 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
         sleep(250);
-
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
         sleep(2300);
@@ -131,7 +130,6 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
         sleep(250);
-
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
         sleep(2300);
@@ -174,7 +172,6 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
         sleep(250);
-
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
         sleep(2300);

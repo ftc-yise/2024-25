@@ -605,6 +605,13 @@ public class LiftClass {
         pulleyRight.setPower(power);
     }
 
+    public void setLiftPower(double power) {
+        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftLeft.setPower(power);
+        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftRight.setPower(power);
+    }
+
     public void setWristPosition(double power) {
         wrist.setPosition(power);
     }

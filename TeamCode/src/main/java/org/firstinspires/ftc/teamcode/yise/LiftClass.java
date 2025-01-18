@@ -113,7 +113,7 @@ public class LiftClass {
         // initialization pose for Driver Control and Auto
         //ToDO make the Servos & motor not move on Initiation and instead at the very start of Auto and Drive
         // control to save drivers time
-        setShoulderPosition(0.25);
+        setShoulderPosition(0.5);
         setElbowPosition(0.5);
         setWristPosition(0);
         setClawPosition(0);
@@ -303,7 +303,7 @@ public class LiftClass {
                     switch (step) {
                         case -1:  // Initialize the
                             setShoulderPosition(0.25);
-                            setElbowPosition(0);
+                            setElbowPosition(0.5);
                             step = 0;
                             break;
                         case 0:  // Initialize the
@@ -357,7 +357,6 @@ public class LiftClass {
                                 }
                                 break;
                             case 1:
-                                setClawPosition(0.5);
                                 setLiftPosition(LiftClass.liftPosition.BASKET);
                                 if (getLiftPositionL() >= 400) { // Replace with your own position checking logic
                                     step++;
@@ -365,7 +364,6 @@ public class LiftClass {
                                 break;
                             case 2:
                                 sleep(250);
-                                setClawPosition(0.25);
                                 setShoulderPosition(0.5);
                                 setElbowPosition(0.2);
                                 step = -1;

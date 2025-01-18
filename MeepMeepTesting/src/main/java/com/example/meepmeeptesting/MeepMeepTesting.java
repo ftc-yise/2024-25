@@ -123,13 +123,39 @@ public class MeepMeepTesting {
                                 .splineToLinearHeading(new Pose2d(0, 30, Math.toRadians(90)), Math.toRadians(270))
                                 .build());
 
+        RoadRunnerBotEntity telemetryPathingUno = new DefaultBotBuilder(meepMeep)
+                .setConstraints(60,60,Math.toRadians(180),Math.toRadians(180),15)
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-20.875, 0, Math.toRadians(0)))
+                        .splineToLinearHeading(new Pose2d(-60, 60, Math.toRadians(90)), Math.toRadians(180))
+                        .splineToLinearHeading(new Pose2d(-20.875, 0, Math.toRadians(0)), Math.toRadians(0))
+                        .waitSeconds(80)
+                        .build());
+
+        RoadRunnerBotEntity telemetryPathingDos = new DefaultBotBuilder(meepMeep)
+                .setConstraints(60,60,Math.toRadians(180),Math.toRadians(180),15)
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(0, 37, Math.toRadians(-90)))
+                        .splineToLinearHeading(new Pose2d(-48, 60, Math.toRadians(90)), Math.toRadians(180))
+                        .splineToLinearHeading(new Pose2d(-0, 37, Math.toRadians(-90)), Math.toRadians(90))
+                        .waitSeconds(80)
+                        .build());
+
+        RoadRunnerBotEntity telemetryPathingTres = new DefaultBotBuilder(meepMeep)
+                .setConstraints(60,60,Math.toRadians(180),Math.toRadians(180),15)
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-0, 47, Math.toRadians(90)))
+                        .splineToLinearHeading(new Pose2d(24, 0, Math.toRadians(180)), Math.toRadians(180))
+                        .waitSeconds(80)
+                        .build());
+
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 //.addEntity(botBlue)
                 //.addEntity(botRed)
-                .addEntity(botBluePark)
-                .addEntity(SpecimenHangBlue)
+                //.addEntity(botBluePark)
+                //.addEntity(SpecimenHangBlue)
+                .addEntity(telemetryPathingUno)
+                .addEntity(telemetryPathingDos)
+                .addEntity(telemetryPathingTres)
                 .start();
     }
 }

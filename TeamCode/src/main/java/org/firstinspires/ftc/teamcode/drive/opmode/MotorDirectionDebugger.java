@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import android.drm.DrmStore;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -89,12 +91,21 @@ public class MotorDirectionDebugger extends LinearOpMode {
             }
 
             if(gamepad1.right_bumper){
-                arm.setShoulderPosition(0.3);
-                arm.setElbowPosition(0);
-                arm.setClawPosition(0);
-            } else if (gamepad1.left_bumper) {
                 arm.setShoulderPosition(0.25);
+                arm.setElbowPosition(0.2);
+            } else if (gamepad1.left_bumper) {
+                arm.setShoulderPosition(0);
                 arm.setElbowPosition(0);
+            }
+
+            if (gamepad1.right_trigger > 0.5) {
+                arm.setLiftPower(1);
+                sleep(350);
+                arm.setLiftPower(0);
+            } else if (gamepad1.left_trigger > 0.5) {
+                arm.setLiftPower(-1);
+            } else {
+                arm.setLiftPower(0);
             }
 
             telemetry.update();

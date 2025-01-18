@@ -1,4 +1,11 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.yise.LiftClass;
+import org.firstinspires.ftc.teamcode.yise.ledLights;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -28,7 +35,7 @@ public class autoRedPark extends LinearOpMode {
     public float endHeading_Z = 90;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
         // ------------------------------------------------------------------------------------
         // Initialize Class Instances and Variables
@@ -52,8 +59,8 @@ public class autoRedPark extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence red_Side_Park = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-42, 12, Math.toRadians(0)))
-                .forward(19)
+                .lineToLinearHeading(new Pose2d(-52, 12, Math.toRadians(180)))
+                .back (29)
                 .build();
 
         // run my trajectories in order
@@ -64,6 +71,14 @@ public class autoRedPark extends LinearOpMode {
 
         // drive to cone stack with arm at cone 5 height
         drive.followTrajectorySequence(red_Side_Park);
+
+        arm.setElbowPosition(0);
+        arm.setShoulderPosition(1);
+        sleep(300);
+        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
+        sleep(1500);
+        arm.setArmPosition(LiftClass.armPosition.AUTOPARK);
+        sleep(500);
         // telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
         // telemetry.addData ("Distance S Right", yiseDrive.distanceSensorRight);
         telemetry.update();

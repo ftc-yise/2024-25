@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.yise;
 
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -112,7 +113,7 @@ public class LiftClass {
         // initialization pose for Driver Control and Auto
         //ToDO make the Servos & motor not move on Initiation and instead at the very start of Auto and Drive
         // control to save drivers time
-        setShoulderPosition(0.25);
+        setShoulderPosition(0.5);
         setElbowPosition(0.5);
         setWristPosition(0);
         setClawPosition(0);
@@ -293,7 +294,7 @@ public class LiftClass {
                     switch (step) {
                         case -1:  // Initialize the
                             setShoulderPosition(0.25);
-                            setElbowPosition(0);
+                            setElbowPosition(0.5);
                             step = 0;
                             break;
                         case 0:  // Initialize the
@@ -347,7 +348,6 @@ public class LiftClass {
                                 }
                                 break;
                             case 1:
-                                setClawPosition(0.5);
                                 setLiftPosition(LiftClass.liftPosition.BASKET);
                                 if (getLiftPositionL() >= 400) { // Replace with your own position checking logic
                                     step++;
@@ -355,7 +355,6 @@ public class LiftClass {
                                 break;
                             case 2:
                                 sleep(250);
-                                setClawPosition(0.25);
                                 setShoulderPosition(0.5);
                                 setElbowPosition(0.2);
                                 step = -1;
@@ -503,24 +502,15 @@ public class LiftClass {
                         setElbowPosition(0.5);
                         step = 0;
                         break;
-                    case 0:  // Initialize the
-                        if (!buttonPressed) {
-                            setPulleyPosition(LiftClass.PulleyPosition.HOME);
-                            buttonPressed = true;
-                        }
-                        if (getPulleyPositionL() <= 350) {
-                            step++;
-                        }
-                        break;
-                    case 1:
+                    case 0:
+                        manualPowerUpLift();
                         setLiftPosition(liftPosition.SUBMERSIBLE);
-                        if (getLiftPositionL() >= 200) { // Replace with your own position checking logic
                             step++;
-                        }
                         break;
                     case 2:
-                        setShoulderPosition(1);
+                        setShoulderPosition(0.25);
                         setElbowPosition(0.5);
+                        sleep(1000);
                         step = -1;
                         submersibleScoringPosition = false;
                         dpadLefttapped = false;
@@ -562,9 +552,9 @@ public class LiftClass {
     // setting power to both lift and pulley to maneuver them without the use of motor encoders
     public void manualPowerUpLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftLeft.setPower(0.35);
+        liftLeft.setPower(0.5);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftRight.setPower(0.35);
+        liftRight.setPower(0.5);
     }
     public void manualPowerDownLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -598,25 +588,34 @@ public class LiftClass {
 
     // setting custom positions and power for servos
     public void setPulleyPower(double power) {
+        pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyLeft.setPower(power);
+        pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyRight.setPower(power);
     }
 
     public void setLiftPower(double power) {
-        liftLeft.setPower(power);
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftRight.setPower(power);
+        liftLeft.setPower(power);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        liftRight.setPower(power);
     }
 
     public void setWristPosition(double power) {
         wrist.setPosition(power);
     }
+    public void CloseClaw() {
+        claw.setPosition(0);
+    }
+    public void OpenClaw() {
+        claw.setPosition(1);
+    }
+
     public void setClawPosition(double position) {
         claw.setPosition(position);
     }
-    public void setShoulderPosition(double position) {
+
+        public void setShoulderPosition(double position) {
         shoulderL.setPosition(position);
         ShoulderR.setPosition(position);
     }

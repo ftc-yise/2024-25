@@ -29,7 +29,7 @@ public class yellowAutoRedBucket extends LinearOpMode {
         // poseStorage.currentPose = drive.getPoseEstimate();
 
         waitForStart();
-        if(isStopRequested()) return;
+        if (isStopRequested()) return;
 
         leds.setLed(ledLights.ledStates.INIT);
 
@@ -43,34 +43,36 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
 
         TrajectorySequence place_Block_1 = drive.trajectorySequenceBuilder(startPose)
-                        .lineToLinearHeading(new Pose2d(-52, -51, Math.toRadians(45)))
-                        .waitSeconds(3)
-                        .build();
+                .lineToLinearHeading(new Pose2d(-55, -51, Math.toRadians(45)))
+                .waitSeconds(1)
+                .build();
 
         TrajectorySequence pick_Up_Block_2 = drive.trajectorySequenceBuilder(place_Block_1.end())
-                        .lineToLinearHeading(new Pose2d(-48, -40, Math.toRadians(90)))
-                        .waitSeconds(2)
-                        .build();
+                .lineToLinearHeading(new Pose2d(-47.5, -40, Math.toRadians(90)))
+                .waitSeconds(1)
+                .forward(8)
+                .build();
 
         TrajectorySequence place_Block_2 = drive.trajectorySequenceBuilder(pick_Up_Block_2.end())
-                        .lineToLinearHeading(new Pose2d(-52, -51, Math.toRadians(45)))
-                        .build();
+                .lineToLinearHeading(new Pose2d(-55, -51, Math.toRadians(45)))
+                .build();
 
         TrajectorySequence pick_Up_Block_3 = drive.trajectorySequenceBuilder(place_Block_2.end())
                 .lineToLinearHeading(new Pose2d(-58, -40, Math.toRadians(90)))
-                .waitSeconds(3)
+                .waitSeconds(1)
+                .forward(8)
                 .build();
 
         TrajectorySequence place_Block_3 = drive.trajectorySequenceBuilder(pick_Up_Block_3.end())
                 .lineToLinearHeading(new Pose2d(-53, -52, Math.toRadians(45)))
-                .waitSeconds(3)
+                .waitSeconds(1)
                 .build();
+
 
         TrajectorySequence park_At_Submersible_And_Hang = drive.trajectorySequenceBuilder(place_Block_3.end())
                 .lineToLinearHeading(new Pose2d(-42, 12, Math.toRadians(0)))
                 .forward(19)
                 .build();
-
 
 
         // run my trajectories in order
@@ -85,8 +87,8 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
-        sleep(250);
-
+        sleep(350);
+        arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
         sleep(2300);
@@ -128,8 +130,8 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
-        sleep(250);
-
+        sleep(350);
+        arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
         sleep(2300);
@@ -142,16 +144,16 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         sleep(50);
 
-        arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.4);
+        arm.setElbowPosition(0.35);
+        arm.setShoulderPosition(1);
 
         sleep(500);
 
         arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.25);
+        arm.setShoulderPosition(0.4);
         arm.setPulleyPower(-1);
 
-        while (arm.getPulleyPositionR() >75) {
+        while (arm.getPulleyPositionR() >25) {
             sleep(50);
         }
 
@@ -171,8 +173,8 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
-        sleep(250);
-
+        sleep(350);
+        arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
         sleep(2300);
@@ -185,16 +187,17 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         sleep(50);
 
-        arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.4);
+        arm.setElbowPosition(0.35);
+        arm.setShoulderPosition(1);
+
 
         sleep(500);
 
         arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.25);
+        arm.setShoulderPosition(0.4);
         arm.setPulleyPower(-1);
 
-        while (arm.getPulleyPositionR() >50){
+        while (arm.getPulleyPositionR() >25){
             sleep(50);
         }
         arm.setPulleyPower(0);
@@ -210,5 +213,6 @@ public class yellowAutoRedBucket extends LinearOpMode {
             //drive.followTrajectorySequence(seq_2);
 
 
-        }
+
     }
+}

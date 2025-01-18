@@ -138,6 +138,7 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         arm.setElbowPosition(0.65);
         arm.setShoulderPosition(1);
+        arm.setWristPosition(1);
         sleep(400);
 
         arm.setClawPosition(1);
@@ -146,7 +147,7 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         arm.setElbowPosition(0.35);
         arm.setShoulderPosition(1);
-
+        arm.setWristPosition(0);
         sleep(500);
 
         arm.setElbowPosition(0);
@@ -181,6 +182,7 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         arm.setElbowPosition(0.65);
         arm.setShoulderPosition(1);
+        arm.setWristPosition(1);
         sleep(400);
 
         arm.setClawPosition(1);
@@ -189,6 +191,7 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         arm.setElbowPosition(0.35);
         arm.setShoulderPosition(1);
+        arm.setWristPosition(0);
 
 
         sleep(500);

@@ -74,6 +74,7 @@
            // Run your action in here!
           })
           .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)))
+          .waitSeconds(0.5)
           .forward(8)
           .build();
 
@@ -108,7 +109,7 @@
 
            .splineToLinearHeading(new Pose2d(0 + runs, 31 * DiectionalMulti, Math.toRadians(90 * DiectionalMulti)), Math.toRadians(270))
            .waitSeconds(0.1)
-           .back(2)
+           .back(8)
            .build();
     return blockScoreObservation;
   }
@@ -166,7 +167,6 @@
             .forward(5)
             .strafeLeft(34)
             .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)))
-            .waitSeconds(0.1)
             .forward(40)
 
             .splineToLinearHeading(new Pose2d(blockX, blockY, Math.toRadians(blockHeading)), Math.toRadians(blockTangent))

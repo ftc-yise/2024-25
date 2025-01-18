@@ -136,6 +136,7 @@ public class yellowAutoBlueBucket extends LinearOpMode {
 
         arm.setElbowPosition(0.65);
         arm.setShoulderPosition(1);
+        arm.setWristPosition(1);
         sleep(400);
 
         arm.setClawPosition(1);

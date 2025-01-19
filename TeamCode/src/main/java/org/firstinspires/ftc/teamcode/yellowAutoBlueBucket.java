@@ -130,11 +130,12 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
         sleep(250);
+        arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
         sleep(2300);
 
-        arm.setElbowPosition(0.65);
+        arm.setElbowPosition(0.6);
         arm.setShoulderPosition(1);
         arm.setWristPosition(1);
         sleep(400);
@@ -144,15 +145,15 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         sleep(50);
 
         arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.4);
-
+        arm.setShoulderPosition(0.35);
+        arm.setWristPosition(1);
         sleep(500);
 
         arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.25);
+        arm.setShoulderPosition(0.4);
         arm.setPulleyPower(-1);
 
-         while (arm.getPulleyPositionR() >75) {
+         while (arm.getPulleyPositionR() >25) {
             sleep(50);
         }
 
@@ -173,28 +174,31 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setLiftPosition(LiftClass.liftPosition.BASKET);
 
         sleep(250);
+        arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
         sleep(2300);
 
-        arm.setElbowPosition(0.65);
+        arm.setElbowPosition(0.6);
         arm.setShoulderPosition(1);
+        arm.setWristPosition(1);
         sleep(400);
 
         arm.setClawPosition(1);
 
         sleep(50);
 
-        arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.4);
+        arm.setElbowPosition(0.35);
+        arm.setShoulderPosition(1);
+        arm.setWristPosition(0);
 
         sleep(500);
 
         arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.25);
+        arm.setShoulderPosition(0.4);
         arm.setPulleyPower(-1);
 
-        while (arm.getPulleyPositionR() >50){
+        while (arm.getPulleyPositionR() >25){
             sleep(50);
         }
         arm.setPulleyPower(0);

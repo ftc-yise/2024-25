@@ -170,8 +170,8 @@ public class LiftClass {
                 pulleyRightPower = -1;
                 break;
             case BASKET:
-                pulleyLeft.setTargetPosition(3800);
-                pulleyRight.setTargetPosition(3800);
+                pulleyLeft.setTargetPosition(3900);
+                pulleyRight.setTargetPosition(3900);
                 pulleyRightPower = 1;
                 break;
             case SUBMERSIBLE:
@@ -239,6 +239,7 @@ public class LiftClass {
                         break;
                     case 3:
                         setLiftPosition(liftPosition.HOME);
+                        setLiftPower(-1);
                         setShoulderPosition(1);
                         setElbowPosition(0.65);
                         step++;
@@ -448,7 +449,7 @@ public class LiftClass {
                         break;
                     case 3:
                         setShoulderPosition(1);
-                        setElbowPosition(0.65);
+                        setElbowPosition(0.6);
                         step = -1;
                         submersibleScoringPosition = false;
                         dpadUptapped = false;
@@ -562,6 +563,9 @@ public class LiftClass {
         liftLeft.setPower(-0.35);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setPower(-0.35);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
     }
 
     public void manualPowerUpPulley() {

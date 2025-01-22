@@ -145,8 +145,8 @@ public class LiftClass {
                 armMotorPower = 100;
                 break;
             case HANG:
-                liftLeft.setTargetPosition(300);
-                liftRight.setTargetPosition(300);
+                liftLeft.setTargetPosition(175);
+                liftRight.setTargetPosition(175);
                 armMotorPower = 100;
                 break;
 
@@ -216,36 +216,40 @@ public class LiftClass {
                     case -1:  // Initialize the
                         setShoulderPosition(0.25);
                         setElbowPosition(0);
+                        setLiftPosition(liftPosition.HANG);
                         step = 0;
                         break;
                     case 0:  // Initialize the
                         setPulleyPosition(LiftClass.PulleyPosition.HANG);
-                        if (getPulleyPositionL() >= 2400) {
+                        setLiftPower(0.5);
+                        if (getPulleyPositionL() >= 2800) {
                             step++;
                         }
                         break;
                     case 1:
-                        setLiftPosition(LiftClass.liftPosition.HANG);
-                        if (getLiftPositionL() >= 150) { // Replace with your own position checking logic
-                            sleep(2000);
+                        setLiftPower(1);
+                        if (getLiftPositionL() >= 240) { // Replace with your own position checking logic
                             step++;
                         }
                         break;
                     case 2:
-                        setPulleyPosition(LiftClass.PulleyPosition.HOME);
-                        if (getPulleyPositionL() <= 150) { // Replace with your own position checking logic
+                        setPulleyPower(-1);
+                        if (getPulleyPositionL() <= 1500) { // Replace with your own position checking logic
                             step++;
                         }
                         break;
                     case 3:
-                        setShoulderPosition(1);
-                        setElbowPosition(0.65);
-                        step++;
+                        setLiftPower(-.35);
+                        setPulleyPower(-.85);
+                        if (getPulleyPositionL() <= 100) { // Replace with your own position checking logic
+                            step++;
+                        }
                         break;
                     case 4:
                         hangPowerPulley();
                 }
-            break;
+                break;
+
 
             case HOME:
 
@@ -543,9 +547,9 @@ public class LiftClass {
     public void hangPowerPulley() {
         if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
             pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyLeft.setPower(-0.35);
+            pulleyLeft.setPower(-0.15);
             pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyRight.setPower(-0.35);
+            pulleyRight.setPower(-0.15);
         }
     }
 

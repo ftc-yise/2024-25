@@ -220,8 +220,6 @@ public class Encoder extends LinearOpMode {
 
             if (!isDpadPressed) {
                 arm.setButtonPressedStatus(false);
-            } else {
-                arm.setPulleyHoldStatus(false);
             }
 
             // Claw control method
@@ -364,7 +362,6 @@ public class Encoder extends LinearOpMode {
             telemetry.addLine();
 
             // Section 6: Arm movement control booleans
-            telemetry.addData("pulleyHold", arm.getPulleyHoldStatus());
             telemetry.addData("targetPose", arm.pulleyLeft.getTargetPosition());
             telemetry.addData("hang", arm.getHangStatus());
             telemetry.addData("button pressed", arm.getButtonPressed());

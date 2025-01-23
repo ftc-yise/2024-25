@@ -26,7 +26,9 @@ public class LiftClass {
 
     //creating a boolean for the hang so we can lock the hang into place
     public boolean hang = false;
-    public boolean pulleyHold = false;
+
+    //creating a boolean to define whether or not we need to come down a certain
+    //way to score for the submersible
     public boolean submersibleScoringPosition = false;
 
     //storage to view what the function enum is currently set too
@@ -34,9 +36,8 @@ public class LiftClass {
     private liftPosition currentLiftPosition;
     private armPosition currentArmMovement;
 
-    // power for the right pulley since it is now chained to the left encoder
-    public double pulleyRightPower;
-
+    // double for the power of the lift
+    public double liftMotorPower;
 
     // Arm Definitions
     public DcMotor liftLeft, liftRight, pulleyLeft, pulleyRight;
@@ -88,9 +89,6 @@ public class LiftClass {
         SEARCH,
         HANG
     }
-
-
-    public double armMotorPower;
 
     // Constructor
     public LiftClass(HardwareMap hardwareMap) {
@@ -147,7 +145,6 @@ public class LiftClass {
         currentMovementState = movementState.REST;
 
         // intilization making sure we arnt saving bad variables between opmodes
-        pulleyHold = false;
         hang = false;
     }
 
@@ -159,30 +156,30 @@ public class LiftClass {
             case BASKET:
                 liftLeft.setTargetPosition(495);
                 liftRight.setTargetPosition(495);
-                armMotorPower = 100;
+                liftMotorPower = 1;
                 break;
             case HOME:
                 liftLeft.setTargetPosition(0);
                 liftRight.setTargetPosition(0);
-                armMotorPower = 0.35;
+                liftMotorPower = 0.35;
                 break;
             case SUBMERSIBLE:
                 liftLeft.setTargetPosition(190);
                 liftRight.setTargetPosition(190);
-                armMotorPower = 1;
+                liftMotorPower = 1;
                 break;
             case HANG:
                 liftLeft.setTargetPosition(185);
                 liftRight.setTargetPosition(185);
-                armMotorPower = 1;
+                liftMotorPower = 1;
                 break;
 
         }
         // Run motors to position and define a power level
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftLeft.setPower(armMotorPower);
-        liftRight.setPower(armMotorPower);
+        liftLeft.setPower(liftMotorPower);
+        liftRight.setPower(liftMotorPower);
     }
 
     public void setPulleyPosition(pulleyPosition targetPulleyPosition) {
@@ -194,34 +191,28 @@ public class LiftClass {
             case HOME:
                 pulleyLeft.setTargetPosition(0);
                 pulleyRight.setTargetPosition(0);
-                pulleyRightPower = -1;
                 break;
             case BASKET:
                 pulleyLeft.setTargetPosition(3800);
                 pulleyRight.setTargetPosition(3800);
-                pulleyRightPower = 1;
                 break;
             case SUBMERSIBLE:
                 pulleyLeft.setTargetPosition(1450);
                 pulleyRight.setTargetPosition(1450);
-                pulleyRightPower = 1;
                 break;
             case SEARCH:
                 pulleyLeft.setTargetPosition(2000);
                 pulleyRight.setTargetPosition(2000);
-                pulleyRightPower = 1;
                 break;
 
             case HANG:
                 pulleyLeft.setTargetPosition(2900);
                 pulleyRight.setTargetPosition(2900);
-                pulleyRightPower = 1;
                 break;
 
             case HANGEND:
                 pulleyLeft.setTargetPosition(800);
                 pulleyRight.setTargetPosition(800);
-                pulleyRightPower = 1;
                 break;
         }
         // Run motors to position and define a power level
@@ -682,9 +673,11 @@ public class LiftClass {
     public void setWristPosition(double power) {
         wrist.setPosition(power);
     }
+
     public void CloseClaw() {
         claw.setPosition(0);
     }
+
     public void OpenClaw() {
         claw.setPosition(1);
     }
@@ -701,21 +694,9 @@ public class LiftClass {
         elbow.setPosition(position);
     }
 
-    public void setIntakePower(double power) {
-        intake.setPower(power);
-    }
-
     //writer/setter statements for the eight arm movement booleans
     public void setHangStatus(boolean status) {
         hang = status;
-    }
-
-    public void setPulleyHoldStatus(boolean status){
-        pulleyHold = status;
-    }
-
-    public void setSubmersibleScoringPositionStatus(boolean status){
-        submersibleScoringPosition = status;
     }
 
     public void setDpadUpTappedStatus(boolean status) {
@@ -784,10 +765,6 @@ public class LiftClass {
     // getter statements for the 8 boolean switch program statements
     public boolean getHangStatus() {
         return hang;
-    }
-
-    public boolean getPulleyHoldStatus(){
-        return pulleyHold;
     }
 
     public boolean getSubmersibleScoringPosition(){

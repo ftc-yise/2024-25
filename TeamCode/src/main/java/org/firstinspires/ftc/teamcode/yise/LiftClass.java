@@ -193,8 +193,8 @@ public class LiftClass {
                 pulleyRight.setTargetPosition(0);
                 break;
             case BASKET:
-                pulleyLeft.setTargetPosition(3800);
-                pulleyRight.setTargetPosition(3800);
+                pulleyLeft.setTargetPosition(3900);
+                pulleyRight.setTargetPosition(3900);
                 break;
             case SUBMERSIBLE:
                 pulleyLeft.setTargetPosition(1450);
@@ -233,8 +233,8 @@ public class LiftClass {
                 switch (step) {
                     case -1:  // Initialize the
                         currentHoldPowerState = holdPowerState.HANG;
-                        setShoulderPosition(0.75);
-                        setElbowPosition(1);
+                        setShoulderPosition(0.25);
+                        setElbowPosition(0.8);
                         setLiftPosition(liftPosition.HANG);
                         step = 0;
                         break;
@@ -482,7 +482,7 @@ public class LiftClass {
                         break;
                     case 3:
                         setShoulderPosition(1);
-                        setElbowPosition(0.65);
+                        setElbowPosition(0.6);
                         step = -1;
                         submersibleScoringPosition = false;
                         dpadUptapped = false;
@@ -618,20 +618,24 @@ public class LiftClass {
         }
     }
 
-    // setting power to both lift and pulley to maneuver them without the use of motor encoders
+    // setting power to both lift to maneuver them without the use of motor encoders
     public void manualPowerUpLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftLeft.setPower(0.5);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setPower(0.5);
     }
+
     public void manualPowerDownLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftLeft.setPower(-0.35);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setPower(-0.35);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    // setting power to both pulley to maneuver them without the use of motor encoders
     public void manualPowerUpPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyLeft.setPower(0.35);

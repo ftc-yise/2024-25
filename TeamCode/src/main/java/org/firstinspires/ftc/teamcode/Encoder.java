@@ -168,9 +168,12 @@ public class Encoder extends LinearOpMode {
                 } else {
                     arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLESTART);
                 }
-
+                // manual power at the end of the if else so can only run when not currently
+                // moving arms
             } else if (gamepad2.options) {
                 arm.manualPowerDownPulley();
+            } else if (gamepad2.left_trigger > 0.75){
+                arm.manualPowerDownLift();
             }
 
             // Check arm movement state and adjust hold power accordingly

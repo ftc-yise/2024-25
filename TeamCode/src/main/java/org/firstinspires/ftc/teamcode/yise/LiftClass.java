@@ -17,13 +17,6 @@ public class LiftClass {
     // functions repeatedly
     public boolean buttonPressed = false;
 
-    // determining if a dpad has been hit so we don't run throw loops repeatedly and we dont run
-    // through two loops at once
-    public boolean dpadUptapped = false;
-    public boolean dpadDowntapped = false;
-    public boolean dpadLefttapped = false;
-    public boolean dpadRighttapped = false;
-
     //creating a boolean for the hang so we can lock the hang into place
     public boolean hang = false;
 
@@ -78,6 +71,22 @@ public class LiftClass {
 
     public holdPowerState currentHoldPowerState;
     public movementState currentMovementState;
+
+    //button pressed enum state
+    public enum buttonPressedState {
+        REST,
+        HANG,
+        DPAD_UP,
+        DPAD_DOWN,
+        DPAD_LEFT,
+        DPAD_RIGHT,
+        MANUAL_UP,
+        MANUAL_DOWN
+    }
+    public buttonPressedState currentButtonPressedState;
+
+
+
 
     // define enum for different Arm positions
     public enum armPosition {
@@ -143,6 +152,7 @@ public class LiftClass {
         //init states for hold power
         currentHoldPowerState = holdPowerState.HOME;
         currentMovementState = movementState.REST;
+        currentButtonPressedState = buttonPressedState.REST;
 
         // intilization making sure we arnt saving bad variables between opmodes
         hang = false;
@@ -169,8 +179,8 @@ public class LiftClass {
                 liftMotorPower = 1;
                 break;
             case HANG:
-                liftLeft.setTargetPosition(185);
-                liftRight.setTargetPosition(185);
+                liftLeft.setTargetPosition(150);
+                liftRight.setTargetPosition(150);
                 liftMotorPower = 1;
                 break;
 
@@ -232,16 +242,22 @@ public class LiftClass {
             case HANG:
                 switch (step) {
                     case -1:  // Initialize the
+                        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+                        pulleyLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                        pulleyRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
                         currentHoldPowerState = holdPowerState.HANG;
-                        setShoulderPosition(0.25);
+                        setShoulderPosition(1);
                         setElbowPosition(0.8);
                         setLiftPosition(liftPosition.HANG);
                         step = 0;
                         break;
                     case 0:  // Initialize the
                         setPulleyPosition(pulleyPosition.HANG);
-                        setLiftPower(0.5);
-                        if (getPulleyPositionL() >= 2800) {
+                        if (getPulleyPositionL() >= 2850) {
                             step++;
                         }
                         break;
@@ -253,18 +269,20 @@ public class LiftClass {
                         break;
                     case 2:
                         setPulleyPower(-1);
-                        if (getPulleyPositionL() <= 1500) { // Replace with your own position checking logic
+                        if (getPulleyPositionL() <= 1500) {
                             step++;
                         }
                         break;
                     case 3:
-                        setLiftPower(-.35);
-                        setPulleyPower(-.85);
-                        if (getPulleyPositionL() <= 100) { // Replace with your own position checking logic
+                        setLiftPower(0.15);
+                        setPulleyPower(-.75);
+                        if (getPulleyPositionL() <= 150) {
                             step++;
                         }
                         break;
                     case 4:
+                        setPulleyPower(-.15);
+                        setLiftPower(-.35);
                         currentMovementState = movementState.REST;
                         break;
                 }
@@ -307,7 +325,7 @@ public class LiftClass {
                         setElbowPosition(0);
                         step = -1;
                         submersibleScoringPosition = false;
-                        dpadDowntapped = false;
+                        currentButtonPressedState = buttonPressedState.REST;
                         currentMovementState = movementState.REST;
                         break;
                 }
@@ -354,7 +372,7 @@ public class LiftClass {
                         case 4:
                             step = -1;
                             submersibleScoringPosition = true;
-                            dpadRighttapped = false;
+                            currentButtonPressedState = buttonPressedState.REST;
                             currentMovementState = movementState.REST;
                             break;
                     }
@@ -388,7 +406,7 @@ public class LiftClass {
                                 setElbowPosition(0.2);
                                 step = -1;
                                 submersibleScoringPosition = true;
-                                dpadRighttapped = false;
+                                currentButtonPressedState = buttonPressedState.REST;
                                 currentMovementState = movementState.REST;
                                 break;
                         }
@@ -421,7 +439,7 @@ public class LiftClass {
                             setLiftPosition(LiftClass.liftPosition.HOME);
                             step = -1;
                             submersibleScoringPosition = false;
-                            dpadRighttapped = false;
+                            currentButtonPressedState = buttonPressedState.REST;
                             currentMovementState = movementState.REST;
                             break;
                     }
@@ -443,7 +461,7 @@ public class LiftClass {
                             setLiftPosition(LiftClass.liftPosition.HOME);
                             step = -1;
                             submersibleScoringPosition = false;
-                            dpadRighttapped = false;
+                            currentButtonPressedState = buttonPressedState.REST;
                             currentMovementState = movementState.REST;
                             break;
                     }
@@ -485,7 +503,7 @@ public class LiftClass {
                         setElbowPosition(0.6);
                         step = -1;
                         submersibleScoringPosition = false;
-                        dpadUptapped = false;
+                        currentButtonPressedState = buttonPressedState.REST;
                         currentMovementState = movementState.REST;
                         break;
                 }
@@ -526,7 +544,7 @@ public class LiftClass {
                         setElbowPosition(0);
                         step = -1;
                         submersibleScoringPosition = false;
-                        dpadLefttapped = false;
+                        currentButtonPressedState = buttonPressedState.REST;
                         currentMovementState = movementState.REST;
                         break;
                 }
@@ -551,7 +569,7 @@ public class LiftClass {
                         sleep(1000);
                         step = -1;
                         submersibleScoringPosition = false;
-                        dpadLefttapped = false;
+                        currentButtonPressedState = buttonPressedState.REST;
                         currentMovementState = movementState.REST;
                         break;
                 }
@@ -698,27 +716,6 @@ public class LiftClass {
         elbow.setPosition(position);
     }
 
-    //writer/setter statements for the eight arm movement booleans
-    public void setHangStatus(boolean status) {
-        hang = status;
-    }
-
-    public void setDpadUpTappedStatus(boolean status) {
-        dpadUptapped = status;
-    }
-
-    public void setDpadDowntappedStatus(boolean status) {
-        dpadDowntapped = status;
-    }
-
-    public void setDpadLefttappedStatus(boolean status) {
-        dpadLefttapped = status;
-    }
-
-    public void setDpadRighttappedStatus(boolean status) {
-        dpadRighttapped = status;
-    }
-
     public void setButtonPressedStatus(boolean status) {
         buttonPressed = status;
     }
@@ -766,29 +763,10 @@ public class LiftClass {
         return liftRight.getPower();
     }
 
-    // getter statements for the 8 boolean switch program statements
-    public boolean getHangStatus() {
-        return hang;
-    }
+    // getter statements for the 2 boolean switch program statements
 
     public boolean getSubmersibleScoringPosition(){
         return submersibleScoringPosition;
-    }
-
-    public boolean getDpadUpTapped() {
-        return dpadUptapped;
-    }
-
-    public boolean getDpadDownTapped() {
-        return dpadDowntapped;
-    }
-
-    public boolean getDpadLeftTapped() {
-        return dpadLefttapped;
-    }
-
-    public boolean getDpadRightTapped() {
-        return dpadRighttapped;
     }
 
     public boolean getButtonPressed() {

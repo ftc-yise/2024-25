@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.teamcode.yise.LiftClass;
 import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
@@ -23,6 +24,7 @@ public class Encoder extends LinearOpMode {
     DcMotor leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive;
 
     public RevColorSensorV3 clawSensor;
+    public DigitalChannel limit;
 
     public Boolean RightBumperPressed = false;
     public Boolean XPressed = false;
@@ -31,11 +33,6 @@ public class Encoder extends LinearOpMode {
     public Boolean BumperPressed = false;
 
     public Boolean color = false;
-
-    boolean isDpadPressed = gamepad2.dpad_down &&
-            gamepad2.dpad_up &&
-            gamepad2.dpad_left &&
-            gamepad2.dpad_right;
 
     public boolean canToggleSlowMode = true;
 
@@ -56,6 +53,7 @@ public class Encoder extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "RightBackDrive");
 
         clawSensor = hardwareMap.get(RevColorSensorV3.class, "ClawSensor");
+        limit = hardwareMap.get(DigitalChannel.class, "limit");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -130,50 +128,60 @@ public class Encoder extends LinearOpMode {
             // which dpad we hit
             if (gamepad1.touchpad || gamepad1.ps) {
                 arm.currentMovementState = LiftClass.movementState.MOVING;
-                arm.setHangStatus(true);
+                arm.currentButtonPressedState = LiftClass.buttonPressedState.HANG;
+
             } else if (gamepad2.dpad_up) {
-                arm.setDpadUpTappedStatus(true);
                 arm.currentMovementState = LiftClass.movementState.MOVING;
+                arm.currentButtonPressedState = LiftClass.buttonPressedState.DPAD_UP;
+
             } else if (gamepad2.dpad_down) {
                 arm.currentMovementState = LiftClass.movementState.MOVING;
-                arm.setDpadDowntappedStatus(true);
+                arm.currentButtonPressedState = LiftClass.buttonPressedState.DPAD_DOWN;
+
             } else if (gamepad2.dpad_left) {
                 arm.currentMovementState = LiftClass.movementState.MOVING;
-                arm.setDpadLefttappedStatus(true);
+                arm.currentButtonPressedState = LiftClass.buttonPressedState.DPAD_LEFT;
+
             } else if (gamepad2.dpad_right) {
                 arm.currentMovementState = LiftClass.movementState.MOVING;
-                arm.setDpadRighttappedStatus(true);
-            }
-
-            //set whole are movement based on which dpad is pressed and if we need
-            //to manually in
-            if (arm.getHangStatus()) {
-                arm.setArmPosition(LiftClass.armPosition.HANG);
-            } else if (arm.getDpadUpTapped()) {
-                arm.setArmPosition(LiftClass.armPosition.BASKET);
-            } else if (arm.getDpadDownTapped()) {
-
-                if (arm.getSubmersibleScoringPosition()) {
-                    arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLEEND);
-                } else{
-                    arm.setArmPosition(LiftClass.armPosition.HOME);
-                }
-
-            } else if (arm.getDpadLeftTapped()) {
-                arm.setArmPosition(LiftClass.armPosition.SEARCH);
-            } else if (arm.getDpadRightTapped()) {
-
-                if (arm.getSubmersibleScoringPosition()) {
-                    arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLEEND);
-                } else {
-                    arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLESTART);
-                }
-                // manual power at the end of the if else so can only run when not currently
-                // moving arms
+                arm.currentButtonPressedState = LiftClass.buttonPressedState.DPAD_RIGHT;
             } else if (gamepad2.options) {
                 arm.manualPowerDownPulley();
             } else if (gamepad2.left_trigger > 0.75){
                 arm.manualPowerDownLift();
+            } else {
+                arm.setButtonPressedStatus(false);
+            }
+
+            //set whole are movement based on which dpad is pressed and if we need
+            //to manually in
+            switch (arm.currentButtonPressedState){
+                case HANG:
+                    arm.setArmPosition(LiftClass.armPosition.HANG);
+                    break;
+                case DPAD_UP:
+                    arm.setArmPosition(LiftClass.armPosition.BASKET);
+                    break;
+                case DPAD_DOWN:
+                    if (arm.getSubmersibleScoringPosition()) {
+                        arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLEEND);
+                    } else{
+                        arm.setArmPosition(LiftClass.armPosition.HOME);
+                    }
+                    break;
+                case DPAD_LEFT:
+                    arm.setArmPosition(LiftClass.armPosition.SEARCH);
+                    break;
+                case DPAD_RIGHT:
+                    if (arm.getSubmersibleScoringPosition()) {
+                        arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLEEND);
+                    } else {
+                        arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLESTART);
+                    }
+                    break;
+                case REST:
+                    telemetry.addLine("No buttons pressed");
+                    break;
             }
 
             // Check arm movement state and adjust hold power accordingly
@@ -213,16 +221,6 @@ public class Encoder extends LinearOpMode {
                             break;
                     }
                     break;
-            }
-
-            //checks for if the dpad is ever pressed
-            isDpadPressed = gamepad2.dpad_down ||
-                    gamepad2.dpad_up ||
-                    gamepad2.dpad_left ||
-                    gamepad2.dpad_right;
-
-            if (!isDpadPressed) {
-                arm.setButtonPressedStatus(false);
             }
 
             // Claw control method
@@ -366,15 +364,12 @@ public class Encoder extends LinearOpMode {
 
             // Section 6: Arm movement control booleans
             telemetry.addData("targetPose", arm.pulleyLeft.getTargetPosition());
-            telemetry.addData("hang", arm.getHangStatus());
             telemetry.addData("button pressed", arm.getButtonPressed());
             telemetry.addLine();
 
-            // Section 7: D-pad control booleans for arm movement
-            telemetry.addData("dpad right status", arm.getDpadRightTapped());
-            telemetry.addData("dpad left status", arm.getDpadLeftTapped());
-            telemetry.addData("dpad up status", arm.getDpadUpTapped());
-            telemetry.addData("dpad down status", arm.getDpadDownTapped());
+            // Section 7: Limit Switch
+            telemetry.addData("limit", limit.getState());
+            telemetry.addLine();
 
             telemetry.update();
         }

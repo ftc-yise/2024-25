@@ -10,15 +10,15 @@ import org.firstinspires.ftc.teamcode.yise.ledLights;
 // import org.firstinspires.ftc.teamcode.yise.Parameters;
 // import org.firstinspires.ftc.teamcode.yise.poseStorage;
 
-@Autonomous(name = "yellowAutoRedBucket", group = "Linear Opmode")
+@Autonomous(name = "yellowAutoBlueBucket", group = "Linear Opmode")
 
-public class yellowAutoRedBucket extends LinearOpMode {
+public class autoBlueBucket extends LinearOpMode {
     public float endLocation_X = 0;
     public float endLocation_Y = 16;
     public float endHeading_Z = 90;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
         // ------------------------------------------------------------------------------------
         // Initialize Class Instances and Variables
@@ -38,40 +38,38 @@ public class yellowAutoRedBucket extends LinearOpMode {
         // ------------------------------------------------------------------------------------
 
         // Start by defining our start position
-        Pose2d startPose = new Pose2d(-23, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(23, 60, Math.toRadians(270));
         drive.setPoseEstimate(startPose);
-
-
         TrajectorySequence place_Block_1 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-55, -51, Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(53, 52, Math.toRadians(225)))
                 .waitSeconds(1)
                 .build();
 
         TrajectorySequence pick_Up_Block_2 = drive.trajectorySequenceBuilder(place_Block_1.end())
-                .lineToLinearHeading(new Pose2d(-47.5, -40, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(48, 40, Math.toRadians(270)))
+                .forward(7)
                 .waitSeconds(1)
-                .forward(8)
                 .build();
 
         TrajectorySequence place_Block_2 = drive.trajectorySequenceBuilder(pick_Up_Block_2.end())
-                .lineToLinearHeading(new Pose2d(-55, -51, Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(53, 51.95, Math.toRadians(225)))
+                .waitSeconds(1)
                 .build();
 
         TrajectorySequence pick_Up_Block_3 = drive.trajectorySequenceBuilder(place_Block_2.end())
-                .lineToLinearHeading(new Pose2d(-58, -40, Math.toRadians(90)))
-                .waitSeconds(1)
+                .lineToLinearHeading(new Pose2d(58, 40, Math.toRadians(270)))
                 .forward(8)
+                .waitSeconds(1)
                 .build();
 
         TrajectorySequence place_Block_3 = drive.trajectorySequenceBuilder(pick_Up_Block_3.end())
-                .lineToLinearHeading(new Pose2d(-53, -52, Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(53, 52, Math.toRadians(225)))
                 .waitSeconds(1)
                 .build();
 
-
         TrajectorySequence park_At_Submersible_And_Hang = drive.trajectorySequenceBuilder(place_Block_3.end())
-                .lineToLinearHeading(new Pose2d(-42, 12, Math.toRadians(0)))
-                .forward(19)
+                .lineToLinearHeading(new Pose2d(42, -12, Math.toRadians(180)))
+                .forward(20)
                 .build();
 
 
@@ -80,31 +78,34 @@ public class yellowAutoRedBucket extends LinearOpMode {
         // telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
         // telemetry.addData("Distance S Right", yiseDrive.distanceSensorRight);
         telemetry.update();
+
+
         drive.followTrajectorySequence(place_Block_1);
 
         arm.setElbowPosition(0);
         arm.setShoulderPosition(1);
 
-        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
-
-        sleep(350);
+        arm.setLiftPower(1);
+        while (arm.getLiftPositionL() <350) {
+            sleep(50);
+        }
         arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.pulleyPosition.BASKET);
 
         sleep(2300);
 
-        arm.setElbowPosition(0.6);
-        arm.setShoulderPosition(1);
-        sleep(500);
+        arm.setElbowPosition(0.3);
+        arm.setShoulderPosition(0.5);
+        sleep(400);
 
         arm.setClawPosition(1);
 
         sleep(150);
 
-        arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.4);
+        arm.setElbowPosition(0.5);
+        arm.setShoulderPosition(0.9);
 
-        sleep(500);
+        sleep(600);
 
         arm.setPulleyPosition(LiftClass.pulleyPosition.HOME);
 
@@ -128,41 +129,38 @@ public class yellowAutoRedBucket extends LinearOpMode {
         arm.setElbowPosition(0);
         arm.setShoulderPosition(1);
 
-        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
-
-        sleep(350);
+        arm.setLiftPower(1);
+        while (arm.getLiftPositionL() <350) {
+            sleep(50);
+        }
         arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.pulleyPosition.BASKET);
 
         sleep(2300);
 
-        arm.setElbowPosition(0.6);
-        arm.setShoulderPosition(1);
-        arm.setWristPosition(1);
-        sleep(500);
+        arm.setElbowPosition(0.3);
+        arm.setShoulderPosition(0.5);
+        sleep(400);
 
         arm.setClawPosition(1);
 
-        sleep(150);
+        sleep(50);
 
-        arm.setElbowPosition(0.35);
-        arm.setShoulderPosition(1);
-        arm.setWristPosition(0);
-        sleep(500);
+        arm.setElbowPosition(0.5);
+        arm.setShoulderPosition(0.9);
+        sleep(600);
 
         arm.setElbowPosition(0);
         arm.setShoulderPosition(0.4);
-        arm.setPulleyPower(-1);
 
-        while (arm.getPulleyPositionR() >25) {
-            sleep(50);
-        }
+        arm.setPulleyPosition(LiftClass.pulleyPosition.HOME);
 
-        arm.setPulleyPower(0);
+        sleep(1500);
+
 
         arm.setLiftPosition(LiftClass.liftPosition.HOME);
 
-        drive.followTrajectorySequence(pick_Up_Block_3);
+         drive.followTrajectorySequence(pick_Up_Block_3);
         arm.setShoulderPosition(0.6);
         arm.setElbowPosition(0.02);
         sleep(250);
@@ -172,50 +170,41 @@ public class yellowAutoRedBucket extends LinearOpMode {
         arm.setElbowPosition(0);
         arm.setShoulderPosition(1);
 
-        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
-
-        sleep(350);
+        arm.setLiftPower(1);
+        while (arm.getLiftPositionL() <350) {
+            sleep(50);
+        }
         arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.pulleyPosition.BASKET);
-
         sleep(2300);
 
-        arm.setElbowPosition(0.6);
-        arm.setShoulderPosition(1);
-        arm.setWristPosition(1);
-        sleep(500);
+        arm.setElbowPosition(0.3);
+        arm.setShoulderPosition(0.5);
+        sleep(400);
 
         arm.setClawPosition(1);
 
         sleep(150);
 
-        arm.setElbowPosition(0.35);
-        arm.setShoulderPosition(1);
-        arm.setWristPosition(0);
+        arm.setElbowPosition(0.5);
+        arm.setShoulderPosition(0.9);
 
+        sleep(600);
 
-        sleep(500);
+        arm.setPulleyPosition(LiftClass.pulleyPosition.HOME);
 
-        arm.setElbowPosition(0);
-        arm.setShoulderPosition(0.4);
-        arm.setPulleyPower(-1);
-
-        while (arm.getPulleyPositionR() >25){
-            sleep(50);
-        }
-        arm.setPulleyPower(0);
+        sleep(1500);
         arm.setLiftPosition(LiftClass.liftPosition.HOME);
+        sleep(250);
+
+        arm.setPulleyPower(0);
 
         sleep(250);
 
         //drive.followTrajectorySequence(park_At_Submersible_And_Hang);
-            // telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
-            // telemetry.addData ("Distance S Right", yiseDrive.distanceSensorRight);
-            telemetry.update();
+        // telemetry.addData("Distance S Left", yiseDrive.distanceSensorLeft);
+        // telemetry.addData ("Distance S Right", yiseDrive.distanceSensorRight);
+        telemetry.update();
 
-            //drive.followTrajectorySequence(seq_2);
-
-
-
-    }
-}
+        //drive.followTrajectorySequence(seq_2);
+}}

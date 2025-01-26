@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.yise.LiftClass;
 import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
@@ -13,8 +12,8 @@ import org.firstinspires.ftc.teamcode.yise.Parameters;
 import org.firstinspires.ftc.teamcode.yise.RoadRunnerDriving;
 import org.firstinspires.ftc.teamcode.yise.ledLights;
 
-@TeleOp(name="Encoder Testing", group="Linear OpMode")
-public class Encoder extends LinearOpMode {
+@TeleOp(name="Main Drive", group="Linear OpMode")
+public class MainDrive extends LinearOpMode {
     OpenCVVision vision = new OpenCVVision();
 
     // Declare OpMode members for each of the 4 motors.
@@ -139,19 +138,6 @@ public class Encoder extends LinearOpMode {
                 //arm.currentHoldPowerState = LiftClass.holdPowerState.HOME;
             }
 
-            if (Math.abs(arm.pulleyLeft.getCurrentPosition() - arm.pulleyLeft.getTargetPosition()) <= 250 && !arm.getPulleyHoldStatus()){
-                arm.setPulleyPower(0);
-                arm.setPulleyHoldStatus(true);
-            } else if (arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.BASKET || arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.SUBMERSIBLE && arm.getPulleyHoldStatus()) {
-                arm.zeroPowerPulley();
-            }
-
-            if (arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.HOME && !arm.getButtonPressed() && !arm.getHangStatus()){
-                arm.setPulleyPower(0);
-            } else if (arm.getCurrentLiftPosition() == LiftClass.liftPosition.HOME && !arm.getButtonPressed()){
-                arm.setLiftPower(0);
-            }
-
             if (gamepad2.left_trigger > 0.75){
                 arm.manualPowerDownLift();
             }
@@ -267,9 +253,9 @@ public class Encoder extends LinearOpMode {
             if (gamepad2.x && !XPressed) {
                 XPressed = true;
 
-                 arm.setShoulderPosition(arm.ShoulderR.getPosition() == 0.65 ? 0.45 : 0.65);
+                 arm.setShoulderPosition(arm.ShoulderR.getPosition() == 0.25 ? 1 : 0.25);
 
-                 arm.setElbowPosition(0.45);
+                arm.setElbowPosition(0);
             } else if (!gamepad2.x && XPressed) {
                 XPressed = false;
             }

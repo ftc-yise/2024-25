@@ -149,8 +149,8 @@ public class LiftClass {
         // initialization pose for Driver Control and Auto
         //ToDO make the Servos & motor not move on Initiation and instead at the very start of Auto and Drive
         // control to save drivers time
-        setShoulderPosition(0.5);
-        setElbowPosition(0.5);
+        setShoulderPosition(0);
+        setElbowPosition(0);
         setWristPosition(0);
         setClawPosition(0);
         setCameraHeightLOW();
@@ -217,8 +217,8 @@ public class LiftClass {
                 pulleyRight.setTargetPosition(1450);
                 break;
             case SEARCH:
-                pulleyLeft.setTargetPosition(2000);
-                pulleyRight.setTargetPosition(2000);
+                pulleyLeft.setTargetPosition(1650);
+                pulleyRight.setTargetPosition(1650);
                 break;
 
             case HANG:

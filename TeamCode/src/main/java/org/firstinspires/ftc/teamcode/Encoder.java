@@ -137,6 +137,27 @@ public class Encoder extends LinearOpMode {
             } else if (arm.limit.getState() && !arm.buttonPressed){
                 //arm.currentMovementState = LiftClass.movementState.REST;
                 //arm.currentHoldPowerState = LiftClass.holdPowerState.HOME;
+            }
+
+            if (Math.abs(arm.pulleyLeft.getCurrentPosition() - arm.pulleyLeft.getTargetPosition()) <= 250 && !arm.getPulleyHoldStatus()){
+                arm.setPulleyPower(0);
+                arm.setPulleyHoldStatus(true);
+            } else if (arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.BASKET || arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.SUBMERSIBLE && arm.getPulleyHoldStatus()) {
+                arm.zeroPowerPulley();
+            }
+
+            if (arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.HOME && !arm.getButtonPressed() && !arm.getHangStatus()){
+                arm.setPulleyPower(0);
+            } else if (arm.getCurrentLiftPosition() == LiftClass.liftPosition.HOME && !arm.getButtonPressed()){
+                arm.setLiftPower(0);
+            }
+
+            if (gamepad2.left_trigger > 0.75){
+                arm.manualPowerDownLift();
+            }
+
+            if (!gamepad2.dpad_down && !gamepad2.dpad_up && !gamepad2.dpad_left && !gamepad2.dpad_right) {
+                arm.setButtonPressedStatus(false);
             } else {
                 arm.setButtonPressedStatus(false);
             }

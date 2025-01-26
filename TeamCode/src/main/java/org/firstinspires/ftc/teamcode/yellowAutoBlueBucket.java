@@ -85,9 +85,11 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setElbowPosition(0);
         arm.setShoulderPosition(1);
 
-        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
-
-        sleep(250);
+        arm.setLiftPower(1);
+        while (arm.getLiftPositionL() <350) {
+            sleep(50);
+        }
+        arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
         sleep(2300);
@@ -127,9 +129,10 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setElbowPosition(0);
         arm.setShoulderPosition(1);
 
-        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
-
-        sleep(350);
+        arm.setLiftPower(1);
+        while (arm.getLiftPositionL() <350) {
+            sleep(50);
+        }
         arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
 
@@ -169,12 +172,12 @@ public class yellowAutoBlueBucket extends LinearOpMode {
         arm.setElbowPosition(0);
         arm.setShoulderPosition(1);
 
-        arm.setLiftPosition(LiftClass.liftPosition.BASKET);
-
-        sleep(250);
+        arm.setLiftPower(1);
+        while (arm.getLiftPositionL() < 450) {
+            sleep(50);
+        }
         arm.setLiftPower(0.08);
         arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
-
         sleep(2300);
 
         arm.setElbowPosition(0.3);

@@ -169,9 +169,19 @@ public class Encoder extends LinearOpMode {
 
             if (Math.abs(arm.pulleyLeft.getCurrentPosition() - arm.pulleyLeft.getTargetPosition()) <= 250 && !arm.getPulleyHoldStatus()){
                 arm.setPulleyPower(0);
-                arm.setPulleyHoldStatus(false);
+                arm.setPulleyHoldStatus(true);
             } else if (arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.BASKET || arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.SUBMERSIBLE && arm.getPulleyHoldStatus()) {
                 arm.zeroPowerPulley();
+            }
+
+            if (arm.getCurrentPulleyPosition() == LiftClass.PulleyPosition.HOME && !arm.getButtonPressed() && !arm.getHangStatus()){
+                arm.setPulleyPower(0);
+            } else if (arm.getCurrentLiftPosition() == LiftClass.liftPosition.HOME && !arm.getButtonPressed()){
+                arm.setLiftPower(0);
+            }
+
+            if (gamepad2.left_trigger > 0.75){
+                arm.manualPowerDownLift();
             }
 
             if (!gamepad2.dpad_down && !gamepad2.dpad_up && !gamepad2.dpad_left && !gamepad2.dpad_right) {
@@ -182,6 +192,8 @@ public class Encoder extends LinearOpMode {
 
             if (arm.getCurrentLiftPosition() == LiftClass.liftPosition.BASKET) {
                 arm.zeroPowerLift();
+            } else if (!arm.liftLeft.isBusy() && !arm.liftRight.isBusy()){
+                arm.setLiftPower(0);
             }
 
 

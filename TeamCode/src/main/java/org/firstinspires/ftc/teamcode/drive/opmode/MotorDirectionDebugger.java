@@ -91,11 +91,11 @@ public class MotorDirectionDebugger extends LinearOpMode {
             }
 
             if(gamepad1.right_bumper){
-                arm.setShoulderPosition(0.25);
-                arm.setElbowPosition(0.2);
+                arm.setShoulderPosition(1);
+                arm.setElbowPosition(0.3);
             } else if (gamepad1.left_bumper) {
-                arm.setShoulderPosition(0);
-                arm.setElbowPosition(0);
+                arm.setShoulderPosition(1);
+                arm.setElbowPosition(0.4);
             }
 
             if (gamepad1.right_trigger > 0.5) {

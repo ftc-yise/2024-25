@@ -26,13 +26,38 @@
 
   public TrajectorySequence InitialBlockScore(SampleMecanumDrive drive, Pose2d startPose, LiftClass arm) {
    //Build the trajectory sequence
+
+   //Create all position variables that will be changed
+   double heading;
+   double x;
+   double y;
+
+   //Get the alliance color and starting side of truss
+   //Calculate coordinates depending on prop location
+   if (Parameters.allianceColor == Parameters.Color.RED) {
+    /*startX = -4.875;
+    startY = 64;
+    startHeading =90;*/
+
+
+    //start position should be 12, -64, 90
+    heading = -90;
+    x = -4.125;
+    y = -31;
+
+   } else {
+    heading = 90;
+    x = 4.125;
+    y = 31;
+   }
+
    TrajectorySequence mySequence = drive.trajectorySequenceBuilder(startPose)
            //Wait for however long drivers want before moving
            .waitSeconds(Parameters.WAIT)
 
+
            //Go to calculated position
-           .strafeRight(9)
-           .back(33)
+           .lineToLinearHeading(new Pose2d(x,y,Math.toRadians(heading)))
            .build();
 
    //Return the built sequence so it can be run
@@ -74,6 +99,7 @@
            // Run your action in here!
           })
           .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)))
+          .waitSeconds(0.5)
           .forward(8)
           .build();
 
@@ -108,7 +134,7 @@
 
            .splineToLinearHeading(new Pose2d(0 + runs, 31 * DiectionalMulti, Math.toRadians(90 * DiectionalMulti)), Math.toRadians(270))
            .waitSeconds(0.1)
-           .back(2)
+           .back(8)
            .build();
     return blockScoreObservation;
   }
@@ -159,14 +185,13 @@
     }
 
     runsX = runsX * 6;
-    runsY = runsY * 10;
+    runsY = runsY * 9;
 
     TrajectorySequence lodgeBlocksIntoObservation = drive.trajectorySequenceBuilder(startPose)
             //Go to calculated position
-            .forward(5)
+            .forward(9)
             .strafeLeft(34)
             .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)))
-            .waitSeconds(0.1)
             .forward(40)
 
             .splineToLinearHeading(new Pose2d(blockX, blockY, Math.toRadians(blockHeading)), Math.toRadians(blockTangent))

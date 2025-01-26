@@ -113,8 +113,8 @@ public class LiftClass {
         // initialization pose for Driver Control and Auto
         //ToDO make the Servos & motor not move on Initiation and instead at the very start of Auto and Drive
         // control to save drivers time
-        setShoulderPosition(0.5);
-        setElbowPosition(0.5);
+        setShoulderPosition(0);
+        setElbowPosition(0);
         setWristPosition(0);
         setClawPosition(0);
         setCameraHeightLOW();
@@ -170,8 +170,8 @@ public class LiftClass {
                 pulleyRightPower = -1;
                 break;
             case BASKET:
-                pulleyLeft.setTargetPosition(3800);
-                pulleyRight.setTargetPosition(3800);
+                pulleyLeft.setTargetPosition(3900);
+                pulleyRight.setTargetPosition(3900);
                 pulleyRightPower = 1;
                 break;
             case SUBMERSIBLE:
@@ -180,8 +180,8 @@ public class LiftClass {
                 pulleyRightPower = 1;
                 break;
             case SEARCH:
-                pulleyLeft.setTargetPosition(2000);
-                pulleyRight.setTargetPosition(2000);
+                pulleyLeft.setTargetPosition(1650);
+                pulleyRight.setTargetPosition(1650);
                 pulleyRightPower = 1;
                 break;
 
@@ -215,7 +215,7 @@ public class LiftClass {
                 switch (step) {
                     case -1:  // Initialize the
                         setShoulderPosition(0.25);
-                        setElbowPosition(0);
+                        setElbowPosition(0.8);
                         step = 0;
                         break;
                     case 0:  // Initialize the
@@ -225,7 +225,7 @@ public class LiftClass {
                         }
                         break;
                     case 1:
-                        setLiftPosition(LiftClass.liftPosition.HANG);
+                        setLiftPosition(liftPosition.HANG);
                         if (getLiftPositionL() >= 150) { // Replace with your own position checking logic
                             sleep(2000);
                             step++;
@@ -238,6 +238,8 @@ public class LiftClass {
                         }
                         break;
                     case 3:
+                        setLiftPosition(liftPosition.HOME);
+                        setLiftPower(-1);
                         setShoulderPosition(1);
                         setElbowPosition(0.65);
                         step++;
@@ -447,7 +449,7 @@ public class LiftClass {
                         break;
                     case 3:
                         setShoulderPosition(1);
-                        setElbowPosition(0.65);
+                        setElbowPosition(0.6);
                         step = -1;
                         submersibleScoringPosition = false;
                         dpadUptapped = false;
@@ -561,6 +563,9 @@ public class LiftClass {
         liftLeft.setPower(-0.35);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setPower(-0.35);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
     }
 
     public void manualPowerUpPulley() {

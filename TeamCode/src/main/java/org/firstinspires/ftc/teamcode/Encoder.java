@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.teamcode.yise.LiftClass;
 import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
@@ -21,10 +20,7 @@ public class Encoder extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
     private final ElapsedTime runtime = new  ElapsedTime();
 
-    DcMotor leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive;
-
     public RevColorSensorV3 clawSensor;
-    public DigitalChannel limit;
 
     public Boolean RightBumperPressed = false;
     public Boolean XPressed = false;
@@ -47,18 +43,7 @@ public class Encoder extends LinearOpMode {
         ledLights LEDs = new ledLights(hardwareMap);
 
         // Initialize the hardware variables. Note that the strings used here must correspond
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "LeftFrontDrive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "RightFrontDrive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "LeftBackDrive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "RightBackDrive");
-
         clawSensor = hardwareMap.get(RevColorSensorV3.class, "ClawSensor");
-        limit = hardwareMap.get(DigitalChannel.class, "limit");
-
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -149,6 +134,9 @@ public class Encoder extends LinearOpMode {
                 arm.manualPowerDownPulley();
             } else if (gamepad2.left_trigger > 0.75){
                 arm.manualPowerDownLift();
+            } else if (arm.limit.getState() && !arm.buttonPressed){
+                //arm.currentMovementState = LiftClass.movementState.REST;
+                //arm.currentHoldPowerState = LiftClass.holdPowerState.HOME;
             } else {
                 arm.setButtonPressedStatus(false);
             }
@@ -260,7 +248,7 @@ public class Encoder extends LinearOpMode {
 
                  arm.setShoulderPosition(arm.ShoulderR.getPosition() == 0.65 ? 0.45 : 0.65);
 
-                 arm.setElbowPosition(0.5);
+                 arm.setElbowPosition(0.45);
             } else if (!gamepad2.x && XPressed) {
                 XPressed = false;
             }
@@ -368,7 +356,7 @@ public class Encoder extends LinearOpMode {
             telemetry.addLine();
 
             // Section 7: Limit Switch
-            telemetry.addData("limit", limit.getState());
+            telemetry.addData("limit switch", arm.limit.getState());
             telemetry.addLine();
 
             telemetry.update();

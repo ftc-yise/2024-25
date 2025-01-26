@@ -5,6 +5,8 @@ import static java.lang.Thread.sleep;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -36,6 +38,8 @@ public class LiftClass {
     public DcMotor liftLeft, liftRight, pulleyLeft, pulleyRight;
     public Servo claw, wrist, shoulderL, ShoulderR, elbow, cameraLift;
     public CRServo intake;
+    public DigitalChannel limit;
+
 
     // define enum for different lift positions
     public enum liftPosition {
@@ -118,6 +122,8 @@ public class LiftClass {
         cameraLift = hardwareMap.get(Servo.class, "cameraLift");
 
         intake = hardwareMap.get(CRServo.class, "intake");
+
+        limit = hardwareMap.get(DigitalChannel.class, "limit");
 
         //Set motor and servo directions
         liftLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -304,7 +310,7 @@ public class LiftClass {
                             setPulleyPosition(pulleyPosition.HOME);
                             buttonPressed = true;
                         }
-                        if (getPulleyPositionL() <= 350) {
+                        if (getPulleyPositionL() <= 250) {
                             step++;
                         }
                         break;
@@ -338,8 +344,8 @@ public class LiftClass {
                     switch (step) {
                         case -1:  // Initialize the
                             currentHoldPowerState = holdPowerState.SUBMERSIBLE;
-                            setShoulderPosition(0.25);
-                            setElbowPosition(0.5);
+                            setShoulderPosition(0.65);
+                            setElbowPosition(0.65);
                             step = 0;
                             break;
                         case 0:  // Initialize the
@@ -365,8 +371,8 @@ public class LiftClass {
                             }
                             break;
                         case 3:
-                            setShoulderPosition(0.3);
-                            setElbowPosition(0.5);
+                            setShoulderPosition(0.65);
+                            setElbowPosition(0.65);
                             step++;
                             break;
                         case 4:
@@ -382,7 +388,7 @@ public class LiftClass {
                                 currentHoldPowerState = holdPowerState.SUBMERSIBLE;
                                 setWristPosition(1);
                                 setShoulderPosition(0.5);
-                                setElbowPosition(0.5);
+                                setElbowPosition(0.6);
                                 step = 0;
                                 break;
                             case 0:  // Initialize the
@@ -401,7 +407,6 @@ public class LiftClass {
                                 }
                                 break;
                             case 2:
-                                sleep(250);
                                 setShoulderPosition(0.5);
                                 setElbowPosition(0.2);
                                 step = -1;

@@ -107,7 +107,7 @@ public class yellowAutoBlueBucket extends LinearOpMode {
 
         sleep(600);
 
-        arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+        arm.setPulleyPosition(LiftClass.pulleyPosition.HOME);
 
         sleep(1500);
         arm.setLiftPosition(LiftClass.liftPosition.HOME);

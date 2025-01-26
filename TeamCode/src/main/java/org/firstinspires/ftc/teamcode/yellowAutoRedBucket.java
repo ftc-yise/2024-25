@@ -89,7 +89,7 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         sleep(350);
         arm.setLiftPower(0.08);
-        arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
+        arm.setPulleyPosition(LiftClass.pulleyPosition.BASKET);
 
         sleep(2300);
 
@@ -106,7 +106,7 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         sleep(500);
 
-        arm.setPulleyPosition(LiftClass.PulleyPosition.HOME);
+        arm.setPulleyPosition(LiftClass.pulleyPosition.HOME);
 
         sleep(1500);
         arm.setLiftPosition(LiftClass.liftPosition.HOME);
@@ -132,7 +132,7 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         sleep(350);
         arm.setLiftPower(0.08);
-        arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
+        arm.setPulleyPosition(LiftClass.pulleyPosition.BASKET);
 
         sleep(2300);
 
@@ -176,7 +176,7 @@ public class yellowAutoRedBucket extends LinearOpMode {
 
         sleep(350);
         arm.setLiftPower(0.08);
-        arm.setPulleyPosition(LiftClass.PulleyPosition.BASKET);
+        arm.setPulleyPosition(LiftClass.pulleyPosition.BASKET);
 
         sleep(2300);
 

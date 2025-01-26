@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.yise;
 
-import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -18,31 +19,27 @@ public class LiftClass {
     // functions repeatedly
     public boolean buttonPressed = false;
 
-    // determining if a dpad has been hit so we don't run throw loops repeatedly and we dont run
-    // through two loops at once
-    public boolean dpadUptapped = false;
-    public boolean dpadDowntapped = false;
-    public boolean dpadLefttapped = false;
-    public boolean dpadRighttapped = false;
-
     //creating a boolean for the hang so we can lock the hang into place
     public boolean hang = false;
-    public boolean pulleyHold = false;
+
+    //creating a boolean to define whether or not we need to come down a certain
+    //way to score for the submersible
     public boolean submersibleScoringPosition = false;
 
     //storage to view what the function enum is currently set too
-    private PulleyPosition currentPulleyPosition;
+    private pulleyPosition currentPulleyPosition;
     private liftPosition currentLiftPosition;
     private armPosition currentArmMovement;
 
-    // power for the right pulley since it is now chained to the left encoder
-    public double pulleyRightPower;
-
+    // double for the power of the lift
+    public double liftMotorPower;
 
     // Arm Definitions
     public DcMotor liftLeft, liftRight, pulleyLeft, pulleyRight;
     public Servo claw, wrist, shoulderL, ShoulderR, elbow, cameraLift;
     public CRServo intake;
+    public DigitalChannel limit;
+
 
     // define enum for different lift positions
     public enum liftPosition {
@@ -53,7 +50,7 @@ public class LiftClass {
     }
 
     // define enum for different Pulley positions
-    public enum PulleyPosition {
+    public enum pulleyPosition {
         HOME,
         SUBMERSIBLE,
         BASKET,
@@ -61,6 +58,39 @@ public class LiftClass {
         HANG,
         HANGEND
     }
+
+    //define global enums for hold power logic
+    public enum movementState {
+        REST,
+        MOVING
+    }
+
+    public enum holdPowerState {
+        HANG,
+        SEARCH,
+        SUBMERSIBLE,
+        BASKET,
+        HOME
+    }
+
+    public holdPowerState currentHoldPowerState;
+    public movementState currentMovementState;
+
+    //button pressed enum state
+    public enum buttonPressedState {
+        REST,
+        HANG,
+        DPAD_UP,
+        DPAD_DOWN,
+        DPAD_LEFT,
+        DPAD_RIGHT,
+        MANUAL_UP,
+        MANUAL_DOWN
+    }
+    public buttonPressedState currentButtonPressedState;
+
+
+
 
     // define enum for different Arm positions
     public enum armPosition {
@@ -72,9 +102,6 @@ public class LiftClass {
         SEARCH,
         HANG
     }
-
-
-    public double armMotorPower;
 
     // Constructor
     public LiftClass(HardwareMap hardwareMap) {
@@ -96,6 +123,8 @@ public class LiftClass {
 
         intake = hardwareMap.get(CRServo.class, "intake");
 
+        limit = hardwareMap.get(DigitalChannel.class, "limit");
+
         //Set motor and servo directions
         liftLeft.setDirection(DcMotor.Direction.REVERSE);
         pulleyLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -110,6 +139,13 @@ public class LiftClass {
         pulleyLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pulleyRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        //set zero power behavior for the motors
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        pulleyLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        pulleyRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         // initialization pose for Driver Control and Auto
         //ToDO make the Servos & motor not move on Initiation and instead at the very start of Auto and Drive
         // control to save drivers time
@@ -119,8 +155,12 @@ public class LiftClass {
         setClawPosition(0);
         setCameraHeightLOW();
 
+        //init states for hold power
+        currentHoldPowerState = holdPowerState.HOME;
+        currentMovementState = movementState.REST;
+        currentButtonPressedState = buttonPressedState.REST;
+
         // intilization making sure we arnt saving bad variables between opmodes
-        pulleyHold = false;
         hang = false;
     }
 
@@ -132,33 +172,33 @@ public class LiftClass {
             case BASKET:
                 liftLeft.setTargetPosition(495);
                 liftRight.setTargetPosition(495);
-                armMotorPower = 100;
+                liftMotorPower = 1;
                 break;
             case HOME:
                 liftLeft.setTargetPosition(0);
                 liftRight.setTargetPosition(0);
-                armMotorPower = 0.45;
+                liftMotorPower = 0.35;
                 break;
             case SUBMERSIBLE:
                 liftLeft.setTargetPosition(190);
                 liftRight.setTargetPosition(190);
-                armMotorPower = 100;
+                liftMotorPower = 1;
                 break;
             case HANG:
-                liftLeft.setTargetPosition(300);
-                liftRight.setTargetPosition(300);
-                armMotorPower = 100;
+                liftLeft.setTargetPosition(150);
+                liftRight.setTargetPosition(150);
+                liftMotorPower = 1;
                 break;
 
         }
         // Run motors to position and define a power level
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftLeft.setPower(armMotorPower);
-        liftRight.setPower(armMotorPower);
+        liftLeft.setPower(liftMotorPower);
+        liftRight.setPower(liftMotorPower);
     }
 
-    public void setPulleyPosition(LiftClass.PulleyPosition targetPulleyPosition) {
+    public void setPulleyPosition(pulleyPosition targetPulleyPosition) {
         // Stores the current position
         this.currentPulleyPosition = targetPulleyPosition;
 
@@ -167,41 +207,35 @@ public class LiftClass {
             case HOME:
                 pulleyLeft.setTargetPosition(0);
                 pulleyRight.setTargetPosition(0);
-                pulleyRightPower = -1;
                 break;
             case BASKET:
                 pulleyLeft.setTargetPosition(3900);
                 pulleyRight.setTargetPosition(3900);
-                pulleyRightPower = 1;
                 break;
             case SUBMERSIBLE:
                 pulleyLeft.setTargetPosition(1450);
                 pulleyRight.setTargetPosition(1450);
-                pulleyRightPower = 1;
                 break;
             case SEARCH:
                 pulleyLeft.setTargetPosition(1650);
                 pulleyRight.setTargetPosition(1650);
-                pulleyRightPower = 1;
                 break;
 
             case HANG:
                 pulleyLeft.setTargetPosition(2900);
                 pulleyRight.setTargetPosition(2900);
-                pulleyRightPower = 1;
                 break;
 
             case HANGEND:
                 pulleyLeft.setTargetPosition(800);
                 pulleyRight.setTargetPosition(800);
-                pulleyRightPower = 1;
                 break;
         }
         // Run motors to position and define a power level
         pulleyLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        pulleyRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pulleyRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pulleyLeft.setPower(1);
-        pulleyRight.setPower(pulleyRightPower);
+        pulleyRight.setPower(1);
     }
 
     //switch Case statement for moving to High Basket Scoring position
@@ -214,56 +248,69 @@ public class LiftClass {
             case HANG:
                 switch (step) {
                     case -1:  // Initialize the
-                        setShoulderPosition(0.25);
+                        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+                        pulleyLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                        pulleyRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+                        currentHoldPowerState = holdPowerState.HANG;
+                        setShoulderPosition(1);
                         setElbowPosition(0.8);
+                        setLiftPosition(liftPosition.HANG);
                         step = 0;
                         break;
                     case 0:  // Initialize the
-                        setPulleyPosition(LiftClass.PulleyPosition.HANG);
-                        if (getPulleyPositionL() >= 2400) {
+                        setPulleyPosition(pulleyPosition.HANG);
+                        if (getPulleyPositionL() >= 2850) {
                             step++;
                         }
                         break;
                     case 1:
-                        setLiftPosition(liftPosition.HANG);
-                        if (getLiftPositionL() >= 150) { // Replace with your own position checking logic
-                            sleep(2000);
+                        setLiftPower(1);
+                        if (getLiftPositionL() >= 240) { // Replace with your own position checking logic
                             step++;
                         }
                         break;
                     case 2:
-                        setPulleyPosition(LiftClass.PulleyPosition.HOME);
-                        if (getPulleyPositionL() <= 150) { // Replace with your own position checking logic
+                        setPulleyPower(-1);
+                        if (getPulleyPositionL() <= 1500) {
                             step++;
                         }
                         break;
                     case 3:
-                        setLiftPosition(liftPosition.HOME);
-                        setLiftPower(-1);
-                        setShoulderPosition(1);
-                        setElbowPosition(0.65);
-                        step++;
+                        setLiftPower(0.15);
+                        setPulleyPower(-.75);
+                        if (getPulleyPositionL() <= 150) {
+                            step++;
+                        }
                         break;
                     case 4:
-                        hangPowerPulley();
+                        setPulleyPower(-.15);
+                        setLiftPower(-.35);
+                        currentMovementState = movementState.REST;
+                        break;
                 }
-            break;
+                break;
+
 
             case HOME:
 
                 //case to move back into "home" or default driving position
                 switch (step) {
                     case -1:  // Initialize the
+                        currentHoldPowerState = holdPowerState.HOME;
                         setShoulderPosition(0.25);
                         setElbowPosition(0);
                         step = 0;
                         break;
                     case 0:  // Initialize the
                         if (!buttonPressed) {
-                            setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            setPulleyPosition(pulleyPosition.HOME);
                             buttonPressed = true;
                         }
-                        if (getPulleyPositionL() <= 350) {
+                        if (getPulleyPositionL() <= 250) {
                             step++;
                         }
                         break;
@@ -274,7 +321,7 @@ public class LiftClass {
                         }
                         break;
                     case 2:
-                        setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                        setPulleyPosition(pulleyPosition.HOME);
                         if (getPulleyPositionL() <= 400) { // Replace with your own position checking logic
                             step++;
                         }
@@ -284,7 +331,8 @@ public class LiftClass {
                         setElbowPosition(0);
                         step = -1;
                         submersibleScoringPosition = false;
-                        dpadDowntapped = false;
+                        currentButtonPressedState = buttonPressedState.REST;
+                        currentMovementState = movementState.REST;
                         break;
                 }
                 break;
@@ -295,13 +343,14 @@ public class LiftClass {
                 if (Parameters.attachment == Parameters.AttachmentMethod.OVERTHETOP){
                     switch (step) {
                         case -1:  // Initialize the
-                            setShoulderPosition(0.25);
-                            setElbowPosition(0.5);
+                            currentHoldPowerState = holdPowerState.SUBMERSIBLE;
+                            setShoulderPosition(0.65);
+                            setElbowPosition(0.65);
                             step = 0;
                             break;
                         case 0:  // Initialize the
                             if (!buttonPressed) {
-                                setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                                setPulleyPosition(pulleyPosition.HOME);
                                 buttonPressed = true;
                             }
                             if (getPulleyPositionL() <= 50) {
@@ -316,33 +365,35 @@ public class LiftClass {
                             }
                             break;
                         case 2:
-                            setPulleyPosition(LiftClass.PulleyPosition.SUBMERSIBLE);
+                            setPulleyPosition(pulleyPosition.SUBMERSIBLE);
                             if (getPulleyPositionL() >= 1300) { // Replace with your own position checking logic
                                 step++;
                             }
                             break;
                         case 3:
-                            setShoulderPosition(0.3);
-                            setElbowPosition(0.5);
+                            setShoulderPosition(0.65);
+                            setElbowPosition(0.65);
                             step++;
                             break;
                         case 4:
                             step = -1;
                             submersibleScoringPosition = true;
-                            dpadRighttapped = false;
+                            currentButtonPressedState = buttonPressedState.REST;
+                            currentMovementState = movementState.REST;
                             break;
                     }
                 } else {
                         switch (step) {
                             case -1:  // Initialize the
+                                currentHoldPowerState = holdPowerState.SUBMERSIBLE;
                                 setWristPosition(1);
                                 setShoulderPosition(0.5);
-                                setElbowPosition(0.5);
+                                setElbowPosition(0.6);
                                 step = 0;
                                 break;
                             case 0:  // Initialize the
                                 if (!buttonPressed) {
-                                    setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                                    setPulleyPosition(pulleyPosition.HOME);
                                 }
                                 if (getPulleyPositionL() <= 50) {
                                     buttonPressed = true;
@@ -356,12 +407,12 @@ public class LiftClass {
                                 }
                                 break;
                             case 2:
-                                sleep(250);
                                 setShoulderPosition(0.5);
                                 setElbowPosition(0.2);
                                 step = -1;
                                 submersibleScoringPosition = true;
-                                dpadRighttapped = false;
+                                currentButtonPressedState = buttonPressedState.REST;
+                                currentMovementState = movementState.REST;
                                 break;
                         }
                 }
@@ -373,12 +424,13 @@ public class LiftClass {
                 if (Parameters.attachment == Parameters.AttachmentMethod.OVERTHETOP){
                     switch (step) {
                         case -1:  // Initialize the
+                            currentHoldPowerState = holdPowerState.HOME;
                             setShoulderPosition(0.3);
                             setElbowPosition(0.5);
                             step = 0;
                             break;
                         case 0:
-                            setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            setPulleyPosition(pulleyPosition.HOME);
                             if (getPulleyPositionL() <= 250) {
                                 step++;
                             }
@@ -392,12 +444,14 @@ public class LiftClass {
                             setLiftPosition(LiftClass.liftPosition.HOME);
                             step = -1;
                             submersibleScoringPosition = false;
-                            dpadRighttapped = false;
+                            currentButtonPressedState = buttonPressedState.REST;
+                            currentMovementState = movementState.REST;
                             break;
                     }
                 } else {
                     switch (step) {
                         case -1:  // Initialize the
+                            currentHoldPowerState = holdPowerState.HOME;
                             setShoulderPosition(0.45);
                             setElbowPosition(0.2);
                             step = 0;
@@ -412,7 +466,8 @@ public class LiftClass {
                             setLiftPosition(LiftClass.liftPosition.HOME);
                             step = -1;
                             submersibleScoringPosition = false;
-                            dpadRighttapped = false;
+                            currentButtonPressedState = buttonPressedState.REST;
+                            currentMovementState = movementState.REST;
                             break;
                     }
                 }
@@ -422,13 +477,14 @@ public class LiftClass {
             case BASKET:
                 switch (step) {
                     case -1:  // Initialize the
+                        currentHoldPowerState = holdPowerState.BASKET;
                         setShoulderPosition(0.25);
                         setElbowPosition(0);
                         step = 0;
                         break;
                     case 0:  // Initialize the
                         if (!buttonPressed) {
-                            setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            setPulleyPosition(pulleyPosition.HOME);
                             buttonPressed = true;
                         }
                         if (getPulleyPositionL() <= 350) {
@@ -442,7 +498,7 @@ public class LiftClass {
                         }
                         break;
                     case 2:
-                        setPulleyPosition(LiftClass.PulleyPosition.BASKET);
+                        setPulleyPosition(pulleyPosition.BASKET);
                         if (getPulleyPositionL() >= 3000) { // Replace with your own position checking logic
                             step++;
                         }
@@ -452,7 +508,8 @@ public class LiftClass {
                         setElbowPosition(0.6);
                         step = -1;
                         submersibleScoringPosition = false;
-                        dpadUptapped = false;
+                        currentButtonPressedState = buttonPressedState.REST;
+                        currentMovementState = movementState.REST;
                         break;
                 }
                 break;
@@ -461,13 +518,14 @@ public class LiftClass {
             case SEARCH:
                 switch (step) {
                     case -1:  // Initialize the
+                        currentHoldPowerState = holdPowerState.SEARCH;
                         setShoulderPosition(0.25);
                         setElbowPosition(0);
                         step = 0;
                         break;
                     case 0:  // Initialize the
                         if (!buttonPressed) {
-                            setPulleyPosition(LiftClass.PulleyPosition.HOME);
+                            setPulleyPosition(pulleyPosition.HOME);
                             buttonPressed = true;
                         }
                         if (getPulleyPositionL() <= 350) {
@@ -481,7 +539,7 @@ public class LiftClass {
                         }
                         break;
                     case 2:
-                        setPulleyPosition(LiftClass.PulleyPosition.SEARCH);
+                        setPulleyPosition(pulleyPosition.SEARCH);
                         if (getPulleyPositionL() >= 1500) { // Replace with your own position checking logic
                             step++;
                         }
@@ -491,7 +549,8 @@ public class LiftClass {
                         setElbowPosition(0);
                         step = -1;
                         submersibleScoringPosition = false;
-                        dpadLefttapped = false;
+                        currentButtonPressedState = buttonPressedState.REST;
+                        currentMovementState = movementState.REST;
                         break;
                 }
                 break;
@@ -515,7 +574,8 @@ public class LiftClass {
                         sleep(1000);
                         step = -1;
                         submersibleScoringPosition = false;
-                        dpadLefttapped = false;
+                        currentButtonPressedState = buttonPressedState.REST;
+                        currentMovementState = movementState.REST;
                         break;
                 }
                 break;
@@ -527,37 +587,68 @@ public class LiftClass {
     public void zeroPowerLift() {
         if (!liftLeft.isBusy() && !liftRight.isBusy()) {
             liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftLeft.setPower(0.08);
+            liftLeft.setPower(0.16);
             liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftRight.setPower(0.08);
+            liftRight.setPower(0.16);
         }
     }
 
     public void zeroPowerPulley() {
         if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
             pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyLeft.setPower(0.06);
+            pulleyLeft.setPower(0.04);
             pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyRight.setPower(0.06);
+            pulleyRight.setPower(0.04);
+        }
+    }
+
+    // power functions designed to hold both lift and pulley at a set position by running minimal
+    // power through the motors
+    public void neutralPowerLift() {
+        if (!liftLeft.isBusy() && !liftRight.isBusy()) {
+            liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftLeft.setPower(0.0);
+            liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftRight.setPower(0.0);
+        }
+    }
+
+    public void neutralPowerPulley() {
+        if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
+            pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyLeft.getZeroPowerBehavior();
+            pulleyLeft.setPower(0.0);
+            pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            pulleyRight.setPower(0.0);
         }
     }
 
     public void hangPowerPulley() {
         if (!pulleyLeft.isBusy() && !pulleyRight.isBusy()) {
             pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyLeft.setPower(-0.35);
+            pulleyLeft.setPower(-0.15);
             pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            pulleyRight.setPower(-0.35);
+            pulleyRight.setPower(-0.15);
         }
     }
 
-    // setting power to both lift and pulley to maneuver them without the use of motor encoders
+    public void hangPowerLift() {
+        if (!liftLeft.isBusy() && !liftRight.isBusy()) {
+            liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftLeft.setPower(0.1);
+            liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftRight.setPower(0.1);
+        }
+    }
+
+    // setting power to both lift to maneuver them without the use of motor encoders
     public void manualPowerUpLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftLeft.setPower(0.5);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setPower(0.5);
     }
+
     public void manualPowerDownLift() {
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftLeft.setPower(-0.35);
@@ -565,9 +656,9 @@ public class LiftClass {
         liftRight.setPower(-0.35);
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
     }
 
+    // setting power to both pulley to maneuver them without the use of motor encoders
     public void manualPowerUpPulley() {
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyLeft.setPower(0.35);
@@ -609,9 +700,11 @@ public class LiftClass {
     public void setWristPosition(double power) {
         wrist.setPosition(power);
     }
+
     public void CloseClaw() {
         claw.setPosition(0);
     }
+
     public void OpenClaw() {
         claw.setPosition(1);
     }
@@ -626,39 +719,6 @@ public class LiftClass {
     }
     public void setElbowPosition(double position) {
         elbow.setPosition(position);
-    }
-
-    public void setIntakePower(double power) {
-        intake.setPower(power);
-    }
-
-    //writer/setter statements for the eight arm movement booleans
-    public void setHangStatus(boolean status) {
-        hang = status;
-    }
-
-    public void setPulleyHoldStatus(boolean status){
-        pulleyHold = status;
-    }
-
-    public void setSubmersibleScoringPositionStatus(boolean status){
-        submersibleScoringPosition = status;
-    }
-
-    public void setDpadUpTappedStatus(boolean status) {
-        dpadUptapped = status;
-    }
-
-    public void setDpadDowntappedStatus(boolean status) {
-        dpadDowntapped = status;
-    }
-
-    public void setDpadLefttappedStatus(boolean status) {
-        dpadLefttapped = status;
-    }
-
-    public void setDpadRighttappedStatus(boolean status) {
-        dpadRighttapped = status;
     }
 
     public void setButtonPressedStatus(boolean status) {
@@ -680,7 +740,7 @@ public class LiftClass {
         return liftRight.getCurrentPosition();
     }
 
-    public PulleyPosition getCurrentPulleyPosition() {
+    public pulleyPosition getCurrentPulleyPosition() {
         return currentPulleyPosition; // Return the stored current position
     }
 
@@ -708,33 +768,10 @@ public class LiftClass {
         return liftRight.getPower();
     }
 
-    // getter statements for the 8 boolean switch program statements
-    public boolean getHangStatus() {
-        return hang;
-    }
-
-    public boolean getPulleyHoldStatus(){
-        return pulleyHold;
-    }
+    // getter statements for the 2 boolean switch program statements
 
     public boolean getSubmersibleScoringPosition(){
         return submersibleScoringPosition;
-    }
-
-    public boolean getDpadUpTapped() {
-        return dpadUptapped;
-    }
-
-    public boolean getDpadDownTapped() {
-        return dpadDowntapped;
-    }
-
-    public boolean getDpadLeftTapped() {
-        return dpadLefttapped;
-    }
-
-    public boolean getDpadRightTapped() {
-        return dpadRighttapped;
     }
 
     public boolean getButtonPressed() {

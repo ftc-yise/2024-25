@@ -41,29 +41,29 @@ public class autoBlueBucket extends LinearOpMode {
         Pose2d startPose = new Pose2d(23, 60, Math.toRadians(270));
         drive.setPoseEstimate(startPose);
         TrajectorySequence place_Block_1 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(53, 52, Math.toRadians(225)))
+                .lineToLinearHeading(new Pose2d(54, 51, Math.toRadians(225)))
                 .waitSeconds(1)
                 .build();
 
         TrajectorySequence pick_Up_Block_2 = drive.trajectorySequenceBuilder(place_Block_1.end())
                 .lineToLinearHeading(new Pose2d(48, 40, Math.toRadians(270)))
-                .forward(7)
+                .forward(8)
                 .waitSeconds(1)
                 .build();
 
         TrajectorySequence place_Block_2 = drive.trajectorySequenceBuilder(pick_Up_Block_2.end())
-                .lineToLinearHeading(new Pose2d(53, 51.95, Math.toRadians(225)))
+                .lineToLinearHeading(new Pose2d(54, 51, Math.toRadians(225)))
                 .waitSeconds(1)
                 .build();
 
         TrajectorySequence pick_Up_Block_3 = drive.trajectorySequenceBuilder(place_Block_2.end())
-                .lineToLinearHeading(new Pose2d(58, 40, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(6.5, 40, Math.toRadians(270)))
                 .forward(8)
                 .waitSeconds(1)
                 .build();
 
         TrajectorySequence place_Block_3 = drive.trajectorySequenceBuilder(pick_Up_Block_3.end())
-                .lineToLinearHeading(new Pose2d(53, 52, Math.toRadians(225)))
+                .lineToLinearHeading(new Pose2d(50, 48, Math.toRadians(225)))
                 .waitSeconds(1)
                 .build();
 
@@ -100,12 +100,15 @@ public class autoBlueBucket extends LinearOpMode {
 
         arm.setClawPosition(1);
 
-        sleep(150);
+        sleep(75);
 
         arm.setElbowPosition(0.5);
         arm.setShoulderPosition(0.9);
+        sleep(250);
 
-        sleep(600);
+        arm.setElbowPosition(0);
+        arm.setShoulderPosition(0.4);
+        sleep(250);
 
         arm.setPulleyPosition(LiftClass.pulleyPosition.HOME);
 
@@ -144,14 +147,15 @@ public class autoBlueBucket extends LinearOpMode {
 
         arm.setClawPosition(1);
 
-        sleep(50);
+        sleep(75);
 
         arm.setElbowPosition(0.5);
         arm.setShoulderPosition(0.9);
-        sleep(600);
+        sleep(250);
 
         arm.setElbowPosition(0);
         arm.setShoulderPosition(0.4);
+        sleep(250);
 
         arm.setPulleyPosition(LiftClass.pulleyPosition.HOME);
 
@@ -160,7 +164,10 @@ public class autoBlueBucket extends LinearOpMode {
 
         arm.setLiftPosition(LiftClass.liftPosition.HOME);
 
-         drive.followTrajectorySequence(pick_Up_Block_3);
+        sleep(250);
+        arm.setPulleyPower(0);
+
+        drive.followTrajectorySequence(pick_Up_Block_3);
         arm.setShoulderPosition(0.6);
         arm.setElbowPosition(0.02);
         sleep(250);
@@ -188,8 +195,11 @@ public class autoBlueBucket extends LinearOpMode {
 
         arm.setElbowPosition(0.5);
         arm.setShoulderPosition(0.9);
+        sleep(250);
 
-        sleep(600);
+        arm.setElbowPosition(0);
+        arm.setShoulderPosition(0.4);
+        sleep(250);
 
         arm.setPulleyPosition(LiftClass.pulleyPosition.HOME);
 

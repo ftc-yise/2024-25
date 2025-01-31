@@ -93,11 +93,11 @@
           //Go to calculated position
           .addTemporalMarker(0.75, () -> {
            arm.setShoulderPosition(0.3);
-           arm.setElbowPosition(0.09);
+           arm.setElbowPosition(0.06);
           })
           .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)))
-          .waitSeconds(0.75)
-          .forward(2)
+          .waitSeconds(0.5)
+          .forward(3)
           .build();
 
   //Return the built sequence so it can be run
@@ -123,12 +123,12 @@
    TrajectorySequence blockScoreObservation = drive.trajectorySequenceBuilder(startPose)
            .waitSeconds(.1)
            .back(5)
-           .addTemporalMarker(.2, () -> {
+           .addTemporalMarker(.15, () -> {
             arm.setLiftPosition(LiftClass.liftPosition.BASKET);
             leds.setLed(ledLights.ledStates.GRAB_Y);
            })
 
-           .addTemporalMarker(0.6, () -> {
+           .addTemporalMarker(0.7, () -> {
             arm.setLiftPower(0);
             leds.setLed(ledLights.ledStates.BLUE);
            })
@@ -152,14 +152,14 @@
     if (Parameters.allianceColor == Parameters.Color.RED) {
      //start position should be 12, -64, 90
      heading = -90;
-     x = 45;
+     x = 47;
      y = -12;
      tan = 90;
 
     } else {
      //start position should be -12, 64, -90
      heading = 90;
-     x = -45;
+     x = -47;
      y = 12;
      tan = 270;
     }
@@ -187,8 +187,8 @@
      runsX = -runsX;
     }
 
-    runsX = runsX * 6;
-    runsY = runsY * 9;
+    runsX = runsX * 7;
+    runsY = runsY * 11;
 
     TrajectorySequence lodgeBlocksIntoObservation = drive.trajectorySequenceBuilder(startPose)
             //Go to calculated position
@@ -203,14 +203,14 @@
             .addTemporalMarker(5.5, () -> {
              // This marker runs two seconds into the trajectory
              arm.setShoulderPosition(0.3);
-             arm.setElbowPosition(0.09);
+             arm.setElbowPosition(0.06);
              // Run your action in here!
             })
 
             .splineToLinearHeading(new Pose2d(blockX + runsX, blockY, Math.toRadians(blockHeading)), Math.toRadians(blockTangent))
-            .forward(36.5 + runsY)
-            .waitSeconds(0.6)
-            .forward(3)
+            .forward(35.5 + runsY)
+            .waitSeconds(0.45)
+            .forward(1)
             .build();
 
      return lodgeBlocksIntoObservation;

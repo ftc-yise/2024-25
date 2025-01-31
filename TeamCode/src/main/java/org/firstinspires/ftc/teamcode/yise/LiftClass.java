@@ -134,6 +134,8 @@ public class LiftClass {
         intake.setDirection(CRServo.Direction.REVERSE);
         wrist.setDirection(Servo.Direction.REVERSE);
 
+        elbow.setDirection(Servo.Direction.REVERSE);
+
         //Reset motor encoders
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -224,8 +226,8 @@ public class LiftClass {
                 break;
 
             case HANG:
-                pulleyLeft.setTargetPosition(2900);
-                pulleyRight.setTargetPosition(2900);
+                pulleyLeft.setTargetPosition(2550);
+                pulleyRight.setTargetPosition(2550);
                 break;
 
             case HANGEND:
@@ -266,7 +268,7 @@ public class LiftClass {
                         break;
                     case 0:  // Initialize the
                         setPulleyPosition(pulleyPosition.HANG);
-                        if (getPulleyPositionL() >= 2750) {
+                        if (getPulleyPositionL() >= 2450) {
                             step++;
                         }
                         break;
@@ -279,15 +281,17 @@ public class LiftClass {
                         break;
                     case 2:
 
-                        sleep(400);
+                        sleep(650);
                         setPulleyPower(-1);
+                        sleep(150);
+                        setLiftPower(-0.75);
                         if (getPulleyPositionL() <= 650) {
                             setPulleyPower(-.3);
                             step++;
                         }
                         break;
                     case 3:
-                        setLiftPower(-0.3);
+                        setLiftPower(-0.35);
                         setPulleyPower(-0.35);
                         if (getPulleyPositionL() <= 450) {
                             step++;
@@ -295,7 +299,7 @@ public class LiftClass {
                         break;
                     case 4:
                         setPulleyPower(-.25);
-                        setLiftPower(-.25);
+                        setLiftPower(-.55);
 
                         currentMovementState = movementState.REST;
                         break;

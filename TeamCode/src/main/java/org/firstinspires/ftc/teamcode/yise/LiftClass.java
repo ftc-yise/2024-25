@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.teamcode.yise.RoadRunnerDriving;
 
 public class LiftClass {
 
@@ -39,7 +40,6 @@ public class LiftClass {
     public Servo claw, wrist, shoulderL, ShoulderR, elbow, cameraLift;
     public CRServo intake;
     public DigitalChannel limit;
-
 
     // define enum for different lift positions
     public enum liftPosition {
@@ -105,6 +105,8 @@ public class LiftClass {
 
     // Constructor
     public LiftClass(HardwareMap hardwareMap) {
+        RoadRunnerDriving drive = new RoadRunnerDriving(hardwareMap);
+
         //Initialize arm motors
         liftLeft = hardwareMap.get(DcMotor.class, "liftleft");
         liftRight = hardwareMap.get(DcMotor.class, "liftright");
@@ -185,9 +187,9 @@ public class LiftClass {
                 liftMotorPower = 1;
                 break;
             case HANG:
-                liftLeft.setTargetPosition(150);
-                liftRight.setTargetPosition(150);
-                liftMotorPower = 1;
+                liftLeft.setTargetPosition(400);
+                liftRight.setTargetPosition(400);
+                liftMotorPower = 0.45;
                 break;
 
         }
@@ -257,38 +259,44 @@ public class LiftClass {
 
                         currentHoldPowerState = holdPowerState.HANG;
                         setShoulderPosition(1);
-                        setElbowPosition(0.8);
+                        setElbowPosition(0.2);
+
                         setLiftPosition(liftPosition.HANG);
                         step = 0;
                         break;
                     case 0:  // Initialize the
                         setPulleyPosition(pulleyPosition.HANG);
-                        if (getPulleyPositionL() >= 2850) {
+                        if (getPulleyPositionL() >= 2750) {
                             step++;
                         }
                         break;
                     case 1:
-                        setLiftPower(1);
+                        setLiftPower(0.65);
                         if (getLiftPositionL() >= 240) { // Replace with your own position checking logic
+                            setPulleyPower(0);
                             step++;
                         }
                         break;
                     case 2:
+
+                        sleep(400);
                         setPulleyPower(-1);
-                        if (getPulleyPositionL() <= 1500) {
+                        if (getPulleyPositionL() <= 650) {
+                            setPulleyPower(-.3);
                             step++;
                         }
                         break;
                     case 3:
-                        setLiftPower(0.15);
-                        setPulleyPower(-.75);
-                        if (getPulleyPositionL() <= 150) {
+                        setLiftPower(-0.3);
+                        setPulleyPower(-0.35);
+                        if (getPulleyPositionL() <= 450) {
                             step++;
                         }
                         break;
                     case 4:
-                        setPulleyPower(-.15);
-                        setLiftPower(-.35);
+                        setPulleyPower(-.25);
+                        setLiftPower(-.25);
+
                         currentMovementState = movementState.REST;
                         break;
                 }

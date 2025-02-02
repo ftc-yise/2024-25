@@ -134,8 +134,6 @@ public class LiftClass {
         intake.setDirection(CRServo.Direction.REVERSE);
         wrist.setDirection(Servo.Direction.REVERSE);
 
-        elbow.setDirection(Servo.Direction.REVERSE);
-
         //Reset motor encoders
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -341,10 +339,10 @@ public class LiftClass {
                     case 3:
                         setShoulderPosition(0.25);
                         setElbowPosition(0);
-                        step = -1;
                         submersibleScoringPosition = false;
                         currentButtonPressedState = buttonPressedState.REST;
                         currentMovementState = movementState.REST;
+                        step = -1;
                         break;
                 }
                 break;
@@ -454,10 +452,10 @@ public class LiftClass {
                         case 2:
                             setWristPosition(0);
                             setLiftPosition(LiftClass.liftPosition.HOME);
-                            step = -1;
                             submersibleScoringPosition = false;
                             currentButtonPressedState = buttonPressedState.REST;
                             currentMovementState = movementState.REST;
+                            step = -1;
                             break;
                     }
                 } else {

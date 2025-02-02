@@ -114,11 +114,6 @@
 
    int directionalOffset = 0;
 
-   if (runs == 1){
-    directionalOffset = -15;
-   } else {
-    directionalOffset = 0;
-   }
    runs = runs * 4 * DiectionalMulti;
    TrajectorySequence blockScoreObservation = drive.trajectorySequenceBuilder(startPose)
            .waitSeconds(.1)
@@ -133,7 +128,7 @@
             leds.setLed(ledLights.ledStates.BLUE);
            })
 
-           .splineToLinearHeading(new Pose2d(0 - runs, 26 * DiectionalMulti, Math.toRadians(90 + directionalOffset * DiectionalMulti)), Math.toRadians(270 * DiectionalMulti))
+           .splineToLinearHeading(new Pose2d(0 - runs, 26 * DiectionalMulti, Math.toRadians(90 * DiectionalMulti)), Math.toRadians(270 * DiectionalMulti))
            .waitSeconds(0.1)
            .build();
     return blockScoreObservation;
@@ -174,12 +169,12 @@
 
     if (Parameters.allianceColor == Parameters.Color.RED) {
      //56, -12, Math.toRadians(-90), Math.toRadians(0)
-     blockX = 56;
+     blockX = 52;
      blockY = -12;
      blockHeading = -90;
      blockTangent = 0;
     } else {
-     blockX = -56;
+     blockX = -52;
      blockY = 12;
      blockHeading = 90;
      blockTangent = 180;
@@ -187,15 +182,15 @@
      runsX = -runsX;
     }
 
-    runsX = runsX * 7;
+    runsX = runsX * 6;
     runsY = runsY * 11;
 
     TrajectorySequence lodgeBlocksIntoObservation = drive.trajectorySequenceBuilder(startPose)
             //Go to calculated position
             .forward(12)
-            .strafeLeft(12)
             .splineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)), Math.toRadians(tan))
-            .forward(40)
+            .strafeLeft(5)
+            .forward(37)
 
             .splineToLinearHeading(new Pose2d(blockX, blockY, Math.toRadians(blockHeading)), Math.toRadians(blockTangent))
 
@@ -208,7 +203,7 @@
             })
 
             .splineToLinearHeading(new Pose2d(blockX + runsX, blockY, Math.toRadians(blockHeading)), Math.toRadians(blockTangent))
-            .forward(35.5 + runsY)
+            .forward(34.5 + runsY)
             .waitSeconds(0.45)
             .forward(1)
             .build();
@@ -315,7 +310,7 @@
    sleep(250);
 
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
-   while (arm.getLiftPositionL() >= 300) {
+   while (arm.getLiftPositionL() >= 325) {
     sleep(5);
    }
    arm.setClawPosition(1);
@@ -343,7 +338,7 @@
    sleep(350);
 
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
-   while (arm.getLiftPositionL() >= 300) {
+   while (arm.getLiftPositionL() >= 325) {
     sleep(25);
    }
    arm.setClawPosition(1);
@@ -371,7 +366,7 @@
    sleep(350);
 
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
-   while (arm.getLiftPositionL() >= 300) {
+   while (arm.getLiftPositionL() >= 325) {
     sleep(25);
    }
    arm.setClawPosition(1);

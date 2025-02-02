@@ -253,7 +253,7 @@ public class MainDrive extends LinearOpMode {
             if (gamepad2.x && !XPressed) {
                 XPressed = true;
 
-                 arm.setShoulderPosition(arm.ShoulderR.getPosition() == 0.25 ? 1 : 0.25);
+                 arm.setShoulderPosition(arm.ShoulderR.getPosition() == 0.25 ? 0 : 0.25);
 
                 arm.setElbowPosition(0);
             } else if (!gamepad2.x && XPressed) {

@@ -224,10 +224,10 @@ public class MainDrive extends LinearOpMode {
             // Claw control method
             // uses a ternary operation condition ? valueIfTrue : valueIfFalse
             // a ternary operator is a shortcut for an if statement
-            if (gamepad2.right_trigger > 0.15 || clawSensor.green() >= 338 && !RightTriggerPressed) {
+            if (gamepad2.right_trigger > 0.15 && !RightTriggerPressed) {
                 RightTriggerPressed = true;
                 arm.claw.setPosition(arm.claw.getPosition() == 1 ? 0 : 1);
-            } else if (gamepad2.right_trigger < 0.15 && clawSensor.green() <= 338) {
+            } else if (gamepad2.right_trigger < 0.15) {
                 RightTriggerPressed = false;
             }
 

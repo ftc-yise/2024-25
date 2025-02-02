@@ -131,6 +131,7 @@ public class LiftClass {
         shoulderL.setDirection(Servo.Direction.REVERSE);
         intake.setDirection(CRServo.Direction.REVERSE);
         wrist.setDirection(Servo.Direction.REVERSE);
+        elbow.setDirection(Servo.Direction.REVERSE);
 
         //Reset motor encoders
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

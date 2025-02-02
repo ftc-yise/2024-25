@@ -43,24 +43,31 @@ public class ColorSeeing extends LinearOpMode {
 
         vision.setCameraPipeline(OpenCVVision.Color.RED);// Wait for the game to start (driver presses PLAY)
 
-        telemetry.addData("Status", "Initialized");
+        while (!gamepad1.x) {
+            telemetry.addData("Status", "Initialized");
 
-        telemetry.addData("Color:", vision.getColor());
-        telemetry.addData("centroid", vision.getLargestContourCentroid());
 
-        telemetry.addLine();
+            telemetry.addData("Color:", vision.getColor());
+            telemetry.addData("centroid", vision.getLargestContourCentroid());
 
-        telemetry.addData("Corner T", vision.getTopRightCorner());
-        telemetry.addData("Corner B", vision.getBottomRightCorner());
-        telemetry.update();
+            telemetry.addLine();
 
-            if (gamepad1.right_trigger > 0.75){
+            telemetry.addData("Corner T", vision.getTopRightCorner());
+            telemetry.addData("Corner B", vision.getBottomRightCorner());
+            telemetry.update();
+
+            if (gamepad1.right_trigger > 0.75) {
                 vision.setCameraPipeline(OpenCVVision.Color.BLUE);
-            } else if (gamepad1.left_trigger > 0.75){
+            } else if (gamepad1.left_trigger > 0.75) {
                 vision.setCameraPipeline(OpenCVVision.Color.RED);
             } else {
                 vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
             }
+
+            if (gamepad1.dpad_down){
+                vision.setLowerRedScaler(-10);
+            }
+        }
 
         waitForStart();
 

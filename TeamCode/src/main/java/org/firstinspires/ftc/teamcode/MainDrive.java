@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -133,9 +134,11 @@ public class MainDrive extends LinearOpMode {
                 arm.manualPowerDownPulley();
             } else if (gamepad2.left_trigger > 0.75){
                 arm.manualPowerDownLift();
-            } else if (arm.limit.getState() && !arm.buttonPressed){
-                //arm.currentMovementState = LiftClass.movementState.REST;
-                //arm.currentHoldPowerState = LiftClass.holdPowerState.HOME;
+            }
+
+           if (arm.limit.getState()){
+               arm.pulleyLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+               arm.pulleyRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
             }
 
             if (gamepad2.left_trigger > 0.75){

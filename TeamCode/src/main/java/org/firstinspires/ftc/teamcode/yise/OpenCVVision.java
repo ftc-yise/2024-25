@@ -49,6 +49,12 @@ public class OpenCVVision {
     }
 
 
+    public static Scalar lowerRED;
+    public static Scalar upperRED;
+    public Scalar lowerBLUE;
+    public Scalar upperBLUE;
+
+
     //Main Constructor
     public OpenCVVision(HardwareMap hardwareMap) {
 
@@ -129,8 +135,8 @@ public class OpenCVVision {
             Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
 
             // Define red color range in HSV
-            Scalar lowerRED = new Scalar(359, 100, 45);    // Allow for some variation
-            Scalar upperRED = new Scalar(2.7, 78, 100);    // Capture the bright reds
+            lowerRED = new Scalar(359, 100, 45);    // Allow for some variation
+            upperRED = new Scalar(2.7, 78, 100);    // Capture the bright reds
 
             // Threshold the HSV image to get only yellow colors
             Mat yellowMask = new Mat();
@@ -281,12 +287,12 @@ public class OpenCVVision {
             Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
 
             // Define the range for the color blue in HSV
-            Scalar lowerBound = new Scalar(220, 74, 14);   // H:234/2, S:47%, V:35% with lower tolerance
-            Scalar upperBound = new Scalar(234, 58, 72);  // Upper bounds with tolerance
+            Scalar lowerBLUE = new Scalar(220, 74, 14);   // H:234/2, S:47%, V:35% with lower tolerance
+            Scalar upperBLUE = new Scalar(234, 58, 72);  // Upper bounds with tolerance
 
             // Threshold the HSV image to get only the blue color
             Mat blueMask = new Mat();
-            Core.inRange(hsv, lowerBound, upperBound, blueMask);
+            Core.inRange(hsv, lowerBLUE, upperBLUE, blueMask);
 
             // Find contours
             contoursList.clear();
@@ -617,6 +623,11 @@ public class OpenCVVision {
     }
 
     // Getter methods for telemetry
+    public void setLowerRedScaler(double scaler){
+        lowerRED = new Scalar(lowerRED.val[0]+scaler, lowerRED.val[1]+scaler, lowerRED.val[2]+scaler);
+    }
+
+
     public double getLargestContourArea() {
         return largestContourArea;
     }

@@ -118,9 +118,11 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity SpecimenHangBlue = new DefaultBotBuilder(meepMeep)
                 .setConstraints(60,60,Math.toRadians(180),Math.toRadians(180),15)
-                        .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-64.875, 72, Math.toRadians(90)))
-                                .back(2)
-                                .splineToLinearHeading(new Pose2d(0, 30, Math.toRadians(90)), Math.toRadians(270))
+                        .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-8, -30, Math.toRadians(75)))
+                                .forward(12)
+                                .strafeLeft(12)
+                                .splineToLinearHeading(new Pose2d(45, -12, Math.toRadians(-90)), Math.toRadians(90))
+                                .strafeLeft(5)
                                 .build());
 
         RoadRunnerBotEntity telemetryPathingUno = new DefaultBotBuilder(meepMeep)
@@ -152,10 +154,10 @@ public class MeepMeepTesting {
                 //.addEntity(botBlue)
                 //.addEntity(botRed)
                 //.addEntity(botBluePark)
-                //.addEntity(SpecimenHangBlue)
-                .addEntity(telemetryPathingUno)
-                .addEntity(telemetryPathingDos)
-                .addEntity(telemetryPathingTres)
+                .addEntity(SpecimenHangBlue)
+                //.addEntity(telemetryPathingUno)
+                //.addEntity(telemetryPathingDos)
+                //.addEntity(telemetryPathingTres)
                 .start();
     }
 }

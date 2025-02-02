@@ -51,12 +51,13 @@ public class LiftClass {
 
     // define enum for different Pulley positions
     public enum pulleyPosition {
-        HOME,
         SUBMERSIBLE,
         BASKET,
         SEARCH,
         HANG,
-        HANGEND
+        HANGEND,
+        HOME,
+        HOMEFIRST
     }
 
     //define global enums for hold power logic
@@ -133,6 +134,7 @@ public class LiftClass {
         shoulderL.setDirection(Servo.Direction.REVERSE);
         intake.setDirection(CRServo.Direction.REVERSE);
         wrist.setDirection(Servo.Direction.REVERSE);
+        elbow.setDirection(Servo.Direction.REVERSE);
 
         //Reset motor encoders
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -206,17 +208,21 @@ public class LiftClass {
 
         //switches pulleys destined position based on the target pulley position ENUM variable
         switch (targetPulleyPosition) {
+            case HOMEFIRST:
+                pulleyLeft.setTargetPosition(-50);
+                pulleyRight.setTargetPosition(-50);
+                break;
             case HOME:
-                pulleyLeft.setTargetPosition(0);
-                pulleyRight.setTargetPosition(0);
+                pulleyLeft.setTargetPosition(-50);
+                pulleyRight.setTargetPosition(-50);
                 break;
             case BASKET:
                 pulleyLeft.setTargetPosition(3900);
                 pulleyRight.setTargetPosition(3900);
                 break;
             case SUBMERSIBLE:
-                pulleyLeft.setTargetPosition(1450);
-                pulleyRight.setTargetPosition(1450);
+                pulleyLeft.setTargetPosition(1050);
+                pulleyRight.setTargetPosition(1050);
                 break;
             case SEARCH:
                 pulleyLeft.setTargetPosition(1650);
@@ -317,7 +323,7 @@ public class LiftClass {
                         break;
                     case 0:  // Initialize the
                         if (!buttonPressed) {
-                            setPulleyPosition(pulleyPosition.HOME);
+                            setPulleyPosition(pulleyPosition.HOMEFIRST);
                             buttonPressed = true;
                         }
                         if (getPulleyPositionL() <= 250) {
@@ -350,49 +356,7 @@ public class LiftClass {
             // case for moving from the start position of arm to the scoring position of the
             // high chamber
             case SUBMERSIBLESTART:
-                if (Parameters.attachment == Parameters.AttachmentMethod.OVERTHETOP){
-                    switch (step) {
-                        case -1:  // Initialize the
-                            currentHoldPowerState = holdPowerState.SUBMERSIBLE;
-                            setShoulderPosition(0.65);
-                            setElbowPosition(0.65);
-                            step = 0;
-                            break;
-                        case 0:  // Initialize the
-                            if (!buttonPressed) {
-                                setPulleyPosition(pulleyPosition.HOME);
-                                buttonPressed = true;
-                            }
-                            if (getPulleyPositionL() <= 50) {
-                                step++;
-                            }
-                            break;
-                        case 1:
-                            setLiftPosition(LiftClass.liftPosition.BASKET);
-                            if (getLiftPositionL() >= 400) { // Replace with your own position checking logic
-                                setWristPosition(1);
-                                step++;
-                            }
-                            break;
-                        case 2:
-                            setPulleyPosition(pulleyPosition.SUBMERSIBLE);
-                            if (getPulleyPositionL() >= 1300) { // Replace with your own position checking logic
-                                step++;
-                            }
-                            break;
-                        case 3:
-                            setShoulderPosition(0.65);
-                            setElbowPosition(0.65);
-                            step++;
-                            break;
-                        case 4:
-                            step = -1;
-                            submersibleScoringPosition = true;
-                            currentButtonPressedState = buttonPressedState.REST;
-                            currentMovementState = movementState.REST;
-                            break;
-                    }
-                } else {
+                 if (Parameters.attachment == Parameters.AttachmentMethod.INTERNAL) {
                         switch (step) {
                             case -1:  // Initialize the
                                 currentHoldPowerState = holdPowerState.SUBMERSIBLE;
@@ -425,40 +389,55 @@ public class LiftClass {
                                 currentMovementState = movementState.REST;
                                 break;
                         }
+                } else {
+                switch (step) {
+                    case -1:  // Initialize the
+                        currentHoldPowerState = holdPowerState.SUBMERSIBLE;
+                        setShoulderPosition(0.65);
+                        setElbowPosition(0.65);
+                        step = 0;
+                        break;
+                    case 0:  // Initialize the
+                        if (!buttonPressed) {
+                            setPulleyPosition(pulleyPosition.HOME);
+                            buttonPressed = true;
+                        }
+                        if (getPulleyPositionL() <= 50) {
+                            step++;
+                        }
+                        break;
+                    case 1:
+                        setLiftPosition(LiftClass.liftPosition.BASKET);
+                        if (getLiftPositionL() >= 400) { // Replace with your own position checking logic
+                            setWristPosition(1);
+                            step++;
+                        }
+                        break;
+                    case 2:
+                        setPulleyPosition(pulleyPosition.SUBMERSIBLE);
+                        if (getPulleyPositionL() >= 900) { // Replace with your own position checking logic
+                            step++;
+                        }
+                        break;
+                    case 3:
+                        setShoulderPosition(0.5);
+                        setElbowPosition(0.5);
+                        step++;
+                        break;
+                    case 4:
+                        step = -1;
+                        submersibleScoringPosition = true;
+                        currentButtonPressedState = buttonPressedState.REST;
+                        currentMovementState = movementState.REST;
+                        break;
                 }
+            }
                 break;
 
             // case for moving from the scoring position of the high chamber back to the home
             // position
             case SUBMERSIBLEEND:
-                if (Parameters.attachment == Parameters.AttachmentMethod.OVERTHETOP){
-                    switch (step) {
-                        case -1:  // Initialize the
-                            currentHoldPowerState = holdPowerState.HOME;
-                            setShoulderPosition(0.3);
-                            setElbowPosition(0.5);
-                            step = 0;
-                            break;
-                        case 0:
-                            setPulleyPosition(pulleyPosition.HOME);
-                            if (getPulleyPositionL() <= 250) {
-                                step++;
-                            }
-                        case 1:
-                            sleep(460);
-                            setClawPosition(1);
-                            step++;
-                            break;
-                        case 2:
-                            setWristPosition(0);
-                            setLiftPosition(LiftClass.liftPosition.HOME);
-                            submersibleScoringPosition = false;
-                            currentButtonPressedState = buttonPressedState.REST;
-                            currentMovementState = movementState.REST;
-                            step = -1;
-                            break;
-                    }
-                } else {
+                 if (Parameters.attachment == Parameters.AttachmentMethod.INTERNAL) {
                     switch (step) {
                         case -1:  // Initialize the
                             currentHoldPowerState = holdPowerState.HOME;
@@ -480,7 +459,32 @@ public class LiftClass {
                             currentMovementState = movementState.REST;
                             break;
                     }
+                }else {
+                switch (step) {
+                    case -1:  // Initialize the
+                        currentHoldPowerState = holdPowerState.HOME;
+                        setShoulderPosition(0.25);
+                        setElbowPosition(0.5);
+                        step = 0;
+                        break;
+                    case 0:
+                        setPulleyPosition(pulleyPosition.HOME);
+                            step++;
+                    case 1:
+                        sleep(350);
+                        setClawPosition(1);
+                        step++;
+                        break;
+                    case 2:
+                        setWristPosition(0);
+                        setLiftPosition(LiftClass.liftPosition.HOME);
+                        step = -1;
+                        submersibleScoringPosition = false;
+                        currentButtonPressedState = buttonPressedState.REST;
+                        currentMovementState = movementState.REST;
+                        break;
                 }
+            }
                 break;
 
             //case to move into basket searching position
@@ -488,8 +492,8 @@ public class LiftClass {
                 switch (step) {
                     case -1:  // Initialize the
                         currentHoldPowerState = holdPowerState.BASKET;
-                        setShoulderPosition(0.25);
-                        setElbowPosition(0);
+                        setShoulderPosition(0.6);
+                        setElbowPosition(0.02);
                         step = 0;
                         break;
                     case 0:  // Initialize the
@@ -723,7 +727,8 @@ public class LiftClass {
         claw.setPosition(position);
     }
 
-        public void setShoulderPosition(double position) {
+
+    public void setShoulderPosition(double position) {
         shoulderL.setPosition(position);
         ShoulderR.setPosition(position);
     }

@@ -1,6 +1,7 @@
  package org.firstinspires.ftc.teamcode;
 
  import com.acmerobotics.roadrunner.geometry.Pose2d;
+ import com.acmerobotics.roadrunner.geometry.Vector2d;
  import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  import com.qualcomm.robotcore.util.ElapsedTime;
@@ -78,14 +79,14 @@
   if (Parameters.allianceColor == Parameters.Color.RED) {
    //start position should be 12, -64, 90
    heading = -90;
-   x = 32;
-   y = -55;
+   x = 34;
+   y = -51;
 
   } else {
    //start position should be -12, 64, -90
    heading = 90;
-   x = -32;
-   y = 55;
+   x = -34;
+   y = 51;
   }
 
   //Build the trajectory sequence
@@ -95,9 +96,10 @@
            arm.setShoulderPosition(0.3);
            arm.setElbowPosition(0.06);
           })
+          .forward(4)
           .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)))
           .waitSeconds(0.5)
-          .forward(3)
+          .forward(8)
           .build();
 
   //Return the built sequence so it can be run
@@ -117,18 +119,18 @@
    runs = runs * 4 * DiectionalMulti;
    TrajectorySequence blockScoreObservation = drive.trajectorySequenceBuilder(startPose)
            .waitSeconds(.1)
-           .back(5)
-           .addTemporalMarker(.15, () -> {
-            arm.setLiftPosition(LiftClass.liftPosition.BASKET);
+           .strafeTo(new Vector2d(startPose.getX() + (7 * DiectionalMulti) , startPose.getY() - (5 * DiectionalMulti)))
+           .addTemporalMarker(.1, () -> {
+            arm.setLiftPosition(LiftClass.liftPosition.AUTO_BASKET);
             leds.setLed(ledLights.ledStates.GRAB_Y);
            })
 
-           .addTemporalMarker(0.7, () -> {
-            arm.setLiftPower(0);
+           .addTemporalMarker(0.8, () -> {
+            arm.setLiftPower(0.08);
             leds.setLed(ledLights.ledStates.BLUE);
            })
 
-           .splineToLinearHeading(new Pose2d(0 - runs, 26 * DiectionalMulti, Math.toRadians(90 * DiectionalMulti)), Math.toRadians(270 * DiectionalMulti))
+           .splineToLinearHeading(new Pose2d(runs, (28 - (runs/2)) * DiectionalMulti, Math.toRadians(90 * DiectionalMulti)), Math.toRadians(270 * DiectionalMulti))
            .waitSeconds(0.1)
            .build();
     return blockScoreObservation;
@@ -141,20 +143,21 @@
     double x;
     double y;
     double tan;
+    int offset = 0;
 
     //Get the alliance color and starting side of truss
     //Calculate coordinates depending on prop location
     if (Parameters.allianceColor == Parameters.Color.RED) {
      //start position should be 12, -64, 90
      heading = -90;
-     x = 47;
+     x = 44;
      y = -12;
      tan = 90;
 
     } else {
      //start position should be -12, 64, -90
      heading = 90;
-     x = -47;
+     x = -43;
      y = 12;
      tan = 270;
     }
@@ -169,10 +172,11 @@
 
     if (Parameters.allianceColor == Parameters.Color.RED) {
      //56, -12, Math.toRadians(-90), Math.toRadians(0)
-     blockX = 52;
-     blockY = -12;
+     blockX = 50;
+     blockY = -8;
      blockHeading = -90;
      blockTangent = 0;
+     offset = 5;
     } else {
      blockX = -52;
      blockY = 12;
@@ -182,14 +186,14 @@
      runsX = -runsX;
     }
 
-    runsX = runsX * 6;
+    runsX = runsX * 7;
     runsY = runsY * 11;
 
     TrajectorySequence lodgeBlocksIntoObservation = drive.trajectorySequenceBuilder(startPose)
             //Go to calculated position
-            .forward(12)
+            .forward(13 + offset)
             .splineToLinearHeading(new Pose2d(x, y, Math.toRadians(heading)), Math.toRadians(tan))
-            .strafeLeft(5)
+            .strafeLeft(3)
             .forward(37)
 
             .splineToLinearHeading(new Pose2d(blockX, blockY, Math.toRadians(blockHeading)), Math.toRadians(blockTangent))
@@ -203,42 +207,13 @@
             })
 
             .splineToLinearHeading(new Pose2d(blockX + runsX, blockY, Math.toRadians(blockHeading)), Math.toRadians(blockTangent))
-            .forward(34.5 + runsY)
-            .waitSeconds(0.45)
-            .forward(1)
+            .forward(29.5 + runsY)
+            .waitSeconds(0.75)
+            .forward(7 + offset/2)
             .build();
 
      return lodgeBlocksIntoObservation;
   }
-
-//Navigating to parking pose
- public TrajectorySequence Parking(SampleMecanumDrive drive, Pose2d startPose) {
-  TrajectorySequence parkRedBasket = drive.trajectorySequenceBuilder(startPose)
-          .lineToLinearHeading(new Pose2d(-20, 11, Math.toRadians(0)))
-          .build();
-  TrajectorySequence parkRedObservation = drive.trajectorySequenceBuilder(startPose)
-          .lineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(45)))
-          .waitSeconds(0.5)
-          .lineToLinearHeading(new Pose2d(-20, -11, Math.toRadians(0)))
-          .build();
-  TrajectorySequence parkBlueBasket = drive.trajectorySequenceBuilder(startPose)
-          .lineToLinearHeading(new Pose2d(20, -11, Math.toRadians(180)))
-          .build();
-  TrajectorySequence parkBlueObservation = drive.trajectorySequenceBuilder(startPose)
-          .lineToLinearHeading(new Pose2d(48, 48, Math.toRadians(-135)))
-          .waitSeconds(0.5)
-          .lineToLinearHeading(new Pose2d(20, 11, Math.toRadians(180)))
-          .build();
-  if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION && Parameters.allianceColor == Parameters.Color.RED) {
-   return parkRedObservation;
-  } else if (Parameters.autoConfig == Parameters.AutonomousConfig.OBSERVATION && Parameters.allianceColor == Parameters.Color.BLUE) {
-   return parkBlueObservation;
-  } else if (Parameters.autoConfig == Parameters.AutonomousConfig.BASKET && Parameters.allianceColor == Parameters.Color.RED) {
-   return parkRedBasket;
-  } else {
-   return parkBlueBasket;
-  }
- }
 
   @Override
   public void runOpMode() {
@@ -292,12 +267,9 @@
    TrajectorySequence score2ndBlock = BlockScore(drive, pickUp1stBlock.end(), arm, leds, 1);
    TrajectorySequence score3rdBlock = BlockScore(drive, score2ndBlock.end(), arm, leds, 2);
 
-
-   TrajectorySequence park = Parking(drive, score3rdBlock.end());
-
    drive.followTrajectorySequence(InitialBlockScore);
 
-   arm.setLiftPosition(LiftClass.liftPosition.BASKET);
+   arm.setLiftPosition(LiftClass.liftPosition.AUTO_BASKET);
    while (arm.getLiftPositionL() <= 400) {
     sleep(50); // Check every 50ms
    }
@@ -310,12 +282,10 @@
    sleep(250);
 
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
-   while (arm.getLiftPositionL() >= 325) {
+   while (arm.getLiftPositionL() >= 315) {
     sleep(5);
    }
    arm.setClawPosition(1);
-
-   sleep(150);
 
    arm.setShoulderPosition(0.45);
    arm.setElbowPosition(1);
@@ -335,15 +305,13 @@
    arm.setElbowPosition(0);
    arm.setClawPosition(0);
 
-   sleep(350);
+   sleep(250);
 
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
    while (arm.getLiftPositionL() >= 325) {
-    sleep(25);
+    sleep(5);
    }
    arm.setClawPosition(1);
-
-   sleep(150);
 
    arm.setShoulderPosition(0.45);
    arm.setElbowPosition(1);
@@ -363,15 +331,13 @@
    arm.setElbowPosition(0);
    arm.setClawPosition(0);
 
-   sleep(350);
+   sleep(250);
 
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
-   while (arm.getLiftPositionL() >= 325) {
-    sleep(25);
+   while (arm.getLiftPositionL() >= 305) {
+    sleep(5);
    }
    arm.setClawPosition(1);
-
-   sleep(150);
 
    arm.setShoulderPosition(0.45);
    arm.setElbowPosition(1);

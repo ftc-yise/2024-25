@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.yise.poseStorage;
 import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
 
 @TeleOp(group = "advanced")
+@Disabled
 public class TeleOpAugmentedDriving extends LinearOpMode {
     // Define 2 states, drive control or automatic control
     enum Mode {

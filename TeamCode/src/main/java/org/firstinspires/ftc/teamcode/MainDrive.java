@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,7 +19,7 @@ public class MainDrive extends LinearOpMode {
     OpenCVVision vision = new OpenCVVision();
 
     // Declare OpMode members for each of the 4 motors.
-    private final ElapsedTime runtime = new  ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
 
     public RevColorSensorV3 clawSensor;
 
@@ -26,11 +27,14 @@ public class MainDrive extends LinearOpMode {
     public Boolean XPressed = false;
     public Boolean BPressed = false;
     public Boolean RightTriggerPressed = false;
+    boolean ClawSensorTriggered = false;
     public Boolean BumperPressed = false;
 
     public Boolean color = false;
 
     public boolean canToggleSlowMode = true;
+
+    int light;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -52,14 +56,10 @@ public class MainDrive extends LinearOpMode {
         LEDs.setLed(ledLights.ledStates.INIT);
 
         // set which pipeline is used in INIT to check to check what it is seeing
-        if (Parameters.vision == Parameters.Vision.RED){
+        if (Parameters.allianceColor == Parameters.Color.RED) {
             vision.setCameraPipeline(OpenCVVision.Color.RED);
-        } else if (Parameters.vision == Parameters.Vision.BLUE) {
-            vision.setCameraPipeline(OpenCVVision.Color.BLUE);
-        } else if (Parameters.vision == Parameters.Vision.YELLOW) {
-            vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
         } else {
-            vision.setCameraPipeline(OpenCVVision.Color.TEST);
+            vision.setCameraPipeline(OpenCVVision.Color.BLUE);
         }
 
         telemetry.addData("Color:", vision.getColor());
@@ -132,16 +132,16 @@ public class MainDrive extends LinearOpMode {
                 arm.currentButtonPressedState = LiftClass.buttonPressedState.DPAD_RIGHT;
             } else if (gamepad2.options) {
                 arm.manualPowerDownPulley();
-            } else if (gamepad2.left_trigger > 0.75){
+            } else if (gamepad2.left_trigger > 0.75) {
                 arm.manualPowerDownLift();
             }
 
-           if (arm.limit.getState()){
-               arm.pulleyLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
-               arm.pulleyRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            if (arm.limit.getState()) {
+                arm.pulleyLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+                arm.pulleyRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
             }
 
-            if (gamepad2.left_trigger > 0.75){
+            if (gamepad2.left_trigger > 0.75) {
                 arm.manualPowerDownLift();
             }
 
@@ -153,9 +153,76 @@ public class MainDrive extends LinearOpMode {
 
             //set whole are movement based on which dpad is pressed and if we need
             //to manually in
-            switch (arm.currentButtonPressedState){
+            switch (arm.currentButtonPressedState) {
                 case HANG:
+                    if (!arm.getHang()) {
+                        drive.updateFromDpad(-0.2, 0, 0);
+                    } else {
+                        drive.updateMotorsFromStick(gamepad1);
+                        switch (light) {
+                            case 0:
+                                LEDs.setLed(ledLights.ledStates.GRAB_Y);
+                                sleep(350);
+                                light++;
+                                break;
+                            case 1:
+                                LEDs.setLed(ledLights.ledStates.BLUE);
+                                sleep(350);
+                                light++;
+                                break;
+                            case 2:
+                                LEDs.setLed(ledLights.ledStates.RED);
+                                sleep(350);
+                                light++;
+                                break;
+                            case 3:
+                                LEDs.setLed(ledLights.ledStates.INIT);
+                                sleep(350);
+                                light++;
+                                break;
+                            case 4:
+                                LEDs.setLed(ledLights.ledStates.GRAB_B);
+                                sleep(350);
+                                light++;
+                                break;
+                            case 5:
+                                LEDs.setLed(ledLights.ledStates.CLAW_OPEN);
+                                sleep(350);
+                                light++;
+                                break;
+                            case 6:
+                                LEDs.setLed(ledLights.ledStates.ENDGAME);
+                                sleep(350);
+                                light++;
+                                break;
+                            case 7:
+                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
+                                light++;
+                                sleep(350);
+                                light++;
+                                break;
+                            case 8:
+                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.AQUA);
+                                light++;
+                                sleep(350);
+                                light++;
+                                break;
+                            case 9:
+                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_MEDIUM);
+                                light++;
+                                sleep(350);
+                                light++;
+                                break;
+                            case 10:
+                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+                                light++;
+                                sleep(350);
+                                light = 0;
+                                break;
+                        }
+                    }
                     arm.setArmPosition(LiftClass.armPosition.HANG);
+                    sleep(250);
                     break;
                 case DPAD_UP:
                     arm.setArmPosition(LiftClass.armPosition.BASKET);
@@ -163,7 +230,7 @@ public class MainDrive extends LinearOpMode {
                 case DPAD_DOWN:
                     if (arm.getSubmersibleScoringPosition()) {
                         arm.setArmPosition(LiftClass.armPosition.SUBMERSIBLEEND);
-                    } else{
+                    } else {
                         arm.setArmPosition(LiftClass.armPosition.HOME);
                     }
                     break;
@@ -224,152 +291,161 @@ public class MainDrive extends LinearOpMode {
             // Claw control method
             // uses a ternary operation condition ? valueIfTrue : valueIfFalse
             // a ternary operator is a shortcut for an if statement
-            if (gamepad2.right_trigger > 0.15 && !RightTriggerPressed) {
-                RightTriggerPressed = true;
-                arm.claw.setPosition(arm.claw.getPosition() == 1 ? 0 : 1);
-            } else if (gamepad2.right_trigger < 0.15) {
-                RightTriggerPressed = false;
-            }
+            // Check if the right trigger is pressed
+                if (gamepad2.right_trigger < 0.15) {
+                    RightTriggerPressed = false; // Reset the flag when the trigger is released
+                }// Check the conditions for opening/closing the claw
+                if (gamepad2.right_trigger > 0.15 && !RightTriggerPressed) {
+                    // If the right trigger is pressed, toggle the claw and reset the sensor flag
+                    arm.claw.setPosition(arm.claw.getPosition() == 1 ? 0 : 1);
+                    RightTriggerPressed = true; // Reset the flag when the trigger is released
+                } else if (clawSensor.green() > 150 && clawSensor.blue() >= 75 && !ClawSensorTriggered) {
+                    // If the sensor detects green AND it hasn't triggered yet, toggle the claw
+                    arm.claw.setPosition(0);
+                    ClawSensorTriggered = true; // Set the sensor flag to true
+                } else if (clawSensor.green() <= 150) {
+                    // If the sensor no longer detects green, reset the sensor flag
+                    ClawSensorTriggered = false;
+                }
 
-            // LED code for if we open our code
-            if (arm.claw.getPosition() == 1){
-                LEDs.setLed(ledLights.ledStates.CLAW_OPEN);
-            }
+                // LED code for if we open our code
+                if (arm.claw.getPosition() == 1) {
+                    LEDs.setLed(ledLights.ledStates.CLAW_OPEN);
+                }
 
-            // this is our toggle to move servos into ground search positions
-            if (gamepad2.b && !BPressed) {
-                BPressed = true;
-                if (arm.elbow.getPosition() == 0.02){
-                    arm.setShoulderPosition(0.4);
+                // this is our toggle to move servos into ground search positions
+                if (gamepad2.b && !BPressed) {
+                    BPressed = true;
+                    if (arm.elbow.getPosition() == 0.02) {
+                        arm.setShoulderPosition(0.3);
+                        arm.setElbowPosition(0);
+                    } else {
+                        arm.setShoulderPosition(0.6);
+                        arm.setElbowPosition(0.02);
+                    }
+                } else if (!gamepad2.b && BPressed) {
+                    BPressed = false;
+                }
+
+                //controlling shoulder when grabbing specimen of the wall position using a
+                // toggle boolean and a ternary operator
+                if (gamepad2.x && !XPressed) {
+                    XPressed = true;
+
+                    arm.setShoulderPosition(arm.ShoulderR.getPosition() == 0.25 ? 0.1 : 0.25);
+
                     arm.setElbowPosition(0);
-                } else {
-                    arm.setShoulderPosition(0.6);
-                    arm.setElbowPosition(0.02);
+                } else if (!gamepad2.x && XPressed) {
+                    XPressed = false;
                 }
-            }
-            else if (!gamepad2.b && BPressed) {
-                BPressed = false;
-            }
 
-            //controlling shoulder when grabbing specimen of the wall position using a
-            // toggle boolean and a ternary operator
-            if (gamepad2.x && !XPressed) {
-                XPressed = true;
+                //controlling wrist position using a toggle boolean and a ternary operator
+                // Set wrist position: if current position is 1, set to 0;
+                // if current position is 0, set to 0.5;
+                // otherwise, set to 1.
+                if (gamepad2.right_bumper && !RightBumperPressed) {
+                    RightBumperPressed = true;
 
-                 arm.setShoulderPosition(arm.ShoulderR.getPosition() == 0.25 ? 0 : 0.25);
+                    arm.wrist.setPosition(arm.wrist.getPosition() == 1 ? 0 : (arm.wrist.getPosition() == 0 ? 0.5 : 1));
 
-                arm.setElbowPosition(0);
-            } else if (!gamepad2.x && XPressed) {
-                XPressed = false;
-            }
-
-            //controlling wrist position using a toggle boolean and a ternary operator
-            // Set wrist position: if current position is 1, set to 0;
-            // if current position is 0, set to 0.5;
-            // otherwise, set to 1.
-            if (gamepad2.right_bumper && !RightBumperPressed) {
-                RightBumperPressed = true;
-
-                arm.wrist.setPosition(arm.wrist.getPosition() == 1 ? 0 : (arm.wrist.getPosition() == 0 ? 0.5 : 1));
-
-            } else if (!gamepad2.right_bumper && RightBumperPressed) {
-                RightBumperPressed = false;
-            }
-
-            // this if else statement controls both OpenCV pipelines and camera heights
-            if (gamepad1.right_bumper){
-                arm.setCameraHeightHIGH();
-                if (Parameters.allianceColor == Parameters.Color.RED){
-                    vision.setCameraPipeline(OpenCVVision.Color.RED);
-                } else {
-                    vision.setCameraPipeline(OpenCVVision.Color.BLUE);
+                } else if (!gamepad2.right_bumper && RightBumperPressed) {
+                    RightBumperPressed = false;
                 }
-            } else if (gamepad1.left_bumper && !BumperPressed) {
-                arm.setCameraHeightLOW();
-                BumperPressed = true;
-                if (vision.getColor() == OpenCVVision.Color.YELLOW){
-                    if (Parameters.allianceColor == Parameters.Color.RED){
+
+                // this if else statement controls both OpenCV pipelines and camera heights
+                /**if (gamepad1.right_bumper) {
+                    arm.setCameraHeightHIGH();
+                    if (Parameters.allianceColor == Parameters.Color.RED) {
                         vision.setCameraPipeline(OpenCVVision.Color.RED);
                     } else {
                         vision.setCameraPipeline(OpenCVVision.Color.BLUE);
                     }
-                } else {
-                    vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
+                } else if (gamepad1.left_bumper && !BumperPressed) {
+                    arm.setCameraHeightLOW();
+                    BumperPressed = true;
+                    if (vision.getColor() == OpenCVVision.Color.YELLOW) {
+                        if (Parameters.allianceColor == Parameters.Color.RED) {
+                            vision.setCameraPipeline(OpenCVVision.Color.RED);
+                        } else {
+                            vision.setCameraPipeline(OpenCVVision.Color.BLUE);
+                        }
+                    } else {
+                        vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
+                    }
                 }
+                if (!gamepad1.left_bumper) {
+                    BumperPressed = false;
+                }**/
+
+                //LED code based on the color sensor to decide what color our LEDs should
+                //display
+                if (clawSensor.green() > 650) {
+                    color = true;
+                    LEDs.setLed(ledLights.ledStates.GRAB_Y);
+                } else if (clawSensor.red() > 400) {
+                    color = true;
+                    LEDs.setLed(ledLights.ledStates.GRAB_R);
+                } else if (clawSensor.blue() > 400) {
+                    LEDs.setLed(ledLights.ledStates.GRAB_B);
+                    color = true;
+                } else {
+                    color = false;
+                }
+
+
+                // Telemetry Segments
+                // The telemetry output is grouped into 7 sections for clarity:
+                // 1. Encoder positions
+                // 2. Motor powers
+                // 3. Current arm movement (Enum values)
+                // 4. Servo positions
+                // 5. Color sensor values
+                // 6. Arm movement control booleans
+                // 7. D-pad control booleans for arm movement
+
+                // Section 1: Encoder positions
+                telemetry.addData("Pulley Right", arm.getPulleyPositionR());
+                telemetry.addData("Pulley Left", arm.getPulleyPositionL());
+                telemetry.addData("Left Lift Encoder Position", arm.getLiftPositionL());
+                telemetry.addData("Right Lift Encoder Position", arm.getLiftPositionR());
+                telemetry.addLine();
+
+                // Section 2: Motor powers
+                telemetry.addData("Pulley PowerL", arm.PulleyPowerL());
+                telemetry.addData("Pulley PowerR", arm.PulleyPowerR());
+                telemetry.addData("Lift PowerL", arm.LiftPowerL());
+                telemetry.addData("Lift PowerR", arm.LiftPowerR());
+                telemetry.addLine();
+
+                // Section 3: Current arm movement (Enum values)
+                telemetry.addData("pulleyPose", arm.getCurrentPulleyPosition());
+                telemetry.addData("liftPose", arm.getCurrentLiftPosition());
+                telemetry.addData("armMovement", arm.getCurrentArmMovement());
+                telemetry.addLine();
+
+                // Section 4: Servo positions
+                telemetry.addData("shoulder", arm.ShoulderR.getPosition());
+                telemetry.addData("elbow", arm.elbow.getPosition());
+                telemetry.addData("claw", arm.claw.getPosition());
+                telemetry.addData("wrist", arm.wrist.getPosition());
+                telemetry.addLine();
+
+                // Section 5: Color sensor values
+                telemetry.addData("colorR", clawSensor.red());
+                telemetry.addData("colorB", clawSensor.blue());
+                telemetry.addData("colorG", clawSensor.green());
+                telemetry.addLine();
+
+                // Section 6: Arm movement control booleans
+                telemetry.addData("targetPose", arm.pulleyLeft.getTargetPosition());
+                telemetry.addData("button pressed", arm.getButtonPressed());
+                telemetry.addLine();
+
+                // Section 7: Limit Switch
+                telemetry.addData("limit switch", arm.limit.getState());
+                telemetry.addLine();
+
+                telemetry.update();
             }
-            if (!gamepad1.left_bumper){
-                BumperPressed = false;
-            }
-
-            //LED code based on the color sensor to decide what color our LEDs should
-            //display
-            if (clawSensor.green() > 650) {
-                color = true;
-                LEDs.setLed(ledLights.ledStates.GRAB_Y);
-            } else if (clawSensor.red() > 400) {
-                color = true;
-                LEDs.setLed(ledLights.ledStates.GRAB_R);
-            } else if (clawSensor.blue() > 400) {
-                LEDs.setLed(ledLights.ledStates.GRAB_B);
-                color = true;
-            } else {
-                color = false;
-            }
-
-
-            // Telemetry Segments
-            // The telemetry output is grouped into 7 sections for clarity:
-            // 1. Encoder positions
-            // 2. Motor powers
-            // 3. Current arm movement (Enum values)
-            // 4. Servo positions
-            // 5. Color sensor values
-            // 6. Arm movement control booleans
-            // 7. D-pad control booleans for arm movement
-
-            // Section 1: Encoder positions
-            telemetry.addData("Pulley Right", arm.getPulleyPositionR());
-            telemetry.addData("Pulley Left", arm.getPulleyPositionL());
-            telemetry.addData("Left Lift Encoder Position", arm.getLiftPositionL());
-            telemetry.addData("Right Lift Encoder Position", arm.getLiftPositionR());
-            telemetry.addLine();
-
-            // Section 2: Motor powers
-            telemetry.addData("Pulley PowerL", arm.PulleyPowerL());
-            telemetry.addData("Pulley PowerR", arm.PulleyPowerR());
-            telemetry.addData("Lift PowerL", arm.LiftPowerL());
-            telemetry.addData("Lift PowerR", arm.LiftPowerR());
-            telemetry.addLine();
-
-            // Section 3: Current arm movement (Enum values)
-            telemetry.addData("pulleyPose", arm.getCurrentPulleyPosition());
-            telemetry.addData("liftPose", arm.getCurrentLiftPosition());
-            telemetry.addData("armMovement", arm.getCurrentArmMovement());
-            telemetry.addLine();
-
-            // Section 4: Servo positions
-            telemetry.addData("shoulder", arm.ShoulderR.getPosition());
-            telemetry.addData("elbow", arm.elbow.getPosition());
-            telemetry.addData("claw", arm.claw.getPosition());
-            telemetry.addData("wrist", arm.wrist.getPosition());
-            telemetry.addLine();
-
-            // Section 5: Color sensor values
-            telemetry.addData("colorR", clawSensor.red());
-            telemetry.addData("colorB", clawSensor.blue());
-            telemetry.addData("colorG", clawSensor.green());
-            telemetry.addLine();
-
-            // Section 6: Arm movement control booleans
-            telemetry.addData("targetPose", arm.pulleyLeft.getTargetPosition());
-            telemetry.addData("button pressed", arm.getButtonPressed());
-            telemetry.addLine();
-
-            // Section 7: Limit Switch
-            telemetry.addData("limit switch", arm.limit.getState());
-            telemetry.addLine();
-
-            telemetry.update();
         }
     }
-}

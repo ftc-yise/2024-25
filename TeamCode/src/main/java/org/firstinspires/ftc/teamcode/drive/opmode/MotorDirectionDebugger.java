@@ -100,16 +100,13 @@ public class MotorDirectionDebugger extends LinearOpMode {
 
             if (gamepad1.right_trigger > 0.5) {
                 arm.setPulleyPower(-1);
-            }else {
-                arm.setPulleyPower(-0);
             }
-
             if (gamepad1.left_trigger > 0.5) {
                 arm.setLiftPower(-1);
             }  else if (gamepad1.dpad_up) {
                 arm.setLiftPower(1);
-            } else {
-                arm.setLiftPower(-0);
+            } else if (gamepad1.options) {
+                arm.setLiftPosition(LiftClass.liftPosition.AUTO_BASKET);
             }
 
 

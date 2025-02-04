@@ -46,7 +46,8 @@ public class LiftClass {
         HOME,
         SUBMERSIBLE,
         BASKET,
-        HANG
+        HANG,
+        AUTO_BASKET
     }
 
     // define enum for different Pulley positions
@@ -177,6 +178,11 @@ public class LiftClass {
                 liftRight.setTargetPosition(495);
                 liftMotorPower = 1;
                 break;
+            case AUTO_BASKET:
+                liftLeft.setTargetPosition(495);
+                liftRight.setTargetPosition(495);
+                liftMotorPower = 0.45;
+                break;
             case HOME:
                 liftLeft.setTargetPosition(0);
                 liftRight.setTargetPosition(0);
@@ -188,8 +194,8 @@ public class LiftClass {
                 liftMotorPower = 1;
                 break;
             case HANG:
-                liftLeft.setTargetPosition(400);
-                liftRight.setTargetPosition(400);
+                liftLeft.setTargetPosition(380);
+                liftRight.setTargetPosition(380);
                 liftMotorPower = 0.45;
                 break;
 
@@ -271,12 +277,12 @@ public class LiftClass {
                         break;
                     case 0:  // Initialize the
                         setPulleyPosition(pulleyPosition.HANG);
-                        if (getPulleyPositionL() >= 2450) {
+                        if (getPulleyPositionL() >= 2550) {
                             step++;
                         }
                         break;
                     case 1:
-                        setLiftPower(0.65);
+                        setLiftPower(0.5);
                         if (getLiftPositionL() >= 240) { // Replace with your own position checking logic
                             setPulleyPower(0);
                             step++;
@@ -284,10 +290,10 @@ public class LiftClass {
                         break;
                     case 2:
 
-                        sleep(650);
+                        sleep(550);
                         setPulleyPower(-1);
-                        sleep(150);
-                        setLiftPower(-0.75);
+                        sleep(650);
+                        setLiftPower(-0.65);
                         if (getPulleyPositionL() <= 650) {
                             setPulleyPower(-.3);
                             step++;
@@ -305,6 +311,7 @@ public class LiftClass {
                         setLiftPower(-.55);
 
                         currentMovementState = movementState.REST;
+                        hang = true;
                         break;
                 }
                 break;
@@ -790,5 +797,9 @@ public class LiftClass {
 
     public boolean getButtonPressed() {
         return buttonPressed;
+    }
+
+    public boolean getHang() {
+        return hang;
     }
 }

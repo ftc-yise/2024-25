@@ -7,21 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="Game Values (RUN THIS EVERY MATCH)", group="Necessity")
 public class Parameters extends LinearOpMode {
 
-    public enum AutonomousConfig {
-        BASKET,
-        OBSERVATION
-    }
-
-    public enum Vision {
-        RED,
-        BLUE, YELLOW, TEST
-    }
-
-    public enum EndingPosition {
-        ACCENT,
-        OBSERVATION
-    }
-
     public enum Color {
         RED,
         BLUE
@@ -32,11 +17,8 @@ public class Parameters extends LinearOpMode {
         OVERTHETOP
     }
 
-    public static AutonomousConfig autoConfig;
-    public static EndingPosition endingPosition;
     public static Color allianceColor;
     public static AttachmentMethod attachment;
-    public static Vision vision;
 
     public static double WAIT = 0;
     public boolean xReleased;
@@ -62,28 +44,6 @@ public class Parameters extends LinearOpMode {
             //WAIT until released
         }
 
-        while (!gamepad1.a && !gamepad1.b && !gamepad1.y && !gamepad1.x) {
-            telemetry.addLine("Vision Color \n");
-            telemetry.addLine("X - Blue \n O - Red \n Triangle - Yellow \n Square - PlainView");
-
-            telemetry.update();
-
-            if (gamepad1.a) {
-                vision = Vision.BLUE;
-            } else if (gamepad1.b) {
-                vision = Vision.RED;
-            } else if (gamepad1.y) {
-                vision= Vision.YELLOW;
-            } else {
-                vision = Vision.TEST;
-            }
-        }
-
-
-        while (gamepad1.a || gamepad1.b) {
-            //WAIT until released
-        }
-
         while (!gamepad1.a && !gamepad1.b) {
             telemetry.addLine("attachment Method \n");
             telemetry.addLine("X - Over the top \n O - INTERNAL");
@@ -101,43 +61,6 @@ public class Parameters extends LinearOpMode {
         while (gamepad1.a || gamepad1.b) {
             //WAIT until released
         }
-
-
-        while (!gamepad1.a && !gamepad1.b) {
-            telemetry.addLine("Starting Position \n");
-            telemetry.addLine("X - BASKET \n O - Observation Zone");
-
-            telemetry.update();
-
-            if (gamepad1.a) {
-                    autoConfig = AutonomousConfig.BASKET;
-            } else if (gamepad1.b) {
-                autoConfig = AutonomousConfig.OBSERVATION;
-            }
-        }
-
-        while (gamepad1.a || gamepad1.b) {
-            //Wait until released
-        }
-
-        while (!gamepad1.a && !gamepad1.b && !gamepad1.x) {
-            telemetry.addLine("Park Position \n");
-            telemetry.addLine("▢ - Accent Level 1 \n X - Observation Zone");
-
-            telemetry.update();
-
-            if (gamepad1.x) {
-                endingPosition = EndingPosition.ACCENT;
-            } else if (gamepad1.a) {
-                endingPosition = EndingPosition.OBSERVATION;
-            }
-        }
-
-        while (gamepad1.a || gamepad1.b || gamepad1.x) {
-            //Wait until released
-        }
-
-        while (!gamepad1.y) {
             telemetry.addLine("Wait Seconds: " + WAIT);
             telemetry.addLine("▢ = -1 \n X = +1 \n O = 0 \n Y to continue");
             telemetry.update();
@@ -156,16 +79,9 @@ public class Parameters extends LinearOpMode {
             if (!gamepad1.x && !gamepad1.a && !gamepad1.b && !xReleased){
                 xReleased = true;
             }
-        }
-
-        while (gamepad1.y) {
-            //Wait until released
-        }
 
         while (!gamepad1.a) {
             telemetry.addLine("Color: " + allianceColor);
-            telemetry.addLine("Starting Position: " + autoConfig);
-            telemetry.addLine("Park position: " + endingPosition);
             telemetry.addLine("WAIT: " + WAIT);
             telemetry.addLine("\nX to end program");
 

@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
+import org.firstinspires.ftc.teamcode.yise.Parameters;
+
 @TeleOp(name="OpenCVTest", group="Linear OpMode")
 public class ColorSeeing extends LinearOpMode {
 
@@ -43,7 +45,7 @@ public class ColorSeeing extends LinearOpMode {
 
         vision.setCameraPipeline(OpenCVVision.Color.RED);// Wait for the game to start (driver presses PLAY)
 
-        while (!gamepad1.x) {
+        while (!isStopRequested()) {
             telemetry.addData("Status", "Initialized");
 
 
@@ -54,15 +56,20 @@ public class ColorSeeing extends LinearOpMode {
 
             telemetry.addData("Corner T", vision.getTopRightCorner());
             telemetry.addData("Corner B", vision.getBottomRightCorner());
-            telemetry.update();
 
-            if (gamepad1.right_trigger > 0.75) {
-                vision.setCameraPipeline(OpenCVVision.Color.BLUE);
-            } else if (gamepad1.left_trigger > 0.75) {
+           // telemetry.addData("lowerRED", vision.getLowerRedScaler)
+            telemetry.update();
+            if (gamepad1.right_trigger > 0.75){
+                vision.setCameraPipeline(OpenCVVision.Color.TEST);
+            }
+
+            // set which pipeline is used in INIT to check to check what it is seeing
+            if (Parameters.allianceColor == Parameters.Color.RED) {
                 vision.setCameraPipeline(OpenCVVision.Color.RED);
             } else {
-                vision.setCameraPipeline(OpenCVVision.Color.YELLOW);
+                vision.setCameraPipeline(OpenCVVision.Color.TEST);
             }
+
 
             if (gamepad1.dpad_down){
                 vision.setLowerRedScaler(-10);

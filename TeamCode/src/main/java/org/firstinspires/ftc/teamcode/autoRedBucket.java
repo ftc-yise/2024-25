@@ -59,8 +59,8 @@ public class autoRedBucket extends LinearOpMode {
                 .build();
 
         TrajectorySequence pick_Up_Block_3 = drive.trajectorySequenceBuilder(place_Block_2.end())
-                .lineToLinearHeading(new Pose2d(-59, -40, Math.toRadians(-270)))
-                .forward(7)
+                .lineToLinearHeading(new Pose2d(-57.8, -40, Math.toRadians(-270)))
+                .forward(6)
                 .waitSeconds(0.25)
                 .build();
 
@@ -168,7 +168,7 @@ public class autoRedBucket extends LinearOpMode {
         drive.followTrajectorySequence(pick_Up_Block_3);
         arm.setShoulderPosition(0.6);
         arm.setElbowPosition(0.12);
-        sleep(250);
+        sleep(350);
         arm.CloseClaw();
 
         drive.followTrajectorySequence(place_Block_3);
@@ -185,11 +185,11 @@ public class autoRedBucket extends LinearOpMode {
 
         arm.setElbowPosition(0.6);
         arm.setShoulderPosition(1);
-        sleep(400);
+        sleep(550);
 
         arm.setClawPosition(1);
 
-        sleep(150);
+        sleep(200);
 
         arm.setElbowPosition(0.5);
         arm.setShoulderPosition(0.9);

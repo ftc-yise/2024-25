@@ -253,18 +253,6 @@ public class MainDrive extends LinearOpMode {
                     // If the right trigger is pressed, toggle the claw and reset the sensor flag
                     arm.claw.setPosition(arm.claw.getPosition() == 1 ? 0 : 1);
                     RightTriggerPressed = true; // Reset the flag when the trigger is released
-                } else if (clawSensor.green() > 150 && clawSensor.blue() >= 75 && !ClawSensorTriggered) {
-                    // If the sensor detects green AND it hasn't triggered yet, toggle the claw
-                    arm.claw.setPosition(0);
-                    ClawSensorTriggered = true; // Set the sensor flag to true
-                } else if (clawSensor.green() <= 150) {
-                    // If the sensor no longer detects green, reset the sensor flag
-                    ClawSensorTriggered = false;
-                }
-
-                // LED code for if we open our code
-                if (arm.claw.getPosition() == 1) {
-                    LEDs.setLed(ledLights.ledStates.CLAW_OPEN);
                 }
 
                 // this is our toggle to move servos into ground search positions

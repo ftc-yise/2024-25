@@ -293,7 +293,7 @@ public class LiftClass {
                         sleep(550);
                         setPulleyPower(-1);
                         sleep(650);
-                        setLiftPower(-0.65);
+                        setLiftPower(-0.7);
                         if (getPulleyPositionL() <= 650) {
                             setPulleyPower(-.3);
                             step++;
@@ -302,7 +302,7 @@ public class LiftClass {
                     case 3:
                         setLiftPower(-0.35);
                         setPulleyPower(-0.35);
-                        if (getPulleyPositionL() <= 450) {
+                        if (getPulleyPositionL() <= 500) {
                             step++;
                         }
                         break;

@@ -282,7 +282,7 @@
    sleep(250);
 
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
-   while (arm.getLiftPositionL() >= 315) {
+   while (arm.getLiftPositionL() >= 305) {
     sleep(5);
    }
    arm.setClawPosition(1);
@@ -308,7 +308,7 @@
    sleep(250);
 
    arm.setLiftPosition(LiftClass.liftPosition.HOME);
-   while (arm.getLiftPositionL() >= 325) {
+   while (arm.getLiftPositionL() >= 305) {
     sleep(5);
    }
    arm.setClawPosition(1);

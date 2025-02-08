@@ -161,64 +161,18 @@ public class MainDrive extends LinearOpMode {
                         drive.updateMotorsFromStick(gamepad1);
                         switch (light) {
                             case 0:
-                                LEDs.setLed(ledLights.ledStates.GRAB_Y);
-                                sleep(350);
+                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_WITH_GLITTER);
                                 light++;
-                                break;
-                            case 1:
-                                LEDs.setLed(ledLights.ledStates.BLUE);
-                                sleep(350);
+                                sleep(700);
                                 light++;
                                 break;
                             case 2:
-                                LEDs.setLed(ledLights.ledStates.RED);
-                                sleep(350);
-                                light++;
-                                break;
-                            case 3:
-                                LEDs.setLed(ledLights.ledStates.INIT);
-                                sleep(350);
-                                light++;
-                                break;
-                            case 4:
-                                LEDs.setLed(ledLights.ledStates.GRAB_B);
-                                sleep(350);
-                                light++;
-                                break;
-                            case 5:
-                                LEDs.setLed(ledLights.ledStates.CLAW_OPEN);
-                                sleep(350);
-                                light++;
-                                break;
-                            case 6:
-                                LEDs.setLed(ledLights.ledStates.ENDGAME);
-                                sleep(350);
-                                light++;
-                                break;
-                            case 7:
-                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
+                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
                                 light++;
                                 sleep(350);
                                 light++;
                                 break;
-                            case 8:
-                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.AQUA);
-                                light++;
-                                sleep(350);
-                                light++;
-                                break;
-                            case 9:
-                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_MEDIUM);
-                                light++;
-                                sleep(350);
-                                light++;
-                                break;
-                            case 10:
-                                LEDs.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
-                                light++;
-                                sleep(350);
-                                light = 0;
-                                break;
+
                         }
                     }
                     arm.setArmPosition(LiftClass.armPosition.HANG);
@@ -299,18 +253,6 @@ public class MainDrive extends LinearOpMode {
                     // If the right trigger is pressed, toggle the claw and reset the sensor flag
                     arm.claw.setPosition(arm.claw.getPosition() == 1 ? 0 : 1);
                     RightTriggerPressed = true; // Reset the flag when the trigger is released
-                } else if (clawSensor.green() > 150 && clawSensor.blue() >= 75 && !ClawSensorTriggered) {
-                    // If the sensor detects green AND it hasn't triggered yet, toggle the claw
-                    arm.claw.setPosition(0);
-                    ClawSensorTriggered = true; // Set the sensor flag to true
-                } else if (clawSensor.green() <= 150) {
-                    // If the sensor no longer detects green, reset the sensor flag
-                    ClawSensorTriggered = false;
-                }
-
-                // LED code for if we open our code
-                if (arm.claw.getPosition() == 1) {
-                    LEDs.setLed(ledLights.ledStates.CLAW_OPEN);
                 }
 
                 // this is our toggle to move servos into ground search positions

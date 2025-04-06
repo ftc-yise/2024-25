@@ -9,161 +9,66 @@ import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-
+import org.opencv.core .*;
+import java.util.ArrayList;
+import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
 public class detectRedPipeline extends OpenCvPipeline {
 
-    private Mat blackBackground = new Mat();
-    private Mat contoursOnBlackBackground = new Mat();
-    private Mat lineTest = new Mat();
-    private List<MatOfPoint> contoursList = new ArrayList<>();
+        public Scalar lowerRGBA = new Scalar(29.0, 0.0, 16.0, 0.0);
+        public Scalar upperRGBA = new Scalar(255.0, 70.0, 70.0, 255.0);
+        private Mat rgbaBinaryMat = new Mat();
 
-    // Enum for stages
-    enum Stage {
-        CONTOURS_ON_BLACK_BACKGROUND,
-        RAW_IMAGE,
-        LINE_TEST
-    }
+        private ArrayList<MatOfPoint> contours = new ArrayList<>();
+        private Mat hierarchy = new Mat();
 
-    private Stage stageToRenderToViewport = Stage.CONTOURS_ON_BLACK_BACKGROUND;
-    private Stage[] stages = Stage.values();
+        private ArrayList<Rect> contoursRects = new ArrayList<>();
 
-    // Red color range in HSV
-    private Scalar lowerRED = new Scalar(0, 126, 30);  // Lower bound for red
-    private Scalar upperRED = new Scalar(4.3, 255, 255);  // Upper bound for red
+        private Rect biggestRect = null;
 
-    // For line calculations
-    private Point topRightCorner;
-    private Point bottomRightCorner;
-    private double lineAngle;
-    private double perpendicularAngle1;
-    private double perpendicularAngle2;
-    private double largestContourArea;
-    private double secondLargestContourArea;
+        public Scalar lineColor = new Scalar(255.0, 0.0, 0.0, 0.0);
+        public int lineThickness = 1;
 
-    @Override
-    public void onViewportTapped() {
-        int currentStageNum = stageToRenderToViewport.ordinal();
-        int nextStageNum = currentStageNum + 1;
-        if (nextStageNum >= stages.length) {
-            nextStageNum = 0;
-        }
-        stageToRenderToViewport = stages[nextStageNum];
-    }
+        private Mat rgbaBinaryMatRects = new Mat();
 
-    @Override
-    public Mat processFrame(Mat input) {
-        // Convert the image to HSV
-        Mat hsv = new Mat();
-        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
+        public Scalar lineColor1 = new Scalar(255.0, 255.0, 255.0, 0.0);
+        public int lineThickness1 = 0;
 
-        // Threshold the HSV image to get only red colors
-        Mat redMask = new Mat();
-        Core.inRange(hsv, lowerRED, upperRED, redMask);
+        private Mat rgbaBinaryMatContours = new Mat();
 
-        // Find contours
-        contoursList.clear();
-        Imgproc.findContours(redMask, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+        @Override
+        public Mat processFrame(Mat input) {
+            Core.inRange(input, lowerRGBA, upperRGBA, rgbaBinaryMat);
 
-        // Sort contours by area in descending order
-        contoursList.sort((c1, c2) -> Double.compare(Imgproc.contourArea(c2), Imgproc.contourArea(c1)));
+            contours.clear();
+            hierarchy.release();
+            Imgproc.findContours(rgbaBinaryMat, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        // Draw contours on the black background
-        blackBackground.release();
-        blackBackground = Mat.zeros(input.size(), input.type());
-        contoursOnBlackBackground.release();
-        blackBackground.copyTo(contoursOnBlackBackground);
-        Imgproc.drawContours(contoursOnBlackBackground, contoursList, -1, new Scalar(0, 0, 255), 2);
-
-        // Initialize variables for largest and second-largest contours
-        MatOfPoint largestContour = null;
-        MatOfPoint secondLargestContour = null;
-        largestContourArea = 0;
-        secondLargestContourArea = 0;
-
-        if (contoursList.size() > 0) {
-            // Largest contour
-            largestContour = contoursList.get(0);
-            largestContourArea = Imgproc.contourArea(largestContour);
-
-            if (contoursList.size() > 1) {
-                // Second largest contour
-                secondLargestContour = contoursList.get(1);
-                secondLargestContourArea = Imgproc.contourArea(secondLargestContour);
+            contoursRects.clear();
+            for (MatOfPoint points : contours) {
+                contoursRects.add(Imgproc.boundingRect(points));
             }
 
-            // Compute the minimum-area rectangle for the largest contour
-            if (largestContour != null) {
-                RotatedRect minAreaRect = Imgproc.minAreaRect(new MatOfPoint2f(largestContour.toArray()));
-
-                // Get the box points
-                Point[] boxPoints = new Point[4];
-                MatOfPoint2f boxPointsMat = new MatOfPoint2f();
-                Imgproc.boxPoints(minAreaRect, boxPointsMat);
-                boxPoints = boxPointsMat.toArray();
-
-                // Draw the bounding box on the contours
-                for (int i = 0; i < 4; i++) {
-                    Imgproc.line(contoursOnBlackBackground, boxPoints[i], boxPoints[(i + 1) % 4], new Scalar(0, 255, 0), 2);
+            this.biggestRect = null;
+            for (Rect rect : contoursRects) {
+                if (rect != null) {
+                    if ((biggestRect == null) || (rect.area() > biggestRect.area())) {
+                        this.biggestRect = rect;
+                    }
                 }
+            }
 
-                // Calculate the angle of the line
-                topRightCorner = boxPoints[1];
-                bottomRightCorner = boxPoints[2];
-                lineAngle = calculateAngle(boxPoints[0], boxPoints[2]);
+            rgbaBinaryMat.copyTo(rgbaBinaryMatRects);
+            if (biggestRect != null) {
+                Imgproc.rectangle(rgbaBinaryMatRects, biggestRect, lineColor, lineThickness);
+            }
 
-                // Calculate perpendicular angles
-                perpendicularAngle1 = (lineAngle + 90) % 360;
-                perpendicularAngle2 = (lineAngle - 90) % 360;
+            rgbaBinaryMat.copyTo(rgbaBinaryMatContours);
+            Imgproc.drawContours(rgbaBinaryMatContours, contours, -1, lineColor1, lineThickness1);
 
-                // Normalize angles to be within [0, 360) degrees
-                if (perpendicularAngle1 < 0) perpendicularAngle1 += 360;
-                if (perpendicularAngle2 < 0) perpendicularAngle2 += 360;
-            }
-        }
-
-        // Choose the correct stage to render
-        switch (stageToRenderToViewport) {
-            case CONTOURS_ON_BLACK_BACKGROUND: {
-                return contoursOnBlackBackground;
-            }
-            case RAW_IMAGE: {
-                Mat rawWithContours = new Mat();
-                input.copyTo(rawWithContours);
-                Imgproc.drawContours(rawWithContours, contoursList, -1, new Scalar(0, 0, 255), 2);
-                return rawWithContours;
-            }
-            case LINE_TEST: {
-                return lineTest;
-            }
-            default: {
-                return input;
-            }
+            return rgbaBinaryMatRects;
         }
     }
-
-    // Method to calculate the angle between two points
-    private double calculateAngle(Point p1, Point p2) {
-        // Compute the difference in coordinates
-        double deltaY = p2.y - p1.y;
-        double deltaX = p2.x - p1.x;
-
-        // Calculate the angle in radians and convert to degrees
-        double angleRadians = Math.atan2(deltaY, deltaX);
-        double angleDegrees = Math.toDegrees(angleRadians);
-
-        // Normalize angle to be within 0 to 360 degrees
-        if (angleDegrees < 0) {
-            angleDegrees += 360;
-        }
-
-        return angleDegrees;
-    }
-
-    // Getter for the contour count
-    public int getContourCount() {
-        return contoursList.size();
-    }
-}

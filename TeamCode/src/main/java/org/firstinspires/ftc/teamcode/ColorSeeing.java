@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.yise.OpenCVVision;
 import org.firstinspires.ftc.teamcode.yise.Parameters;
 
-@TeleOp(name="OpenCVTest", group="Linear OpMode")
+@TeleOp(name="OpenCVTest", group="color seeing")
 public class ColorSeeing extends LinearOpMode {
 
     OpenCVVision vision = new OpenCVVision();

@@ -3,18 +3,12 @@ package org.firstinspires.ftc.teamcode.vision.detectRedPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.Point;
-import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.opencv.core .*;
 import java.util.ArrayList;
-import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvPipeline;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class detectRedPipeline extends OpenCvPipeline {
 

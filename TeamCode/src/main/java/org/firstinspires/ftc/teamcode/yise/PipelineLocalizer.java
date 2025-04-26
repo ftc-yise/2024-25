@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -94,4 +95,10 @@ public class PipelineLocalizer {
     public Color getColor(){
         return currentColor;
     }
+
+    public double getrectX() {
+        return pipelineR.getLargestRectCenterX();
+    }
+
+
 }

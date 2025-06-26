@@ -14,10 +14,12 @@ public class SwerveModuleConfig {
     public final String driveMotorName, angleServoName, absoluteEncoderName;
     public final double offset;
     public final int moduleNumber;
-    public PIDFController drivePIDFController, anglePIDFController;
+     public final String moduleString;
+
+     public PIDFController drivePIDFController, anglePIDFController;
     public DcMotorSimple.Direction angleReverse;
 
-    public SwerveModuleConfig(int modNumber, PIDFController drivePIDFController, PIDFController anglePIDFController,
+    public SwerveModuleConfig(int modNumber, String moduleString, PIDFController drivePIDFController, PIDFController anglePIDFController,
                               String driveMotorName, String angleServoName, String absoluteEncoderName, double offset, DcMotorSimple.Direction angleReverse) {
         this.driveMotorName = driveMotorName;
         this.angleServoName = angleServoName;
@@ -27,5 +29,6 @@ public class SwerveModuleConfig {
         this.angleReverse = angleReverse;
         this.offset = offset;
         this.moduleNumber = modNumber;
+        this.moduleString = moduleString;
     }
 }

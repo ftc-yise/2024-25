@@ -31,7 +31,10 @@ public class SwerveDrive extends SubsystemBase {
 
     // Controllers for odometry/path following (currently unused)
     private final PIDFController driveController = new PIDFController(0.01, 0, 0, 0);
-    private final PIDFController turnController = new PIDFController(0.018, 0.005, 0.025, 0);
+    private final PIDFController turnControllerFL = new PIDFController(0.00485, 0.025, 0.013, 0.001);
+    private final PIDFController turnControllerFR = new PIDFController(0.0048, 0.028, 0.013, 0.001);
+    private final PIDFController turnControllerBR = new PIDFController(0.0048, 0.03, 0.013, 0.001);
+    private final PIDFController turnControllerBL = new PIDFController(0.00485, 0.015, 0.013, 0.001);
 
     // IMU for field-relative driving
     private BHI260IMU imu;
@@ -51,17 +54,17 @@ public class SwerveDrive extends SubsystemBase {
         // Create configurations for each module
         // Parameters: moduleNumber, drive controller, turn controller, motor name, servo name,
         // encoder name, angle offset, servo direction
-        SwerveModuleConfig fl = new SwerveModuleConfig(0, driveController, turnController,
-                "driveMotor1", "angleServo1", "angleInput1", 113.9, DcMotorSimple.Direction.REVERSE);
+        SwerveModuleConfig fl = new SwerveModuleConfig(0,"0Fl", driveController, turnControllerFL,
+                "LeftFrontDrive", "LeftFrontAxon", "LeftFrontAnalog", 96, DcMotorSimple.Direction.FORWARD);
 
-        SwerveModuleConfig fr = new SwerveModuleConfig(1, driveController, turnController,
-                "driveMotor2", "angleServo2", "angleInput2", 33.6, DcMotorSimple.Direction.REVERSE);
+        SwerveModuleConfig fr = new SwerveModuleConfig(1, "1FR", driveController, turnControllerFR,
+                "RightFrontDrive", "RightFrontAxon", "RightFrontAnalog", 0, DcMotorSimple.Direction.FORWARD);
 
-        SwerveModuleConfig bl = new SwerveModuleConfig(2, driveController, turnController,
-                "driveMotor3", "angleServo3", "angleInput3", 48.2, DcMotorSimple.Direction.REVERSE);
+        SwerveModuleConfig bl = new SwerveModuleConfig(2, "2bl", driveController, turnControllerBL,
+                "LeftBackDrive", "LeftBackAxon", "LeftBackAnalog", 4, DcMotorSimple.Direction.REVERSE);
 
-        SwerveModuleConfig br = new SwerveModuleConfig(3, driveController, turnController,
-                "driveMotor4", "angleServo4", "angleInput4", 125.8, DcMotorSimple.Direction.REVERSE);
+        SwerveModuleConfig br = new SwerveModuleConfig(3, "3br", driveController, turnControllerBR,
+                "RightBackDrive", "RightBackAxon", "RightBackAnalog", 2.5, DcMotorSimple.Direction.REVERSE);
 
         // Create array of modules
         modules = new SwerveModule[] {
@@ -77,7 +80,7 @@ public class SwerveDrive extends SubsystemBase {
                 new IMU.Parameters(
                         new RevHubOrientationOnRobot(
                                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
+                                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
                         )
                 )
         );
@@ -129,7 +132,7 @@ public class SwerveDrive extends SubsystemBase {
 
         // Set each module to its calculated state
         for (SwerveModule module : modules) {
-            module.setState(states[module.moduleNumber]);
+            module.setState(states[(module.moduleNumber)]);
         }
     }
 
@@ -175,10 +178,23 @@ public class SwerveDrive extends SubsystemBase {
      */
     @Override
     public void periodic() {
+        if (imu != null && imu.getRobotYawPitchRollAngles() != null) {
         // Get and display IMU angles
         YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
         telemetry.addData("Heading", angles.getYaw(AngleUnit.DEGREES));
         telemetry.addData("Roll", angles.getRoll(AngleUnit.DEGREES));
         telemetry.addData("Pitch", angles.getPitch(AngleUnit.DEGREES));
+
+        // Telemetry for each swerve module
+        for (SwerveModule module : modules) {
+            telemetry.addData("Module " + module.moduleString + " Raw Voltage", module.servoPotentiometer.getVoltage());
+            telemetry.addData("Module " + module.moduleString + " Current Angle (deg)", module.getWheelAngleDeg());
+            telemetry.addData("Module " + module.moduleString + " PID Output", module.anglePID);
+            telemetry.addData("Module " + module.moduleString + " At Setpoint", module.angleController.atSetPoint());
+            telemetry.addData("Module " + module.moduleString + " Setpoint", module.angleController.getSetPoint());
+        }
+        } else {
+        telemetry.addData("IMU", "IMU not ready or null!");
+    }
     }
 }

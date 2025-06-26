@@ -35,7 +35,8 @@ public class SwerveModule extends SubsystemBase {
     public CustomPIDFController angleController;  // PID controller for wheel orientation
     public PIDFController driveController;        // PID controller for drive motor (unused in current implementation)
 
-    public int moduleNumber;              // Module identifier (0-3)
+    public int moduleNumber;// Module identifier (0-3)
+    public String moduleString;
     public Telemetry telemetry;           // Telemetry for debugging
 
     // State variables for telemetry and debugging
@@ -77,6 +78,7 @@ public class SwerveModule extends SubsystemBase {
 
         // Store module number for identification
         moduleNumber = config.moduleNumber;
+        moduleString = config.moduleString;
 
         // Set up telemetry with FTC Dashboard integration
         FtcDashboard dashboard = FtcDashboard.getInstance();

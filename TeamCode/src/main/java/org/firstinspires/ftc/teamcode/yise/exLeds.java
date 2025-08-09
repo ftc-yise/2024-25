@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.yise;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class exLedLights {
+public class exLeds {
     public final RevBlinkinLedDriver lights;
     public ledStates currentState;
 
@@ -16,7 +16,7 @@ public class exLedLights {
         GRAB_R,
     }
 
-    public exLedLights(HardwareMap hardwareMap) {
+    public exLeds(HardwareMap hardwareMap) {
         lights = hardwareMap.get(RevBlinkinLedDriver.class, "led");
         currentState = ledStates.INIT;
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);

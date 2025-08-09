@@ -9,11 +9,11 @@ public class exLeds {
 
     public enum ledStates {
         INIT,
-        RED,
-        BLUE,
-        GRAB_Y,
-        GRAB_B,
-        GRAB_R,
+        ALLIANCE_RED,
+        ALLIANCE_BLUE,
+        GRAB_YELLOW,
+        GRAB_BLUE,
+        GRAB_RED,
     }
 
     public exLeds(HardwareMap hardwareMap) {
@@ -24,27 +24,27 @@ public class exLeds {
 
     public void setLed(ledStates state) {
         switch (state) {
-            case RED:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
-                currentState = state;
-                break;
-            case BLUE:
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
-                currentState = state;
-                break;
             case INIT:
                 lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
                 currentState = state;
                 break;
-            case GRAB_Y:
+            case ALLIANCE_RED:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
+                currentState = state;
+                break;
+            case ALLIANCE_BLUE:
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
+                currentState = state;
+                break;
+            case GRAB_YELLOW:
                 lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
                 currentState = state;
                 break;
-            case GRAB_B:
+            case GRAB_BLUE:
                 lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                 currentState = state;
                 break;
-            case GRAB_R:
+            case GRAB_RED:
                 lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                 currentState = state;
                 break;

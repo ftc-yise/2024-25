@@ -43,7 +43,6 @@ public class exDrive {
             heading = -gamepad.right_stick_x * speedMultiplier;
             drive.setWeightedDrivePower(new Pose2d(x, y, heading));
         }
-
     }
 
     //Toggles fast and slow speeds
@@ -59,8 +58,8 @@ public class exDrive {
         }
     }
 
-    //Updates the roadrunner coords; must be called every tick
-    public void update() {
+    // updates the roadrunner coords; must be called every tick
+    public void update_coords() {
         drive.update();
     }
 

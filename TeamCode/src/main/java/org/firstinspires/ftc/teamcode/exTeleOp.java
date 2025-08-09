@@ -39,20 +39,20 @@ public class exTeleOp extends LinearOpMode {
 
             // checks for which color should be our default color based on our alliance
             if (exParams.allianceColor == exParams.Color.RED && (!colorChanged)) {
-                LEDs.setLed(exLeds.ledStates.RED);
+                LEDs.setLed(exLeds.ledStates.ALLIANCE_RED);
             } else if (!colorChanged) {
-                LEDs.setLed(exLeds.ledStates.BLUE);
+                LEDs.setLed(exLeds.ledStates.ALLIANCE_BLUE);
             }
 
             // set LED color based on color sensor in claw (i.e. what color block did we grab)
             if (clawSensor.green() > 650) {
                 colorChanged = true;
-                LEDs.setLed(exLeds.ledStates.GRAB_Y);
+                LEDs.setLed(exLeds.ledStates.GRAB_YELLOW);
             } else if (clawSensor.red() > 400) {
                 colorChanged = true;
-                LEDs.setLed(exLeds.ledStates.GRAB_R);
+                LEDs.setLed(exLeds.ledStates.GRAB_RED);
             } else if (clawSensor.blue() > 400) {
-                LEDs.setLed(exLeds.ledStates.GRAB_B);
+                LEDs.setLed(exLeds.ledStates.GRAB_BLUE);
                 colorChanged = true;
             } else {
                 colorChanged = false;
@@ -64,7 +64,7 @@ public class exTeleOp extends LinearOpMode {
 
             // update drive motor speeds/direction based on stick input
             drive.updateMotorsFromStick(gamepad1);
-            drive.update();
+            drive.update_coords();
 
             // toggles "slow mode" off and on
             if (gamepad1.y && canToggleSlowMode) {

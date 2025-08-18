@@ -5,12 +5,17 @@
  */
 
 buildscript {
+    ext.kotlin_version = '1.8.0' //<----- ADD THIS LINE, UPDATE VERSION TO LATEST IF NEEDED
+
+
     repositories {
         mavenCentral()
         google()
     }
     dependencies {
         // Note for FTC Teams: Do not modify this yourself.
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // ✅ This is key
+
         classpath 'com.android.tools.build:gradle:8.6.1'
     }
 }

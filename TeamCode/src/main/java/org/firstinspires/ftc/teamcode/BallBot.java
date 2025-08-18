@@ -8,11 +8,17 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.SensorSparkFunOTOSSetup_Test;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @TeleOp(name="Ball Bot", group="Ball Bot")
 
 public class BallBot extends LinearOpMode {
+    SampleMecanumDrive drive;
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -25,8 +31,6 @@ public class BallBot extends LinearOpMode {
     private double fullSpeed = 1;
     private double currentSpeed = 1;
     private boolean canChangeSpeeds = true;
-
-    SensorSparkFunOTOSSetup_Test laser;
 
     @Override
     public void runOpMode() {
@@ -43,6 +47,14 @@ public class BallBot extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        drive = new SampleMecanumDrive(hardwareMap);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+
+        double forward = 0;
+        double strafe = 0;
+        double turn = 0;
+
 
 
         waitForStart();
@@ -52,10 +64,10 @@ public class BallBot extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double forward   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double strafe =  gamepad1.left_stick_x;
-            double turn     =  gamepad1.right_stick_x;
+            /*// POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+            forward   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            strafe =  gamepad1.left_stick_x;
+            turn     =  gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -74,6 +86,12 @@ public class BallBot extends LinearOpMode {
                 rightFrontDrive.setPower(1);
             }
 
+            // Send calculated power to wheels
+            leftFrontDrive.setPower(leftFrontPower * currentSpeed);
+            rightFrontDrive.setPower(rightFrontPower * currentSpeed);
+            leftBackDrive.setPower(leftBackPower * currentSpeed);
+            rightBackDrive.setPower(rightBackPower * currentSpeed);*/
+
             if (gamepad1.y && canChangeSpeeds) {
                 canChangeSpeeds = false;
                 if (currentSpeed == fullSpeed) {
@@ -85,11 +103,29 @@ public class BallBot extends LinearOpMode {
                 canChangeSpeeds = true;
             }
 
+            //Set drive power based on gamepad inputs multiplied by the speed variable
+            if (!gamepad1.dpad_down && !gamepad1.dpad_up && !gamepad1.dpad_left && !gamepad1.dpad_right) {
+                strafe   = gamepad1.left_stick_y * currentSpeed;  // Note: pushing stick forward gives negative value
+                forward =  gamepad1.left_stick_x * currentSpeed;
+                turn     =  -gamepad1.right_stick_x * currentSpeed;
+                drive.setWeightedDrivePower(new Pose2d(strafe, forward, turn));
+            } else if (gamepad1.dpad_up) {
+                drive.setWeightedDrivePower(new Pose2d(-.251, 0, 0));
+            } else if (gamepad1.dpad_down) {
+                drive.setWeightedDrivePower(new Pose2d(.251, 0, 0));
+            } else if (gamepad1.dpad_left) {
+                drive.setWeightedDrivePower(new Pose2d(0, -.251, 0));
+            } else if (gamepad1.dpad_right) {
+                drive.setWeightedDrivePower(new Pose2d(0, .251, 0));
+            }
 
-            // Send calculated power to wheels
-            leftFrontDrive.setPower(leftFrontPower * currentSpeed);
-            rightFrontDrive.setPower(rightFrontPower * currentSpeed);
-            leftBackDrive.setPower(leftBackPower * currentSpeed);
-            rightBackDrive.setPower(rightBackPower * currentSpeed);
+            drive.updateOTOS();
+
+            Pose2d poseEstimate = drive.LDrive.getOTOSPoseEstimate();
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.update();
+
         }
     }}

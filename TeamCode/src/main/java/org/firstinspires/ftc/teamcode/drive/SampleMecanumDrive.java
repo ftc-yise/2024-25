@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import androidx.annotation.NonNull;
 
+import org.firstinspires.ftc.teamcode.drive.LaserDrive.Drive;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
@@ -9,6 +11,7 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -19,6 +22,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -75,6 +79,34 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private IMU imu;
     private VoltageSensor batteryVoltageSensor;
+
+    private SparkFunOTOS optical;
+
+    public final Drive LDrive = new Drive() {
+        @Override public void setDriveSignal(DriveSignal driveSignal) {
+            SampleMecanumDrive.this.setDriveSignal(driveSignal);
+        }
+
+        @Override public void setDrivePower(Pose2d drivePower) {
+            SampleMecanumDrive.this.setDrivePower(drivePower);
+        }
+
+        @Override public Localizer getLocalizer() {
+            return SampleMecanumDrive.this.getLocalizer();
+        }
+
+        @Override public void setLocalizer(Localizer localizer) {
+            SampleMecanumDrive.this.setLocalizer(localizer);
+        }
+
+        @Override protected double getRawExternalHeading() {
+            return SampleMecanumDrive.this.getRawExternalHeading();
+        }
+
+        @Override public Double getExternalHeadingVelocity() {
+            return SampleMecanumDrive.this.getExternalHeadingVelocity();
+        }
+    };
 
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
@@ -136,6 +168,8 @@ public class SampleMecanumDrive extends MecanumDrive {
                 follower, HEADING_PID, batteryVoltageSensor,
                 lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
         );
+        //Start Pose for the OTOS
+        this.optical = getOptical(hardwareMap, new Pose2d(0, 0, 0));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -200,6 +234,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void update() {
         updatePoseEstimate();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
+        if (signal != null) setDriveSignal(signal);
+    }
+
+    public void updateOTOS() {
+        LDrive.updateOTOSPose(optical);
+        DriveSignal signal = trajectorySequenceRunner.update(LDrive.getOTOSPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
     }
 
@@ -311,5 +351,18 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
+    }
+
+    // Configure the optical sensor:
+    // used for appending roadrunner to be able to use the otos rather that just the odom wheels
+    static public SparkFunOTOS getOptical(HardwareMap hardwareMap, Pose2d pose) {
+        SparkFunOTOS optical = hardwareMap.get(SparkFunOTOS.class, "laser");
+        optical.setAngularUnit(AngleUnit.DEGREES);
+        optical.setOffset(new SparkFunOTOS.Pose2D(0, 0, 0));
+        optical.setLinearScalar(1.0);
+        optical.setAngularScalar(1.0);
+        optical.calibrateImu();
+        optical.setPosition(new SparkFunOTOS.Pose2D(pose.getX(), pose.getY(), pose.getHeading()));
+        return optical;
     }
 }

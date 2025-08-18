@@ -14,6 +14,7 @@
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
+apply plugin: 'kotlin-android' // ✅ correct ID for Android Kotlin projects
 
 android {
 
@@ -35,6 +36,10 @@ android {
         }
         jniLibs.useLegacyPackaging true
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8" // ✅ RECOMMENDED
+    }
 }
 
 dependencies {
@@ -47,4 +52,8 @@ dependencies {
     //swerve dependencies
     implementation 'org.ftclib.ftclib:core:2.1.1'
     implementation "com.acmerobotics.dashboard:dashboard:0.4.16"
+
+    //Kotlin dependencies
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
 }

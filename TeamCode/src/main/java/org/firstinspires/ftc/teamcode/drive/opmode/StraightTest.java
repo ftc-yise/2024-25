@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
-@Disabled
 @Autonomous(group = "drive")
 public class StraightTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
@@ -37,7 +36,7 @@ public class StraightTest extends LinearOpMode {
 
         drive.followTrajectory(trajectory);
 
-        Pose2d poseEstimate = drive.getPoseEstimate();
+        Pose2d poseEstimate = drive.LDrive.getPoseEstimate();
         telemetry.addData("finalX", poseEstimate.getX());
         telemetry.addData("finalY", poseEstimate.getY());
         telemetry.addData("finalHeading", poseEstimate.getHeading());

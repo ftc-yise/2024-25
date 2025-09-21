@@ -13,8 +13,10 @@ import com.arcrobotics.ftclib.kinematics.wpilibkinematics.SwerveDriveKinematics;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.SwerveDriveOdometry;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.SwerveModuleState;
 import com.qualcomm.hardware.bosch.BHI260IMU;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -31,10 +33,10 @@ public class SwerveDrive extends SubsystemBase {
 
     // Controllers for odometry/path following (currently unused)
     private final PIDFController driveController = new PIDFController(0.01, 0, 0, 0);
-    private final PIDFController turnControllerFL = new PIDFController(0.00485, 0.025, 0.013, 0.001);
-    private final PIDFController turnControllerFR = new PIDFController(0.0048, 0.028, 0.013, 0.001);
-    private final PIDFController turnControllerBR = new PIDFController(0.0048, 0.03, 0.013, 0.001);
-    private final PIDFController turnControllerBL = new PIDFController(0.00485, 0.015, 0.013, 0.001);
+    private final PIDFController turnControllerFL = new PIDFController(0.0068, 0.03, 0.013, 0.01);
+    private final PIDFController turnControllerFR = new PIDFController(0.0048, 0.03, 0.013, 0.01);
+    private final PIDFController turnControllerBR = new PIDFController(0.0048, 0.03, 0.013, 0.01);
+    private final PIDFController turnControllerBL = new PIDFController(0.0048, 0.03, 0.013, 0.01);
 
     // IMU for field-relative driving
     private BHI260IMU imu;
@@ -55,16 +57,16 @@ public class SwerveDrive extends SubsystemBase {
         // Parameters: moduleNumber, drive controller, turn controller, motor name, servo name,
         // encoder name, angle offset, servo direction
         SwerveModuleConfig fl = new SwerveModuleConfig(0,"0Fl", driveController, turnControllerFL,
-                "LeftFrontDrive", "LeftFrontAxon", "LeftFrontAnalog", 96, DcMotorSimple.Direction.FORWARD);
+                "LeftFrontDrive", "LeftFrontAxon", "LeftFrontAnalog", 90, DcMotorSimple.Direction.FORWARD);
 
         SwerveModuleConfig fr = new SwerveModuleConfig(1, "1FR", driveController, turnControllerFR,
                 "RightFrontDrive", "RightFrontAxon", "RightFrontAnalog", 0, DcMotorSimple.Direction.FORWARD);
 
         SwerveModuleConfig bl = new SwerveModuleConfig(2, "2bl", driveController, turnControllerBL,
-                "LeftBackDrive", "LeftBackAxon", "LeftBackAnalog", 4, DcMotorSimple.Direction.REVERSE);
+                "LeftBackDrive", "LeftBackAxon", "LeftBackAnalog", 0, DcMotorSimple.Direction.REVERSE);
 
         SwerveModuleConfig br = new SwerveModuleConfig(3, "3br", driveController, turnControllerBR,
-                "RightBackDrive", "RightBackAxon", "RightBackAnalog", 2.5, DcMotorSimple.Direction.REVERSE);
+                "RightBackDrive", "RightBackAxon", "RightBackAnalog", 0, DcMotorSimple.Direction.REVERSE);
 
         // Create array of modules
         modules = new SwerveModule[] {
@@ -99,9 +101,9 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void drive(double translation, double strafe, double rotation, boolean fieldRelative) {
         // Scale inputs to actual speeds
-        double new_translation = translation * SwerveDriveConstants.maxSpeedMeters;
-        double new_strafe = strafe * SwerveDriveConstants.maxSpeedMeters;
-        double new_rotation = rotation * SwerveDriveConstants.maxRadiansPerSecond * SwerveDriveConstants.rotationMultiplier;
+        double new_translation = -translation * SwerveDriveConstants.maxSpeedMeters;
+        double new_strafe = -strafe * SwerveDriveConstants.maxSpeedMeters;
+        double new_rotation = rotation * SwerveDriveConstants.maxRadiansPerSecond * SwerveDriveConstants.rotationMultiplier * 1.5;
 
         // Create ChassisSpeeds object (either field or robot relative)
         ChassisSpeeds speeds = fieldRelative
@@ -186,13 +188,13 @@ public class SwerveDrive extends SubsystemBase {
         telemetry.addData("Pitch", angles.getPitch(AngleUnit.DEGREES));
 
         // Telemetry for each swerve module
-        for (SwerveModule module : modules) {
+       /* for (SwerveModule module : modules) {
             telemetry.addData("Module " + module.moduleString + " Raw Voltage", module.servoPotentiometer.getVoltage());
             telemetry.addData("Module " + module.moduleString + " Current Angle (deg)", module.getWheelAngleDeg());
             telemetry.addData("Module " + module.moduleString + " PID Output", module.anglePID);
             telemetry.addData("Module " + module.moduleString + " At Setpoint", module.angleController.atSetPoint());
             telemetry.addData("Module " + module.moduleString + " Setpoint", module.angleController.getSetPoint());
-        }
+        }*/
         } else {
         telemetry.addData("IMU", "IMU not ready or null!");
     }

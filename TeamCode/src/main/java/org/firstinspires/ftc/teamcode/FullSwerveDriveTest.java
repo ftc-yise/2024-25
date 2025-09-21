@@ -30,12 +30,12 @@ public class FullSwerveDriveTest extends CommandOpMode {
         while (opModeIsActive()) {
             run();
             if (gamepad1.right_bumper) {
-                double y = gamepad1.left_stick_y;
-                double x = gamepad1.left_stick_x;
-                double rx = gamepad1.right_stick_x;
-                swerveDrive.drive(y, -x, rx, true);
+                double y = 0.5 * gamepad1.left_stick_y;
+                double x = 0.5 * gamepad1.left_stick_x;
+                double rx = 0.5 * gamepad1.right_stick_x;
+                swerveDrive.drive(y, -x, rx, false);
             }   else {
-                swerveDrive.drive(0, 0, 0, true);
+                swerveDrive.drive(0, 0, 0, false);
 
             }
             if (gamepad1.a) {

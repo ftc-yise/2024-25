@@ -18,7 +18,7 @@ public class SwerveModuleTestBR extends CommandOpMode {
 
 
     private final PIDFController driveController = new PIDFController(0.01, 0, 0, 0);
-    private final PIDFController turnController = new PIDFController(0.0048, 0.03, 0.013, 0.001);
+    private final PIDFController turnController = new PIDFController(0.0088, 0.03, 0.013, 0.001);
     private SwerveModuleConfig config = new SwerveModuleConfig(0, "0FL", driveController, turnController,
             "RightBackDrive", "RightBackAxon", "RightBackAnalog", 2.5, DcMotorSimple.Direction.FORWARD);
 

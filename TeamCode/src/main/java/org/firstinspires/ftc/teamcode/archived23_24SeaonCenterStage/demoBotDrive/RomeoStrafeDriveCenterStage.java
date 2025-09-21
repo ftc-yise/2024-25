@@ -4,11 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Romeo strafe drive", group="Linear OpMode")
-@Disabled
+
 public class RomeoStrafeDriveCenterStage extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
@@ -37,10 +38,10 @@ public class RomeoStrafeDriveCenterStage extends LinearOpMode {
 
         plane = hardwareMap.get(Servo.class, "plane");
 
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         waitForStart();
         runtime.reset();
@@ -56,10 +57,10 @@ public class RomeoStrafeDriveCenterStage extends LinearOpMode {
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = forward - strafe + turn;
-            double rightFrontPower = forward + strafe - turn;
-            double leftBackPower   = forward + strafe + turn;
-            double rightBackPower  = forward - strafe - turn;
+            double leftFrontPower  = forward + strafe + turn;
+            double rightFrontPower = forward - strafe - turn;
+            double leftBackPower   = forward - strafe + turn;
+            double rightBackPower  = forward + strafe - turn;
 
             if (gamepad1.left_trigger > .75) {
                 plane.setPosition(Servo.MIN_POSITION);

@@ -194,7 +194,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void turnAsync(double angle) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(
-                trajectorySequenceBuilder(getPoseEstimate())
+                trajectorySequenceBuilder(LDrive.getPoseEstimate())
                         .turn(angle)
                         .build()
         );
@@ -233,7 +233,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void update() {
         updatePoseEstimate();
-        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
+        DriveSignal signal = trajectorySequenceRunner.update(LDrive.getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
     }
 

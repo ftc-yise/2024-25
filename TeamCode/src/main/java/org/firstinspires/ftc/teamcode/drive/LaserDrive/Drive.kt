@@ -34,16 +34,32 @@ abstract class Drive {
         }
 
     /**
+     * SparkFun OTOS optical tracking sensor reference.
+     * Should be initialized externally before use.
+     */
+    lateinit var optical: SparkFunOTOS
+
+    // Backing field for poseEstimate
+    private var _poseEstimate: Pose2d = Pose2d()
+
+    /**
      * The robot's current pose estimate.
+     * Returns the OTOS position if available; otherwise returns the last known estimate.
      */
     var poseEstimate: Pose2d
-        get() = localizer.poseEstimate
+        get() {
+            if (this::optical.isInitialized) {
+                val opticalPose = optical.position
+                _poseEstimate = Pose2d(opticalPose.x, opticalPose.y, opticalPose.h)
+            }
+            return _poseEstimate
+        }
         set(value) {
-            localizer.poseEstimate = value
+            _poseEstimate = value
         }
 
     /**
-     *  Current robot pose velocity (optional)
+     * Current robot pose velocity (optional)
      */
     val poseVelocity: Pose2d?
         get() = localizer.poseVelocity
@@ -68,8 +84,10 @@ abstract class Drive {
         // FlightRecorder.write("ESTIMATED_POSE", PoseMessage(pose))
     }
 
+    /**
+     * Returns the current OTOS-based pose estimate.
+     */
     open fun getOTOSPoseEstimate(): Pose2d = pose
-
 
     /**
      * Sets the current commanded drive state of the robot. Feedforward is applied to [driveSignal] before it reaches
@@ -83,7 +101,7 @@ abstract class Drive {
     abstract fun setDrivePower(drivePower: Pose2d)
 
     /**
-     * The heading velocity used to determine pose velocity in some cases
+     * The heading velocity used to determine pose velocity in some cases.
      */
     open fun getExternalHeadingVelocity(): Double? = null
 }

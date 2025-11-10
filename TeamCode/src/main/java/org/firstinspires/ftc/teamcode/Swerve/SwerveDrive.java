@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Swerve;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.geometry.Pose2d;
@@ -10,18 +9,16 @@ import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Twist2d;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.SwerveDriveKinematics;
-import com.arcrobotics.ftclib.kinematics.wpilibkinematics.SwerveDriveOdometry;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.SwerveModuleState;
 import com.qualcomm.hardware.bosch.BHI260IMU;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.SwerveTrajectoryFollower;
 
 /**
  * Main swerve drive class that controls all four swerve modules
@@ -52,7 +49,7 @@ public class SwerveDrive extends SubsystemBase {
      * Constructor for the swerve drive system
      * @param opMode OpMode reference for hardware mapping
      */
-    public SwerveDrive(CommandOpMode opMode) {
+    public SwerveDrive(SwerveTrajectoryFollower opMode) {
         // Create configurations for each module
         // Parameters: moduleNumber, drive controller, turn controller, motor name, servo name,
         // encoder name, angle offset, servo direction

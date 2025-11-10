@@ -27,6 +27,8 @@ public class BallBot extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
+    private DcMotor intake = null;
+
     private double slowSpeed = 0.4;
     private double fullSpeed = 1;
     private double currentSpeed = 1;
@@ -41,11 +43,15 @@ public class BallBot extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "LeftBackDrive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "RightFrontDrive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "RightBackDrive");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        intake.setDirection(DcMotor.Direction.FORWARD);
 
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -101,6 +107,12 @@ public class BallBot extends LinearOpMode {
                 }
             } else if (!gamepad1.y) {
                 canChangeSpeeds = true;
+            }
+
+            if (gamepad1.right_trigger > 0.75 || gamepad1.left_trigger > 0.75){
+                intake.setPower(1);
+            }else {
+                intake.setPower(0);
             }
 
             //Set drive power based on gamepad inputs multiplied by the speed variable

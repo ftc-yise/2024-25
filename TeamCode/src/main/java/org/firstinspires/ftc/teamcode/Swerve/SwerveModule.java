@@ -2,21 +2,16 @@ package org.firstinspires.ftc.teamcode.Swerve;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.SwerveModuleState;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Swerve.CustomPIDFController;
+import org.firstinspires.ftc.teamcode.SwerveTrajectoryFollower;
 
 /**
  * Class representing a single swerve module (drive motor + angle servo)
@@ -53,7 +48,7 @@ public class SwerveModule extends SubsystemBase {
      * @param config Configuration parameters for this module
      * @param opMode OpMode reference for hardware mapping
      */
-    public SwerveModule(SwerveModuleConfig config, CommandOpMode opMode) {
+    public SwerveModule(SwerveModuleConfig config, SwerveTrajectoryFollower opMode) {
         // Initialize drive motor
         driveMotor = opMode.hardwareMap.get(DcMotorEx.class, config.driveMotorName);
 

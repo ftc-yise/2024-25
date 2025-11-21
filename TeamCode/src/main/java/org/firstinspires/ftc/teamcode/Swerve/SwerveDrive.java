@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.FullSwerveDriveTest;
 import org.firstinspires.ftc.teamcode.SwerveTrajectoryFollower;
 
 /**
@@ -87,6 +88,9 @@ public class SwerveDrive extends SubsystemBase {
         // Set up telemetry with FTC Dashboard integration
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(opMode.telemetry, dashboard.getTelemetry());
+    }
+
+    public SwerveDrive(FullSwerveDriveTest fullSwerveDriveTest) {
     }
 
     /**

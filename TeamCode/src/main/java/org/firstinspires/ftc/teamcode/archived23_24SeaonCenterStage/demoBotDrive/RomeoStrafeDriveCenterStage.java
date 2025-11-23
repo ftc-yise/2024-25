@@ -54,8 +54,8 @@ public class RomeoStrafeDriveCenterStage extends LinearOpMode {
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double forward   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double strafe =  gamepad1.left_stick_x;
+            double forward   = gamepad1.left_stick_x;  // Note: pushing stick forward gives negative value
+            double strafe =  -gamepad1.left_stick_y;
             double turn     =  gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.

@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.archived23_24SeaonCenterStage.demoBotDrive;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,14 +18,16 @@ public class RomeoStrafeDriveCenterStage extends LinearOpMode {
     private DcMotor rightBackDrive = null;
 
     private Servo Claw = null;
-    private Servo Shoulder = null;
+    private CRServo Shoulder = null;
+    private CRServo Elbow = null;
 
     private double slowSpeed = 0.4;
     private double fullSpeed = 1;
-    private double currentSpeed = .35;
+    private double currentSpeed = 1;
     private boolean canChangeSpeeds = true;
-    private boolean RightTriggerPressed = false;
+    private boolean RightBumperPressed = false;
     private boolean LeftTriggerPressed = false;
+    private boolean elbowPressed = false;
 
 
     @Override
@@ -38,8 +40,10 @@ public class RomeoStrafeDriveCenterStage extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "RightFrontDrive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "RightBackDrive");
 
-        Shoulder = hardwareMap.get(Servo.class, "shoulder");
+        Shoulder = hardwareMap.get(CRServo.class, "shoulder");
+        Elbow = hardwareMap.get(CRServo.class, "elbow");
         Claw = hardwareMap.get(Servo.class, "claw");
+        Shoulder.setDirection(DcMotor.Direction.FORWARD);
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -54,16 +58,16 @@ public class RomeoStrafeDriveCenterStage extends LinearOpMode {
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double forward   = gamepad1.left_stick_x;  // Note: pushing stick forward gives negative value
-            double strafe =  -gamepad1.left_stick_y;
+            double forward   = -gamepad1.left_stick_x;  // Note: pushing stick forward gives negative value
+            double strafe =  gamepad1.left_stick_y;
             double turn     =  gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
             double leftFrontPower  = -forward + strafe + turn;
             double rightFrontPower = -forward - strafe - turn;
-            double leftBackPower   = forward - strafe + turn;
-            double rightBackPower  = forward + strafe - turn;
+            double leftBackPower   = -forward - strafe + turn;
+            double rightBackPower  = -forward + strafe - turn;
 
             /*if (!gamepad1.right_bumper) {
                 RightTriggerPressed = false; // Reset the flag when the trigger is released
@@ -76,22 +80,40 @@ public class RomeoStrafeDriveCenterStage extends LinearOpMode {
 
             //controlling shoulder when grabbing specimen of the wall position using a
             // toggle boolean and a ternary operator
-            if (gamepad1.right_trigger < 0.15) {
-                RightTriggerPressed = false; // Reset the flag when the trigger is released
+            if (!gamepad1.right_bumper) {
+                RightBumperPressed = false; // Reset the flag when the trigger is released
             }// Check the conditions for opening/closing the claw
-            if (gamepad1.right_trigger > 0.15 && !RightTriggerPressed) {
+            if (gamepad1.right_bumper && !RightBumperPressed) {
                 // If the right trigger is pressed, toggle the claw and reset the sensor flag
                 Claw.setPosition(Claw.getPosition() == 0.8 ? 0.2 : 0.8);
-                RightTriggerPressed = true; // Reset the flag when the trigger is released
+                RightBumperPressed = true; // Reset the flag when the trigger is released
             }
 
-            if (gamepad1.left_trigger < 0.15) {
-                LeftTriggerPressed = false; // Reset the flag when the trigger is released
-            }// Check the conditions for opening/closing the claw
-            if (gamepad1.left_trigger > 0.15 && !LeftTriggerPressed) {
-                // If the right trigger is pressed, toggle the claw and reset the sensor flag
-                Shoulder.setPosition(Shoulder.getPosition() == 0.8 ? 0 : 0.8);
-                LeftTriggerPressed = true; // Reset the flag when the trigger is released
+            if (gamepad1.right_trigger > 0.15) {
+                Shoulder.setPower(0.35);
+            } else if (gamepad1.left_trigger > 0.15) {
+                Shoulder.setPower(-0.35);
+            } else {
+                Shoulder.setPower(0.004);
+                // Check the conditions for opening/closing the claw
+            }
+
+            if (gamepad1.y) {
+                Elbow.setPower(0.25);
+            } else if (gamepad1.x) {
+                Elbow.setPower(-0.25);
+            } else {
+                Elbow.setPower(0.008);
+                // Check the conditions for opening/closing the claw
+            }
+
+            if (gamepad1.a) {
+                Shoulder.setPower(0.51);
+            } else if (gamepad1.b) {
+                Shoulder.setPower(-1);
+            } else {
+                //Shoulder.setPower(0.0001);
+                // Check the conditions for opening/closing the claw
             }
 
             // Send calculated power to wheels
@@ -101,9 +123,9 @@ public class RomeoStrafeDriveCenterStage extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower * currentSpeed);
 
             telemetry.addData("serve", Claw.getPosition());
-            telemetry.addData("right trigger", RightTriggerPressed);
+            telemetry.addData("right trigger", RightBumperPressed);
             telemetry.addData("shoulder", Claw.getPosition());
-            telemetry.addData("left trigger", RightTriggerPressed);
+            telemetry.addData("left trigger", RightBumperPressed);
             telemetry.update();
         }
     }}

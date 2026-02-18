@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -60,14 +61,15 @@ public class RomeoStrafeDriveCenterStage extends LinearOpMode {
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double forward   = -gamepad1.left_stick_x;  // Note: pushing stick forward gives negative value
             double strafe =  gamepad1.left_stick_y;
-            double turn     =  gamepad1.right_stick_x;
+            double turn = 0;
+            if (Math.abs(gamepad1.right_stick_x) > 0.4) turn =  gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = -forward + strafe + turn;
-            double rightFrontPower = -forward - strafe - turn;
-            double leftBackPower   = -forward - strafe + turn;
-            double rightBackPower  = -forward + strafe - turn;
+            double leftFrontPower  = -forward - strafe + turn;
+            double rightFrontPower = -forward + strafe - turn;
+            double leftBackPower   = -forward + strafe + turn;
+            double rightBackPower  = -forward - strafe - turn;
 
             /*if (!gamepad1.right_bumper) {
                 RightTriggerPressed = false; // Reset the flag when the trigger is released
